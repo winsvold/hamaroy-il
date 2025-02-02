@@ -9,11 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^3.5.1",
     "@sanity/icons": "^3.5.7",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.72.1",
     "next": "15.1.6",
     "next-sanity": "^9.8.47",
+    "radash": "^12.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sanity": "^3.72.1",
