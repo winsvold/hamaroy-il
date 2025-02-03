@@ -1,6 +1,8 @@
 import { Provider } from "@/app/(frontend)/provider";
 import type { Metadata } from "next";
 import { Source_Sans_3 } from "next/font/google";
+import { Header } from "./layout/Header";
+import { Footer } from "./layout/Footer";
 import { Grid } from "@chakra-ui/react";
 
 const sourceSans = Source_Sans_3({
@@ -21,8 +23,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="no">
-      <body>{children}</body>
-    </html>
+    <Provider>
+      <Grid
+        minH="100vh"
+        gridTemplateRows="auto 1fr auto"
+        className={`${sourceSans.className}`}
+      >
+        <Header />
+        <main>{children}</main>
+        <Footer />
+      </Grid>
+    </Provider>
   );
 }
