@@ -1,11 +1,13 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
-import { Link, Box } from "@chakra-ui/react";
+import { Link, Box, Flex } from "@chakra-ui/react";
 
 export const Footer = () => {
   return (
     <Box padding="1rem">
       <DefaultContainer as="footer">
-        <Link href="/cms">Admin</Link>
+        <Flex justifyContent="flex-end">
+          <Link href="/cms">Admin</Link>
+        </Flex>
       </DefaultContainer>
     </Box>
   );

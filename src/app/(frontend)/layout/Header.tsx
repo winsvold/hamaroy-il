@@ -11,15 +11,15 @@ export const Header = async () => {
 
   return (
     <Box as="header" padding="1.5rem" boxShadow="md">
-      <DefaultContainer >
+      <DefaultContainer>
         <Stack gap="1rem">
           <HStack gap="1rem">
-            <Box borderRadius="50%" overflow="hidden" width="4rem" asChild>
-              <Image alt="" src={logoUrl} width={100} height={100} />
-            </Box>
             <Heading as="h1" size="4xl">
               Hamarøy IL
             </Heading>
+            <Box borderRadius="50%" overflow="hidden" width="4rem" asChild>
+              <Image alt="" src={logoUrl} width={100} height={100} />
+            </Box>
           </HStack>
           <Flex as="ul" gap="2rem" fontSize="1.5rem">
             <Box>Hva skjer</Box>

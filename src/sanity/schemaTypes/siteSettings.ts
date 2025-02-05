@@ -15,4 +15,9 @@ export const siteSettings = defineType({
       },
     }),
   ],
+  preview: {
+    prepare: () => ({
+      title: "Nettstedinnstillinger",
+    }),
+  },
 });
