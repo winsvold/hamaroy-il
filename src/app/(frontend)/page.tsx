@@ -9,7 +9,8 @@ export default function Home() {
           <Heading>Under utvikling</Heading>
           <Text fontSize="lg">
             Vi får nye nettsider, og for øyeblikket ser de ikke all verden ut,
-            men her vil det komme mye nytt iløpet av vinteren. Følg med, og si gjerne fra om du har innspill!
+            men her vil det komme mye nytt iløpet av vinteren. Følg med, og si
+            gjerne fra om du har innspill!
           </Text>
         </Stack>
       </Stack>

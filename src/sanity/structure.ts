@@ -8,7 +8,7 @@ export const structure: StructureResolver = (S) =>
     .title("Innhold")
     .items([
       ...S.documentTypeListItems().filter(
-        (item) => item.getId() !== "siteSettings"
+        (item) => item.getId() !== "siteSettings",
       ),
       S.divider(),
       singeltonDocument(S, siteSettings),
@@ -20,5 +20,8 @@ const singeltonDocument = (S: StructureBuilder, schema: DocumentDefinition) =>
     .schemaType(schema.name)
     .title(schema.title ?? schema.name)
     .child(
-      S.editor().id(schema.name).schemaType(schema.name).documentId(schema.name)
+      S.editor()
+        .id(schema.name)
+        .schemaType(schema.name)
+        .documentId(schema.name),
     );
