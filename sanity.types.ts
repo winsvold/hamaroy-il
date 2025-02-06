@@ -103,11 +103,9 @@ export type SessionSeries = {
   _updatedAt: string;
   _rev: string;
   title?: string;
-  sessions?: Array<
-    {
-      _key: string;
-    } & Session
-  >;
+  sessions?: Array<{
+    _key: string;
+  } & Session>;
   description?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -304,23 +302,5 @@ export type BlockContent = Array<{
   _key: string;
 }>;
 
-export type AllSanitySchemaTypes =
-  | SanityImagePaletteSwatch
-  | SanityImagePalette
-  | SanityImageDimensions
-  | SanityFileAsset
-  | Geopoint
-  | Slug
-  | Person
-  | SessionSeries
-  | Location
-  | Session
-  | Event
-  | SiteSettings
-  | SanityImageCrop
-  | SanityImageHotspot
-  | SanityImageAsset
-  | SanityAssetSourceData
-  | SanityImageMetadata
-  | BlockContent;
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | Slug | Person | SessionSeries | Location | Session | Event | SiteSettings | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | BlockContent;
 export declare const internalGroqTypeReferenceTo: unique symbol;

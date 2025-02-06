@@ -1,7 +1,9 @@
 import { Sports, sports } from "@/utils/sports";
-import { defineField, defineType } from "sanity";
+import roundToNearestMinutes from "date-fns/roundToNearestMinutes";
 import format from "date-fns/format";
 import nb from "date-fns/locale/nb";
+import { defineField, defineType } from "sanity";
+import { add } from "date-fns";
 
 export const sessionSeries = defineType({
   name: "sessionSeries",
@@ -72,6 +74,9 @@ export const session = defineType({
       name: "startsAt",
       title: "Starter",
       type: "datetime",
+      initialValue: roundToNearestMinutes(new Date(), {
+        nearestTo: 30,
+      }).toISOString(),
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -103,12 +108,16 @@ export const session = defineType({
   preview: {
     select: {
       startsAt: "startsAt",
-      parentTitle: "^.title",
+      duration: "duration",
     },
-    prepare({ startsAt }) {
+    prepare({ startsAt, duration }) {
+      const endTime = add(new Date(startsAt), {
+        hours: duration.hours,
+        minutes: duration.minutes,
+      });
       return {
         title: format(new Date(startsAt), "PPP", { locale: nb }),
-        subtitle: format(new Date(startsAt), "p", { locale: nb }),
+        subtitle: `${format(new Date(startsAt), "p")} - ${format(new Date(endTime), "p")}`,
         media: () => "🏋️‍♀️",
       };
     },
