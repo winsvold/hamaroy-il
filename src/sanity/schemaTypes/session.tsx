@@ -1,5 +1,7 @@
 import { Sports, sports } from "@/utils/sports";
 import { defineField, defineType } from "sanity";
+import format from "date-fns/format";
+import nb from "date-fns/locale/nb";
 
 export const sessionSeries = defineType({
   name: "sessionSeries",
@@ -67,20 +69,19 @@ export const session = defineType({
   type: "object",
   fields: [
     defineField({
-      name: "date",
-      title: "Dato",
+      name: "startsAt",
+      title: "Starter",
       type: "datetime",
-    }),
-    defineField({
-      name: "startTime",
-      title: "Starttid",
-      type: "datetime",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "duration",
       title: "Varighet",
       description: "Varighet",
       type: "object",
+      options: {
+        columns: 2,
+      },
       fields: [
         defineField({
           name: "hours",
@@ -101,12 +102,14 @@ export const session = defineType({
   ],
   preview: {
     select: {
-      date: "date",
+      startsAt: "startsAt",
+      parentTitle: "^.title",
     },
-    prepare({ date }) {
+    prepare({ startsAt }) {
       return {
-        title: new Date(date).toLocaleDateString("nb-NO"),
-        subtitle: new Date(date).toLocaleTimeString("nb-NO"),
+        title: format(new Date(startsAt), "PPP", { locale: nb }),
+        subtitle: format(new Date(startsAt), "p", { locale: nb }),
+        media: () => "🏋️‍♀️",
       };
     },
   },
