@@ -1,12 +1,12 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
-import { client } from "@/sanity/lib/client";
+import { sanityClient } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { Stack, Heading, Flex, Box, HStack } from "@chakra-ui/react";
 import { groq } from "next-sanity";
 import Image from "next/image";
 
 export const Header = async () => {
-  const data = await client.fetch(groq`*[_type == "siteSettings"][0]`);
+  const data = await sanityClient.fetch(groq`*[_type == "siteSettings"][0]`);
   const logoUrl = urlFor(data?.logo).url();
 
   return (

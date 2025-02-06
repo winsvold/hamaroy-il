@@ -1,5 +1,6 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { Heading, Stack, Text } from "@chakra-ui/react";
+import { Sessions } from "./components/sessions";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
             gjerne fra om du har innspill!
           </Text>
         </Stack>
+        <Sessions />
       </Stack>
     </DefaultContainer>
   );

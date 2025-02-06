@@ -1,9 +1,8 @@
 import { Sports, sports } from "@/utils/sports";
 import roundToNearestMinutes from "date-fns/roundToNearestMinutes";
-import format from "date-fns/format";
-import nb from "date-fns/locale/nb";
 import { defineField, defineType } from "sanity";
 import { add } from "date-fns";
+import { formatNorwegianDate } from "@/utils/date";
 
 export const sessionSeries = defineType({
   name: "sessionSeries",
@@ -116,8 +115,8 @@ export const session = defineType({
         minutes: duration.minutes,
       });
       return {
-        title: format(new Date(startsAt), "PPP", { locale: nb }),
-        subtitle: `${format(new Date(startsAt), "p")} - ${format(new Date(endTime), "p")}`,
+        title: formatNorwegianDate(startsAt, "PPP"),
+        subtitle: `${formatNorwegianDate(startsAt, "p")} - ${formatNorwegianDate(endTime, "p")}`,
         media: () => "🏋️‍♀️",
       };
     },

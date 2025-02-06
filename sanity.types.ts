@@ -103,9 +103,11 @@ export type SessionSeries = {
   _updatedAt: string;
   _rev: string;
   title?: string;
-  sessions?: Array<{
-    _key: string;
-  } & Session>;
+  sessions?: Array<
+    {
+      _key: string;
+    } & Session
+  >;
   description?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -302,5 +304,115 @@ export type BlockContent = Array<{
   _key: string;
 }>;
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | Slug | Person | SessionSeries | Location | Session | Event | SiteSettings | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | BlockContent;
+export type AllSanitySchemaTypes =
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityFileAsset
+  | Geopoint
+  | Slug
+  | Person
+  | SessionSeries
+  | Location
+  | Session
+  | Event
+  | SiteSettings
+  | SanityImageCrop
+  | SanityImageHotspot
+  | SanityImageAsset
+  | SanityAssetSourceData
+  | SanityImageMetadata
+  | BlockContent;
 export declare const internalGroqTypeReferenceTo: unique symbol;
+// Source: ./src/app/(frontend)/components/sessions.tsx
+// Variable: sessionsSeriesQuery
+// Query: *[_type == "sessionSeries"]{  ...,  location->,  organizers[]->,}
+export type SessionsSeriesQueryResult = Array<{
+  _id: string;
+  _type: "sessionSeries";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  sessions?: Array<
+    {
+      _key: string;
+    } & Session
+  >;
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "h2" | "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  sport?: "climbing";
+  organizers: Array<{
+    _id: string;
+    _type: "person";
+    _createdAt: string;
+    _updatedAt: string;
+    _rev: string;
+    name?: string;
+    email?: string;
+    phone?: string;
+    image?: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+  }> | null;
+  location: {
+    _id: string;
+    _type: "location";
+    _createdAt: string;
+    _updatedAt: string;
+    _rev: string;
+    title?: string;
+    image?: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    parent?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "location";
+    };
+    address?: string;
+    zip?: string;
+    city?: string;
+  } | null;
+}>;
+
+// Query TypeMap
+import "@sanity/client";
+declare module "@sanity/client" {
+  interface SanityQueries {
+    '*[_type == "sessionSeries"]{\n  ...,\n  location->,\n  organizers[]->,\n}': SessionsSeriesQueryResult;
+  }
+}
