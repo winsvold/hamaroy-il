@@ -1,7 +1,5 @@
-import { Provider } from "@/app/(frontend)/provider";
 import type { Metadata } from "next";
 import { Source_Sans_3 } from "next/font/google";
-import { Grid } from "@chakra-ui/react";
 
 const sourceSans = Source_Sans_3({
   weight: ["400", "600", "700"],
@@ -21,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="no">
+    <html lang="no" className={`${sourceSans.className}`}>
       <body>{children}</body>
     </html>
   );

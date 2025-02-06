@@ -1,4 +1,4 @@
-import { sports } from "@/utils/sports";
+import { Sports, sports } from "@/utils/sports";
 import { defineType, defineField } from "sanity";
 
 export const sessionSeries = defineType({
@@ -61,7 +61,7 @@ export const sessionSeries = defineType({
     prepare({ title, sport }) {
       return {
         title: title,
-        media: () => sports[sport]?.icon,
+        media: () => sports[sport as Sports]?.icon,
       };
     },
   },
