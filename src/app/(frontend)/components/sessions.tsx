@@ -3,7 +3,7 @@ import { formatNorwegianDate } from "@/utils/date";
 import { getSessionEndsAt } from "@/utils/session";
 import { sports } from "@/utils/sports";
 import { Box, Flex, Grid, Heading, Text } from "@chakra-ui/react";
-import isAfter from "date-fns/isAfter";
+import { isAfter } from "date-fns";
 import { defineQuery } from "next-sanity";
 import { sift } from "radash";
 import { KeyedSegment } from "sanity";

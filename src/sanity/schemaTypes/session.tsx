@@ -1,8 +1,7 @@
-import { Sports, sports } from "@/utils/sports";
-import roundToNearestMinutes from "date-fns/roundToNearestMinutes";
-import { defineField, defineType } from "sanity";
-import { add } from "date-fns";
 import { formatNorwegianDate } from "@/utils/date";
+import { Sports, sports } from "@/utils/sports";
+import { add, roundToNearestMinutes } from "date-fns";
+import { defineField, defineType } from "sanity";
 
 export const sessionSeries = defineType({
   name: "sessionSeries",

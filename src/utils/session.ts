@@ -1,4 +1,4 @@
-import add from "date-fns/add";
+import { add } from "date-fns";
 import { Session } from "../../sanity.types";
 
 export const getSessionEndsAt = (session: Session) => {

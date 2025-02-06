@@ -1,4 +1,4 @@
-import dateFnsFormat from "date-fns/format";
+import { format as dateFnsFormat } from "date-fns";
 import nb from "date-fns/locale/nb";
 
 export const formatNorwegianDate = (date?: string | Date, format = "PPP") => {
