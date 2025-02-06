@@ -4,6 +4,7 @@ export const event = defineType({
   name: "event",
   title: "Arrangement",
   type: "document",
+  icon: () => "📅",
   fields: [
     defineField({
       name: "title",

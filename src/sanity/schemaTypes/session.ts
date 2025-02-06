@@ -1,33 +1,17 @@
 import { Sports, sports } from "@/utils/sports";
-import { defineType, defineField } from "sanity";
+import { defineField, defineType } from "sanity";
 
 export const sessionSeries = defineType({
   name: "sessionSeries",
   title: "Gjenntagende aktivitet",
   type: "document",
-  icon: () => "🔄",
+  icon: () => "🏋️‍♀️",
   fields: [
     defineField({
       name: "title",
       title: "Navn",
       type: "string",
       validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: "startsAt",
-      title: "Starttid",
-      description: "Format: HH:MM, feks 10:30",
-      type: "string",
-      validation: (Rule) => Rule.required().regex(/^\d{2}:\d{2}$/),
-      hidden: ({ parent }) => parent?.repeated,
-    }),
-    defineField({
-      name: "endsAt",
-      title: "Sluttid",
-      description: "Format: HH:MM, feks 10:30",
-      type: "string",
-      validation: (Rule) => Rule.required().regex(/^\d{2}:\d{2}$/),
-      hidden: ({ parent }) => parent?.repeated,
     }),
     defineField({
       name: "sessions",
@@ -52,18 +36,28 @@ export const sessionSeries = defineType({
         })),
       },
     }),
+    defineField({
+      name: "organizers",
+      title: "Arrangør(er)",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "person" }] }],
+    }),
+    defineField({
+      name: "location",
+      title: "Sted",
+      type: "reference",
+      to: [{ type: "location" }],
+    }),
   ],
   preview: {
     select: {
       title: "title",
       sport: "sport",
     },
-    prepare({ title, sport }) {
-      return {
-        title: title,
-        media: () => sports[sport as Sports]?.icon,
-      };
-    },
+    prepare: ({ title, sport }) => ({
+      title: title,
+      media: () => sports[sport as Sports]?.icon,
+    }),
   },
 });
 
@@ -76,6 +70,33 @@ export const session = defineType({
       name: "date",
       title: "Dato",
       type: "datetime",
+    }),
+    defineField({
+      name: "startTime",
+      title: "Starttid",
+      type: "datetime",
+    }),
+    defineField({
+      name: "duration",
+      title: "Varighet",
+      description: "Varighet",
+      type: "object",
+      fields: [
+        defineField({
+          name: "hours",
+          title: "Timer",
+          type: "number",
+          initialValue: 1,
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "minutes",
+          title: "Minutter",
+          type: "number",
+          initialValue: 0,
+          validation: (Rule) => Rule.required(),
+        }),
+      ],
     }),
   ],
   preview: {
