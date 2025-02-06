@@ -3,7 +3,7 @@ import { Link, Box, Flex } from "@chakra-ui/react";
 
 export const Footer = () => {
   return (
-    <Box padding="1rem">
+    <Box paddingY="1.5rem">
       <DefaultContainer as="footer">
         <Flex justifyContent="flex-end">
           <Link href="/cms">Admin</Link>

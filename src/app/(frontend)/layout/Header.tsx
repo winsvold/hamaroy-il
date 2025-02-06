@@ -10,7 +10,7 @@ export const Header = async () => {
   const logoUrl = urlFor(data?.logo).url();
 
   return (
-    <Box as="header" padding="1.5rem" boxShadow="md">
+    <Box as="header" paddingY="1.5rem">
       <DefaultContainer>
         <Stack gap="1rem">
           <HStack gap="1rem">
