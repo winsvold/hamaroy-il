@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "generate-types": "sanity schema extract && sanity typegen generate"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.5.1",
