@@ -475,6 +475,58 @@ export type SessionsSeriesQueryResult = Array<{
   slug?: Slug;
 }>;
 
+// Source: ./src/app/(frontend)/lokaler/page.tsx
+// Variable: locationsQuery
+// Query: *[_type == "location"]
+export type LocationsQueryResult = Array<{
+  _id: string;
+  _type: "location";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  images?: Array<{
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+  parent?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "location";
+  };
+  address?: string;
+  zip?: string;
+  city?: string;
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "h2" | "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  slug?: Slug;
+}>;
+
 // Source: ./src/app/(frontend)/aktiviteter/[slug]/page.tsx
 // Variable: aktivitetQuery
 // Query: *[_type == "sessionSeries" && slug.current == $slug][0]{  ...,  location->,  organizers[]->,}
@@ -650,6 +702,7 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     '*[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{\n  ...,\n  location->,\n  organizers[]->,\n}': SessionsSeriesQueryResult;
+    '*[_type == "location"]': LocationsQueryResult;
     '*[_type == "sessionSeries" && slug.current == $slug][0]{\n  ...,\n  location->,\n  organizers[]->,\n}': AktivitetQueryResult;
     '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
   }
