@@ -68,12 +68,6 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type Person = {
   _id: string;
   _type: "person";
@@ -126,7 +120,7 @@ export type SessionSeries = {
     _type: "block";
     _key: string;
   }>;
-  sport?: "climbing";
+  sport?: "climbing" | "circle";
   organizers?: Array<{
     _ref: string;
     _type: "reference";
@@ -140,16 +134,7 @@ export type SessionSeries = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "location";
   };
-};
-
-export type Location = {
-  _id: string;
-  _type: "location";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  image?: {
+  images?: Array<{
     asset?: {
       _ref: string;
       _type: "reference";
@@ -159,7 +144,36 @@ export type Location = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
-  };
+    _key: string;
+  }>;
+  slug?: Slug;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type Location = {
+  _id: string;
+  _type: "location";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  images?: Array<{
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
   parent?: {
     _ref: string;
     _type: "reference";
@@ -310,9 +324,9 @@ export type AllSanitySchemaTypes =
   | SanityImageDimensions
   | SanityFileAsset
   | Geopoint
-  | Slug
   | Person
   | SessionSeries
+  | Slug
   | Location
   | Session
   | Event
@@ -326,7 +340,7 @@ export type AllSanitySchemaTypes =
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/app/(frontend)/components/sessions.tsx
 // Variable: sessionsSeriesQuery
-// Query: *[_type == "sessionSeries"]{  ...,  location->,  organizers[]->,}
+// Query: *[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId)]{  ...,  location->,  organizers[]->,}
 export type SessionsSeriesQueryResult = Array<{
   _id: string;
   _type: "sessionSeries";
@@ -357,7 +371,7 @@ export type SessionsSeriesQueryResult = Array<{
     _type: "block";
     _key: string;
   }>;
-  sport?: "climbing";
+  sport?: "circle" | "climbing";
   organizers: Array<{
     _id: string;
     _type: "person";
@@ -385,7 +399,87 @@ export type SessionsSeriesQueryResult = Array<{
     _createdAt: string;
     _updatedAt: string;
     _rev: string;
-    title?: string;
+    name?: string;
+    images?: Array<{
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+      _key: string;
+    }>;
+    parent?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "location";
+    };
+    address?: string;
+    zip?: string;
+    city?: string;
+  } | null;
+  images?: Array<{
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+  slug?: Slug;
+}>;
+
+// Source: ./src/app/(frontend)/aktiviteter/[slug]/page.tsx
+// Variable: aktivitetQuery
+// Query: *[_type == "sessionSeries" && slug.current == $slug][0]{  ...,  location->,  organizers[]->,}
+export type AktivitetQueryResult = {
+  _id: string;
+  _type: "sessionSeries";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  sessions?: Array<
+    {
+      _key: string;
+    } & Session
+  >;
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "h2" | "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  sport?: "circle" | "climbing";
+  organizers: Array<{
+    _id: string;
+    _type: "person";
+    _createdAt: string;
+    _updatedAt: string;
+    _rev: string;
+    name?: string;
+    email?: string;
+    phone?: string;
     image?: {
       asset?: {
         _ref: string;
@@ -397,6 +491,26 @@ export type SessionsSeriesQueryResult = Array<{
       crop?: SanityImageCrop;
       _type: "image";
     };
+  }> | null;
+  location: {
+    _id: string;
+    _type: "location";
+    _createdAt: string;
+    _updatedAt: string;
+    _rev: string;
+    name?: string;
+    images?: Array<{
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+      _key: string;
+    }>;
     parent?: {
       _ref: string;
       _type: "reference";
@@ -407,12 +521,26 @@ export type SessionsSeriesQueryResult = Array<{
     zip?: string;
     city?: string;
   } | null;
-}>;
+  images?: Array<{
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+  slug?: Slug;
+} | null;
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "sessionSeries"]{\n  ...,\n  location->,\n  organizers[]->,\n}': SessionsSeriesQueryResult;
+    '*[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId)]{\n  ...,\n  location->,\n  organizers[]->,\n}': SessionsSeriesQueryResult;
+    '*[_type == "sessionSeries" && slug.current == $slug][0]{\n  ...,\n  location->,\n  organizers[]->,\n}': AktivitetQueryResult;
   }
 }

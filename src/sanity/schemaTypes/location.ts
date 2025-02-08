@@ -7,17 +7,22 @@ export const location = defineType({
   icon: () => "📍",
   fields: [
     {
-      name: "title",
-      title: "Title",
+      name: "name",
+      title: "Navn",
       type: "string",
     },
     {
-      name: "image",
-      title: "Image",
-      type: "image",
-      options: {
-        hotspot: true,
-      },
+      name: "images",
+      title: "Bilder",
+      type: "array",
+      of: [
+        {
+          type: "image",
+          options: {
+            hotspot: true,
+          },
+        },
+      ],
     },
     {
       name: "parent",
@@ -46,7 +51,7 @@ export const location = defineType({
   ],
   preview: {
     select: {
-      title: "title",
+      title: "name",
       subtitle: "address",
     },
   },

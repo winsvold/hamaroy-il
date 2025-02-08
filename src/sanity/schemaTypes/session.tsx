@@ -1,5 +1,6 @@
 import { formatNorwegianDate } from "@/utils/date";
 import { Sports, sports } from "@/utils/sports";
+import { Stack, Text } from "@chakra-ui/react";
 import { add, roundToNearestMinutes } from "date-fns";
 import { defineField, defineType } from "sanity";
 
@@ -49,6 +50,40 @@ export const sessionSeries = defineType({
       title: "Sted",
       type: "reference",
       to: [{ type: "location" }],
+    }),
+    {
+      name: "images",
+      title: "Bilder",
+      type: "array",
+      of: [
+        {
+          type: "image",
+          options: {
+            hotspot: true,
+          },
+        },
+      ],
+    },
+    defineField({
+      name: "slug",
+      title: "Url-segment",
+      description: "Feks «fotball» eller «mandagsgym»",
+      type: "slug",
+      options: {
+        source: "title",
+      },
+      validation: (Rule) => Rule.required(),
+      components: {
+        field: (props) => (
+          <Stack>
+            {props.renderDefault(props)}
+            <Text
+              fontSize="xs"
+              color="gray.600"
+            >{`URL: https://hamaroyil.no/aktiviteter/${props.value?.current ?? "din-verdi-her"}`}</Text>
+          </Stack>
+        ),
+      },
     }),
   ],
   preview: {

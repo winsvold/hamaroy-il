@@ -6,6 +6,7 @@
 
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
+import { unsplashImageAsset } from "sanity-plugin-asset-source-unsplash";
 import { structureTool } from "sanity/structure";
 import { apiVersion, dataset, projectId } from "./src/sanity/env";
 import { schema } from "./src/sanity/schemaTypes";
@@ -20,5 +21,6 @@ export default defineConfig({
   plugins: [
     structureTool({ structure }),
     visionTool({ defaultApiVersion: apiVersion }),
+    unsplashImageAsset(),
   ],
 });
