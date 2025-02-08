@@ -149,12 +149,6 @@ export type SessionSeries = {
   slug?: Slug;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type Location = {
   _id: string;
   _type: "location";
@@ -183,6 +177,31 @@ export type Location = {
   address?: string;
   zip?: string;
   city?: string;
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h2";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  slug?: Slug;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
 };
 
 export type Session = {
@@ -326,8 +345,8 @@ export type AllSanitySchemaTypes =
   | Geopoint
   | Person
   | SessionSeries
-  | Slug
   | Location
+  | Slug
   | Session
   | Event
   | SiteSettings
@@ -340,7 +359,7 @@ export type AllSanitySchemaTypes =
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/app/(frontend)/components/sessions.tsx
 // Variable: sessionsSeriesQuery
-// Query: *[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId)]{  ...,  location->,  organizers[]->,}
+// Query: *[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{  ...,  location->,  organizers[]->,}
 export type SessionsSeriesQueryResult = Array<{
   _id: string;
   _type: "sessionSeries";
@@ -421,6 +440,25 @@ export type SessionsSeriesQueryResult = Array<{
     address?: string;
     zip?: string;
     city?: string;
+    description?: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "h2" | "normal";
+      listItem?: "bullet";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }>;
+    slug?: Slug;
   } | null;
   images?: Array<{
     asset?: {
@@ -520,6 +558,25 @@ export type AktivitetQueryResult = {
     address?: string;
     zip?: string;
     city?: string;
+    description?: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "h2" | "normal";
+      listItem?: "bullet";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }>;
+    slug?: Slug;
   } | null;
   images?: Array<{
     asset?: {
@@ -536,11 +593,64 @@ export type AktivitetQueryResult = {
   slug?: Slug;
 } | null;
 
+// Source: ./src/app/(frontend)/lokaler/[slug]/page.tsx
+// Variable: lokasjonQuery
+// Query: *[_type == "location" && slug.current == $slug][0]{  ...,}
+export type LokasjonQueryResult = {
+  _id: string;
+  _type: "location";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  images?: Array<{
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+  parent?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "location";
+  };
+  address?: string;
+  zip?: string;
+  city?: string;
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "h2" | "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  slug?: Slug;
+} | null;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId)]{\n  ...,\n  location->,\n  organizers[]->,\n}': SessionsSeriesQueryResult;
+    '*[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{\n  ...,\n  location->,\n  organizers[]->,\n}': SessionsSeriesQueryResult;
     '*[_type == "sessionSeries" && slug.current == $slug][0]{\n  ...,\n  location->,\n  organizers[]->,\n}': AktivitetQueryResult;
+    '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
   }
 }

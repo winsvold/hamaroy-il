@@ -16,6 +16,7 @@ export const HeaderLink = (props: Props) => {
       asChild
       textDecoration={isSelected ? "underline" : "none"}
       fontWeight={isSelected ? "600" : "normal"}
+      _hover={{ textDecoration: "underline" }}
     >
       <Link href={props.href}>{props.children}</Link>
     </Box>

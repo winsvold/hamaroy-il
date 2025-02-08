@@ -28,7 +28,7 @@ export const Header = async () => {
           <Flex as="ul" gap="2rem" fontSize="1.5rem">
             <HeaderLink href="/aktiviteter">Hva skjer</HeaderLink>
             <Box>Klubber</Box>
-            <Box>Lokaler</Box>
+            <HeaderLink href="/lokaler">Lokaler</HeaderLink>
             <Box>Info</Box>
           </Flex>
         </Stack>

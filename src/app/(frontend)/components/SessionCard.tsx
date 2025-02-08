@@ -67,8 +67,16 @@ export const SessionCard = ({ session }: { session: SessionOccurrence }) => {
           {formatNorwegianDate(startsAt, "p")} -{" "}
           {formatNorwegianDate(getSessionEndsAt(session), "p")}
         </Text>
-        <Text display="flex" alignItems="center" gap=".5em">
-          <MapPin /> {session.series.location?.name}
+        <Text
+          _hover={{ textDecoration: "underline" }}
+          asChild
+          display="flex"
+          alignItems="center"
+          gap=".5em"
+        >
+          <Link href={`/lokaler/${session.series.location?.slug?.current}`}>
+            <MapPin /> {session.series.location?.name}
+          </Link>
         </Text>
       </Box>
     </LinkBox>

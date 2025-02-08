@@ -7,7 +7,7 @@ import { sift } from "radash";
 import { SessionCard, SessionOccurrence } from "./SessionCard";
 
 const sessionsSeriesQuery =
-  defineQuery(`*[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId)]{
+  defineQuery(`*[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{
   ...,
   location->,
   organizers[]->,
@@ -16,11 +16,13 @@ const sessionsSeriesQuery =
 type Props = {
   limit?: number;
   seriesId?: string;
+  locationId?: string;
 };
 
 export const Sessions = async (props: Props) => {
   const sessionSeries = await sanityClient.fetch(sessionsSeriesQuery, {
     seriesId: props.seriesId ?? null,
+    locationId: props.locationId ?? null,
   });
 
   const sessions: SessionOccurrence[] = sift(

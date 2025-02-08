@@ -1,8 +1,9 @@
-import { defineType } from "sanity";
+import { Stack, Text } from "@chakra-ui/react";
+import { defineField, defineType } from "sanity";
 
 export const location = defineType({
   name: "location",
-  title: "Location",
+  title: "Lokasjon",
   type: "document",
   icon: () => "📍",
   fields: [
@@ -48,6 +49,32 @@ export const location = defineType({
       type: "string",
       hidden: ({ parent }) => !!parent?.parent,
     },
+    defineField({
+      name: "description",
+      title: "Beskrivelse",
+      type: "blockContent",
+    }),
+    defineField({
+      name: "slug",
+      title: "Url-segment",
+      description: "Feks «klatrehall» eller «skateparken»",
+      type: "slug",
+      options: {
+        source: "name",
+      },
+      validation: (Rule) => Rule.required(),
+      components: {
+        field: (props) => (
+          <Stack>
+            {props.renderDefault(props)}
+            <Text
+              fontSize="xs"
+              color="gray.600"
+            >{`URL: https://hamaroyil.no/lokaler/${props.value?.current ?? "din-verdi-her"}`}</Text>
+          </Stack>
+        ),
+      },
+    }),
   ],
   preview: {
     select: {

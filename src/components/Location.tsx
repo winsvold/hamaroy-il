@@ -1,11 +1,12 @@
 import { urlFor } from "@/sanity/lib/image";
-import { Box, Flex, Heading, Stack } from "@chakra-ui/react";
+import { Box, Heading, LinkBox, LinkOverlay, Stack } from "@chakra-ui/react";
 import Image from "next/image";
 import { Location } from "../../sanity.types";
+import Link from "next/link";
 
 export const LocationCard = (location: Location) => {
   return (
-    <Flex gap="1rem">
+    <LinkBox display="flex" gap="1rem">
       {location.images?.[0] && (
         <Box asChild borderRadius="md" height="4rem" width="4rem">
           <Image
@@ -18,8 +19,12 @@ export const LocationCard = (location: Location) => {
       )}
 
       <Stack gap="0">
-        <Heading as="h2">{location.name}</Heading>
+        <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
+          <Link href={`/lokaler/${location.slug?.current}`}>
+            <Heading as="h2">{location.name}</Heading>
+          </Link>
+        </LinkOverlay>
       </Stack>
-    </Flex>
+    </LinkBox>
   );
 };
