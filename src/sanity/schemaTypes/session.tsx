@@ -6,6 +6,7 @@ import { alphabetical, isEqual } from "radash";
 import { useEffect, useState } from "react";
 import { ArrayOfObjectsInputProps, defineField, defineType, set } from "sanity";
 import { Session } from "../../../sanity.types";
+import { getBlockContentType } from "./blockContentType";
 
 const SessionsInput = (props: ArrayOfObjectsInputProps) => {
   // Make sure sessions are sorted by date
@@ -81,12 +82,7 @@ export const sessionSeries = defineType({
         input: SessionsInput,
       },
     }),
-    defineField({
-      name: "body",
-      title: "Beskrivelse",
-      type: "blockContent",
-      validation: (Rule) => Rule.required(),
-    }),
+    getBlockContentType({ headings: ["h2"] }),
     defineField({
       name: "sport",
       title: "Sport",

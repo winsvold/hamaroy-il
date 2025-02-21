@@ -224,7 +224,7 @@ export type PaymentInfo = {
       _type: "span";
       _key: string;
     }>;
-    style?: "normal" | "h2";
+    style?: "normal";
     listItem?: "bullet";
     markDefs?: Array<{
       href?: string;
@@ -368,25 +368,6 @@ export type SanityImageMetadata = {
   isOpaque?: boolean;
 };
 
-export type BlockContent = Array<{
-  children?: Array<{
-    marks?: Array<string>;
-    text?: string;
-    _type: "span";
-    _key: string;
-  }>;
-  style?: "normal" | "h2";
-  listItem?: "bullet";
-  markDefs?: Array<{
-    href?: string;
-    _type: "link";
-    _key: string;
-  }>;
-  level?: number;
-  _type: "block";
-  _key: string;
-}>;
-
 export type AllSanitySchemaTypes =
   | SanityImagePaletteSwatch
   | SanityImagePalette
@@ -405,8 +386,7 @@ export type AllSanitySchemaTypes =
   | SanityImageHotspot
   | SanityImageAsset
   | SanityAssetSourceData
-  | SanityImageMetadata
-  | BlockContent;
+  | SanityImageMetadata;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/app/(frontend)/components/activities.tsx
 // Variable: activitiesQuery

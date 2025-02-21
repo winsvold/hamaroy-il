@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { getBlockContentType } from "./blockContentType";
 
 export const paymentInfo = defineType({
   name: "paymentInfo",
@@ -10,10 +11,6 @@ export const paymentInfo = defineType({
       title: "Vippsnummer",
       type: "string",
     }),
-    defineField({
-      name: "body",
-      title: "Detaljer",
-      type: "blockContent",
-    }),
+    getBlockContentType({}),
   ],
 });

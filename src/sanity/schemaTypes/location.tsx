@@ -1,5 +1,6 @@
 import { Stack, Text } from "@chakra-ui/react";
 import { defineField, defineType } from "sanity";
+import { getBlockContentType } from "./blockContentType";
 
 export const location = defineType({
   name: "location",
@@ -49,11 +50,7 @@ export const location = defineType({
       type: "string",
       hidden: ({ parent }) => !!parent?.parent,
     },
-    defineField({
-      name: "body",
-      title: "Beskrivelse",
-      type: "blockContent",
-    }),
+    getBlockContentType({ headings: ["h2"] }),
     defineField({
       name: "slug",
       title: "Url-segment",

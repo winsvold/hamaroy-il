@@ -1,7 +1,7 @@
 import { Box, BoxProps, Heading, List, Text } from "@chakra-ui/react";
 import { PortableText } from "@portabletext/react";
 import { ComponentProps } from "react";
-import { BlockContent } from "../../sanity.types";
+import { SessionSeries } from "../../sanity.types";
 
 const components: ComponentProps<typeof PortableText>["components"] = {
   block: {
@@ -26,7 +26,7 @@ const components: ComponentProps<typeof PortableText>["components"] = {
 };
 
 type Props = {
-  blockContent?: BlockContent;
+  blockContent?: SessionSeries["body"];
 } & BoxProps;
 
 export const RichText = ({ blockContent, ...chakraProps }: Props) => {

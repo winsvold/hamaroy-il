@@ -1,6 +1,4 @@
 import { type SchemaTypeDefinition } from "sanity";
-
-import { blockContentType } from "./blockContentType";
 import { event } from "./event";
 import { location } from "./location";
 import { person } from "./person";
@@ -10,7 +8,6 @@ import { paymentInfo } from "./paymentInfo";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
-    blockContentType,
     siteSettings,
     event,
     session,

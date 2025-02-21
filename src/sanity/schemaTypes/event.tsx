@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { getBlockContentType } from "./blockContentType";
 
 export const event = defineType({
   name: "event",
@@ -11,11 +12,7 @@ export const event = defineType({
       title: "Navn",
       type: "string",
     }),
-    defineField({
-      name: "body",
-      title: "Beskrivelse",
-      type: "blockContent",
-    }),
+    getBlockContentType({ headings: ["h2"] }),
     defineField({
       name: "startsAt",
       title: "Starttid",
