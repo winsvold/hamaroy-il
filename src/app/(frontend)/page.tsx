@@ -1,6 +1,6 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { Button, Heading, Stack, Text } from "@chakra-ui/react";
-import { Sessions } from "./components/sessions";
+import { Sessions } from "./components/activities";
 import Link from "next/link";
 
 export default function Home() {

@@ -5,12 +5,19 @@ import { isAfter } from "date-fns";
 import { defineQuery } from "next-sanity";
 import { sift } from "radash";
 import { SessionCard, SessionOccurrence } from "./SessionCard";
+import { EventCard } from "./EventCard";
 
-const sessionsSeriesQuery =
-  defineQuery(`*[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{
-  ...,
-  location->,
-  organizers[]->,
+const activitiesQuery = defineQuery(`{
+  "sessionSeries": *[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{
+    ...,
+    location->,
+    organizers[]->,
+  },
+  "events": *[_type == "event"] {
+    ...,
+    location->,
+    organizers[]->,
+  }
 }`);
 
 type Props = {
@@ -20,7 +27,7 @@ type Props = {
 };
 
 export const Sessions = async (props: Props) => {
-  const sessionSeries = await sanityClient.fetch(sessionsSeriesQuery, {
+  const { sessionSeries, events } = await sanityClient.fetch(activitiesQuery, {
     seriesId: props.seriesId ?? null,
     locationId: props.locationId ?? null,
   });
@@ -32,11 +39,12 @@ export const Sessions = async (props: Props) => {
         ...session,
       })),
     ),
-  )
-    .filter(
-      (session) =>
-        session && isAfter(new Date(getSessionEndsAt(session)), new Date()),
-    )
+  ).filter(
+    (session) =>
+      session && isAfter(new Date(getSessionEndsAt(session)), new Date()),
+  );
+
+  const sortedEventsAndSessions = [...events, ...sessions]
     .sort(
       (a, b) =>
         new Date(a.startsAt!).getTime() - new Date(b.startsAt!).getTime(),
@@ -48,9 +56,13 @@ export const Sessions = async (props: Props) => {
       gap=".5rem"
       gridTemplateColumns="repeat(auto-fill, minmax(15rem, 1fr))"
     >
-      {sessions.map((session) => (
-        <SessionCard key={session._key} session={session} />
-      ))}
+      {sortedEventsAndSessions.map((session) =>
+        session._type === "event" ? (
+          <EventCard gridColumn="span 2" key={session._id} event={session} />
+        ) : (
+          <SessionCard key={session._key} session={session} />
+        ),
+      )}
     </Grid>
   );
 };

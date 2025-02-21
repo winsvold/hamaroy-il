@@ -1,4 +1,4 @@
-import { Grid } from "@chakra-ui/react";
+import { Box, Grid } from "@chakra-ui/react";
 import type { Metadata } from "next";
 import { Source_Sans_3 } from "next/font/google";
 import { Footer } from "./layout/Footer";
@@ -28,7 +28,9 @@ export default function RootLayout({
       className={`${sourceSans.className}`}
     >
       <Header />
-      <main>{children}</main>
+      <Box as="main" marginBottom="5rem">
+        {children}
+      </Box>
       <Footer />
     </Grid>
   );

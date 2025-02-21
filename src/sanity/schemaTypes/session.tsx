@@ -82,7 +82,7 @@ export const sessionSeries = defineType({
       },
     }),
     defineField({
-      name: "description",
+      name: "body",
       title: "Beskrivelse",
       type: "blockContent",
       validation: (Rule) => Rule.required(),

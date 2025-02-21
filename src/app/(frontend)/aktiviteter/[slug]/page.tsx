@@ -8,10 +8,10 @@ import { Box, Grid, Heading, Stack, Text } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Sessions } from "../../components/sessions";
+import { Sessions } from "../../components/activities";
 
 const aktivitetQuery =
-  defineQuery(`*[_type == "sessionSeries" && slug.current == $slug][0]{
+  defineQuery(`*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{
   ...,
   location->,
   organizers[]->,
@@ -72,9 +72,9 @@ const Page = async (props: Props) => {
                 </Section>
               )}
             </Stack>
-            <RichText blockContent={data.description} />
+            <RichText blockContent={data.body} />
           </Grid>
-          <Sessions seriesId={data?._id} />
+          {data._type === "sessionSeries" && <Sessions seriesId={data?._id} />}
         </Stack>
       </Stack>
     </DefaultContainer>

@@ -1,8 +1,7 @@
 import { formatNorwegianDate } from "@/utils/date";
-import { getSessionEndsAt } from "@/utils/session";
-import { sports } from "@/utils/sports";
 import {
   Box,
+  BoxProps,
   Flex,
   Heading,
   LinkBox,
@@ -11,17 +10,18 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { Clock, MapPin } from "react-feather";
-import { KeyedSegment } from "sanity";
-import { ActivitiesQueryResult, Session } from "../../../../sanity.types";
+import { ActivitiesQueryResult } from "../../../../sanity.types";
+import Image from "next/image";
+import { urlFor } from "@/sanity/lib/image";
 
-export type SessionOccurrence = Session &
-  KeyedSegment & {
-    series: ActivitiesQueryResult["sessionSeries"][number];
-  };
+export type Data = ActivitiesQueryResult["events"][number];
 
-export const SessionCard = ({ session }: { session: SessionOccurrence }) => {
-  if (!session) return null;
-  const { startsAt } = session;
+export const EventCard = ({
+  event,
+  ...chakraProps
+}: { event: Data } & BoxProps) => {
+  if (!event) return null;
+  const { startsAt } = event;
   if (!startsAt) return null;
 
   return (
@@ -34,7 +34,18 @@ export const SessionCard = ({ session }: { session: SessionOccurrence }) => {
       alignItems="flex-start"
       _hover={{ backgroundColor: "blue.200" }}
       transition=".3s"
+      {...chakraProps}
     >
+      {event?.images?.[0] && (
+        <Box asChild borderRadius="sm" maxWidth="10rem">
+          <Image
+            alt=""
+            src={urlFor(event.images[0]).width(300).height(200).url()}
+            width={300}
+            height={200}
+          />
+        </Box>
+      )}
       <Flex
         flexDirection="column"
         as="p"
@@ -59,17 +70,14 @@ export const SessionCard = ({ session }: { session: SessionOccurrence }) => {
       </Flex>
       <Box>
         <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
-          <Link href={`/aktiviteter/${session.series.slug?.current}`}>
-            <Flex alignItems="center" gap=".5rem">
-              <Heading as="h3">{session.series.title}</Heading>{" "}
-              {session.series.sport && sports[session.series.sport].icon}
-            </Flex>
+          <Link href={`/aktiviteter/${event._id}`}>
+            <Heading as="h3">{event.title}</Heading>{" "}
           </Link>
         </LinkOverlay>
         <Text fontWeight={600} display="flex" alignItems="center" gap=".5em">
           <Clock />
           {formatNorwegianDate(startsAt, "p")} -{" "}
-          {formatNorwegianDate(getSessionEndsAt(session), "p")}
+          {formatNorwegianDate(event.endsAt, "p")}
         </Text>
         <Text
           _hover={{ textDecoration: "underline" }}
@@ -77,7 +85,7 @@ export const SessionCard = ({ session }: { session: SessionOccurrence }) => {
           alignItems="center"
           gap=".5em"
         >
-          <MapPin /> {session.series.location?.name}
+          <MapPin /> {event.location?.name}
         </Text>
       </Box>
     </LinkBox>

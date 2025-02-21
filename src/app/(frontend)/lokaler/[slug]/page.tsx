@@ -6,7 +6,7 @@ import { Box, Flex, Heading, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Sessions } from "../../components/sessions";
+import { Sessions } from "../../components/activities";
 
 const lokasjonQuery =
   defineQuery(`*[_type == "location" && slug.current == $slug][0]{

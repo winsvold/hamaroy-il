@@ -102,7 +102,7 @@ export type SessionSeries = {
       _key: string;
     } & Session
   >;
-  description?: Array<{
+  body?: Array<{
     children?: Array<{
       marks?: Array<string>;
       text?: string;
@@ -148,6 +148,70 @@ export type SessionSeries = {
     _key: string;
   }>;
   slug?: Slug;
+};
+
+export type Session = {
+  _type: "session";
+  startsAt?: string;
+  duration?: {
+    hours?: number;
+    minutes?: number;
+  };
+};
+
+export type Event = {
+  _id: string;
+  _type: "event";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  body?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h2";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  startsAt?: string;
+  endsAt?: string;
+  location?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "location";
+  };
+  organizers?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "person";
+  }>;
+  paymentInfo?: PaymentInfo;
+  images?: Array<{
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
 };
 
 export type PaymentInfo = {
@@ -226,44 +290,6 @@ export type Slug = {
   _type: "slug";
   current?: string;
   source?: string;
-};
-
-export type Session = {
-  _type: "session";
-  startsAt?: string;
-  duration?: {
-    hours?: number;
-    minutes?: number;
-  };
-};
-
-export type Event = {
-  _id: string;
-  _type: "event";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  description?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h2";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  startsAt?: string;
-  endsAt?: string;
 };
 
 export type SiteSettings = {
@@ -369,11 +395,11 @@ export type AllSanitySchemaTypes =
   | Geopoint
   | Person
   | SessionSeries
+  | Session
+  | Event
   | PaymentInfo
   | Location
   | Slug
-  | Session
-  | Event
   | SiteSettings
   | SanityImageCrop
   | SanityImageHotspot
@@ -382,90 +408,23 @@ export type AllSanitySchemaTypes =
   | SanityImageMetadata
   | BlockContent;
 export declare const internalGroqTypeReferenceTo: unique symbol;
-// Source: ./src/app/(frontend)/components/sessions.tsx
-// Variable: sessionsSeriesQuery
-// Query: *[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{  ...,  location->,  organizers[]->,}
-export type SessionsSeriesQueryResult = Array<{
-  _id: string;
-  _type: "sessionSeries";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  sessions?: Array<
-    {
-      _key: string;
-    } & Session
-  >;
-  description?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "h2" | "normal";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  sport?: "circle" | "climbing";
-  organizers: Array<{
+// Source: ./src/app/(frontend)/components/activities.tsx
+// Variable: activitiesQuery
+// Query: {  "sessionSeries": *[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{    ...,    location->,    organizers[]->,  },  "events": *[_type == "event"] {    ...,    location->,    organizers[]->,  }}
+export type ActivitiesQueryResult = {
+  sessionSeries: Array<{
     _id: string;
-    _type: "person";
+    _type: "sessionSeries";
     _createdAt: string;
     _updatedAt: string;
     _rev: string;
-    name?: string;
-    email?: string;
-    phone?: string;
-    image?: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    };
-  }> | null;
-  location: {
-    _id: string;
-    _type: "location";
-    _createdAt: string;
-    _updatedAt: string;
-    _rev: string;
-    name?: string;
-    images?: Array<{
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-      _key: string;
-    }>;
-    parent?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "location";
-    };
-    address?: string;
-    zip?: string;
-    city?: string;
-    description?: Array<{
+    title?: string;
+    sessions?: Array<
+      {
+        _key: string;
+      } & Session
+    >;
+    body?: Array<{
       children?: Array<{
         marks?: Array<string>;
         text?: string;
@@ -483,23 +442,202 @@ export type SessionsSeriesQueryResult = Array<{
       _type: "block";
       _key: string;
     }>;
+    sport?: "circle" | "climbing";
+    organizers: Array<{
+      _id: string;
+      _type: "person";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      name?: string;
+      email?: string;
+      phone?: string;
+      image?: {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      };
+    }> | null;
+    location: {
+      _id: string;
+      _type: "location";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      name?: string;
+      images?: Array<{
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }>;
+      parent?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "location";
+      };
+      address?: string;
+      zip?: string;
+      city?: string;
+      description?: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "h2" | "normal";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }>;
+      slug?: Slug;
+    } | null;
+    paymentInfo?: PaymentInfo;
+    images?: Array<{
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+      _key: string;
+    }>;
     slug?: Slug;
-  } | null;
-  paymentInfo?: PaymentInfo;
-  images?: Array<{
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-    _key: string;
   }>;
-  slug?: Slug;
-}>;
+  events: Array<{
+    _id: string;
+    _type: "event";
+    _createdAt: string;
+    _updatedAt: string;
+    _rev: string;
+    title?: string;
+    body?: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "h2" | "normal";
+      listItem?: "bullet";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }>;
+    startsAt?: string;
+    endsAt?: string;
+    location: {
+      _id: string;
+      _type: "location";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      name?: string;
+      images?: Array<{
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }>;
+      parent?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "location";
+      };
+      address?: string;
+      zip?: string;
+      city?: string;
+      description?: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "h2" | "normal";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }>;
+      slug?: Slug;
+    } | null;
+    organizers: Array<{
+      _id: string;
+      _type: "person";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      name?: string;
+      email?: string;
+      phone?: string;
+      image?: {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      };
+    }> | null;
+    paymentInfo?: PaymentInfo;
+    images?: Array<{
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+      _key: string;
+    }>;
+  }>;
+};
 
 // Source: ./src/app/(frontend)/lokaler/page.tsx
 // Variable: locationsQuery
@@ -555,122 +693,234 @@ export type LocationsQueryResult = Array<{
 
 // Source: ./src/app/(frontend)/aktiviteter/[slug]/page.tsx
 // Variable: aktivitetQuery
-// Query: *[_type == "sessionSeries" && slug.current == $slug][0]{  ...,  location->,  organizers[]->,}
-export type AktivitetQueryResult = {
-  _id: string;
-  _type: "sessionSeries";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  sessions?: Array<
-    {
-      _key: string;
-    } & Session
-  >;
-  description?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "h2" | "normal";
-    listItem?: "bullet";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  sport?: "circle" | "climbing";
-  organizers: Array<{
-    _id: string;
-    _type: "person";
-    _createdAt: string;
-    _updatedAt: string;
-    _rev: string;
-    name?: string;
-    email?: string;
-    phone?: string;
-    image?: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    };
-  }> | null;
-  location: {
-    _id: string;
-    _type: "location";
-    _createdAt: string;
-    _updatedAt: string;
-    _rev: string;
-    name?: string;
-    images?: Array<{
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-      _key: string;
-    }>;
-    parent?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "location";
-    };
-    address?: string;
-    zip?: string;
-    city?: string;
-    description?: Array<{
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
+// Query: *[_type in ["sessionSeries", "event"] && slug.current == $slug][0]{  ...,  location->,  organizers[]->,}
+export type AktivitetQueryResult =
+  | {
+      _id: string;
+      _type: "event";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      title?: string;
+      body?: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "h2" | "normal";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
         _key: string;
       }>;
-      style?: "h2" | "normal";
-      listItem?: "bullet";
-      markDefs?: Array<{
-        href?: string;
-        _type: "link";
+      startsAt?: string;
+      endsAt?: string;
+      location: {
+        _id: string;
+        _type: "location";
+        _createdAt: string;
+        _updatedAt: string;
+        _rev: string;
+        name?: string;
+        images?: Array<{
+          asset?: {
+            _ref: string;
+            _type: "reference";
+            _weak?: boolean;
+            [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+          };
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+          _key: string;
+        }>;
+        parent?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "location";
+        };
+        address?: string;
+        zip?: string;
+        city?: string;
+        description?: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "h2" | "normal";
+          listItem?: "bullet";
+          markDefs?: Array<{
+            href?: string;
+            _type: "link";
+            _key: string;
+          }>;
+          level?: number;
+          _type: "block";
+          _key: string;
+        }>;
+        slug?: Slug;
+      } | null;
+      organizers: Array<{
+        _id: string;
+        _type: "person";
+        _createdAt: string;
+        _updatedAt: string;
+        _rev: string;
+        name?: string;
+        email?: string;
+        phone?: string;
+        image?: {
+          asset?: {
+            _ref: string;
+            _type: "reference";
+            _weak?: boolean;
+            [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+          };
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+        };
+      }> | null;
+      paymentInfo?: PaymentInfo;
+      images?: Array<{
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
         _key: string;
       }>;
-      level?: number;
-      _type: "block";
-      _key: string;
-    }>;
-    slug?: Slug;
-  } | null;
-  paymentInfo?: PaymentInfo;
-  images?: Array<{
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-    _key: string;
-  }>;
-  slug?: Slug;
-} | null;
+    }
+  | {
+      _id: string;
+      _type: "sessionSeries";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      title?: string;
+      sessions?: Array<
+        {
+          _key: string;
+        } & Session
+      >;
+      body?: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "h2" | "normal";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }>;
+      sport?: "circle" | "climbing";
+      organizers: Array<{
+        _id: string;
+        _type: "person";
+        _createdAt: string;
+        _updatedAt: string;
+        _rev: string;
+        name?: string;
+        email?: string;
+        phone?: string;
+        image?: {
+          asset?: {
+            _ref: string;
+            _type: "reference";
+            _weak?: boolean;
+            [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+          };
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+        };
+      }> | null;
+      location: {
+        _id: string;
+        _type: "location";
+        _createdAt: string;
+        _updatedAt: string;
+        _rev: string;
+        name?: string;
+        images?: Array<{
+          asset?: {
+            _ref: string;
+            _type: "reference";
+            _weak?: boolean;
+            [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+          };
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+          _key: string;
+        }>;
+        parent?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "location";
+        };
+        address?: string;
+        zip?: string;
+        city?: string;
+        description?: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "h2" | "normal";
+          listItem?: "bullet";
+          markDefs?: Array<{
+            href?: string;
+            _type: "link";
+            _key: string;
+          }>;
+          level?: number;
+          _type: "block";
+          _key: string;
+        }>;
+        slug?: Slug;
+      } | null;
+      paymentInfo?: PaymentInfo;
+      images?: Array<{
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }>;
+      slug?: Slug;
+    }
+  | null;
 
 // Source: ./src/app/(frontend)/lokaler/[slug]/page.tsx
 // Variable: lokasjonQuery
@@ -728,9 +978,9 @@ export type LokasjonQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{\n  ...,\n  location->,\n  organizers[]->,\n}': SessionsSeriesQueryResult;
+    '{\n  "sessionSeries": *[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{\n    ...,\n    location->,\n    organizers[]->,\n  },\n  "events": *[_type == "event"] {\n    ...,\n    location->,\n    organizers[]->,\n  }\n}': ActivitiesQueryResult;
     '*[_type == "location"]': LocationsQueryResult;
-    '*[_type == "sessionSeries" && slug.current == $slug][0]{\n  ...,\n  location->,\n  organizers[]->,\n}': AktivitetQueryResult;
+    '*[_type in ["sessionSeries", "event"] && slug.current == $slug][0]{\n  ...,\n  location->,\n  organizers[]->,\n}': AktivitetQueryResult;
     '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
   }
 }
