@@ -58,16 +58,19 @@ const Page = async (props: Props) => {
                   <LocationCard {...data.location} />
                 </Section>
               )}
-              <Section title="Betaling">
-                {data.paymentInfo?.vippsNumber && (
-                  <Text>
-                    Du kan betale med vipps til: {data.paymentInfo.vippsNumber}
-                  </Text>
-                )}
-                {data.paymentInfo?.body && (
-                  <RichText blockContent={data.paymentInfo.body} />
-                )}
-              </Section>
+              {data.paymentInfo && (
+                <Section title="Betaling">
+                  {data.paymentInfo?.vippsNumber && (
+                    <Text>
+                      Du kan betale med vipps til:{" "}
+                      {data.paymentInfo.vippsNumber}
+                    </Text>
+                  )}
+                  {data.paymentInfo?.body && (
+                    <RichText blockContent={data.paymentInfo.body} />
+                  )}
+                </Section>
+              )}
             </Stack>
             <RichText blockContent={data.description} />
           </Grid>

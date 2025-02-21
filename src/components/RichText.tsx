@@ -1,11 +1,7 @@
-import { Box, Heading, List, Text } from "@chakra-ui/react";
+import { Box, BoxProps, Heading, List, Text } from "@chakra-ui/react";
 import { PortableText } from "@portabletext/react";
 import { ComponentProps } from "react";
 import { BlockContent } from "../../sanity.types";
-
-type Props = {
-  blockContent?: BlockContent;
-};
 
 const components: ComponentProps<typeof PortableText>["components"] = {
   block: {
@@ -29,12 +25,16 @@ const components: ComponentProps<typeof PortableText>["components"] = {
   },
 };
 
-export const RichText = (props: Props) => {
-  if (!props.blockContent) return null;
+type Props = {
+  blockContent?: BlockContent;
+} & BoxProps;
+
+export const RichText = ({ blockContent, ...chakraProps }: Props) => {
+  if (!blockContent) return null;
 
   return (
-    <Box>
-      <PortableText value={props.blockContent} components={components} />
+    <Box {...chakraProps}>
+      <PortableText value={blockContent} components={components} />
     </Box>
   );
 };
