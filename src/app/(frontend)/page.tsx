@@ -19,7 +19,7 @@ export default function Home() {
           <Heading as="h2" size="xl">
             Kommende aktiviteter
           </Heading>
-          <Sessions limit={3} />
+          <Sessions limit={6} />
           <Button size="lg" variant="solid" asChild alignSelf="flex-end">
             <Link href="/aktiviteter">Se alle</Link>
           </Button>

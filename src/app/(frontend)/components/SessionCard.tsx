@@ -41,17 +41,21 @@ export const SessionCard = ({ session }: { session: SessionOccurrence }) => {
         padding=".5rem"
         minWidth="3.5rem"
         textAlign="center"
+        alignItems="center"
         borderRadius="md"
         backgroundColor="blackAlpha.200"
         fontWeight={600}
-        lineHeight={1.2}
+        lineHeight={1}
         title={formatNorwegianDate(startsAt, "PPP p")}
         fontSize="0.9rem"
       >
+        <Box as="span">{formatNorwegianDate(startsAt, "E")}</Box>
         <Box as="span" fontSize="1.5em">
           {formatNorwegianDate(startsAt, "d")}
         </Box>
-        <Box as="span">{formatNorwegianDate(startsAt, "MMM")}</Box>
+        <Box as="span">
+          {formatNorwegianDate(startsAt, "MMM").replace(".", "")}
+        </Box>
       </Flex>
       <Box>
         <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>

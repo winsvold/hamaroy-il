@@ -1,8 +1,64 @@
 import { formatNorwegianDate } from "@/utils/date";
 import { Sports, sports } from "@/utils/sports";
-import { Stack, Text } from "@chakra-ui/react";
+import { Button, Flex, Input, Stack, Text } from "@chakra-ui/react";
 import { add, roundToNearestMinutes } from "date-fns";
-import { defineField, defineType } from "sanity";
+import { alphabetical, isEqual } from "radash";
+import { useEffect, useState } from "react";
+import { ArrayOfObjectsInputProps, defineField, defineType, set } from "sanity";
+import { Session } from "../../../sanity.types";
+
+const SessionsInput = (props: ArrayOfObjectsInputProps) => {
+  // Make sure sessions are sorted by date
+  useEffect(() => {
+    const sessions = props.value as unknown as Session[];
+    const sortedByDate = alphabetical(
+      sessions,
+      (session) => session.startsAt ?? "N/A",
+    );
+    if (isEqual(sortedByDate, sessions)) return;
+    props.onChange(set(sortedByDate));
+  }, [props]);
+
+  return (
+    <>
+      {props.renderDefault(props)}
+      <AddMultipleSessions {...props} />
+    </>
+  );
+};
+
+const AddMultipleSessions = (props: ArrayOfObjectsInputProps) => {
+  const [value, setValue] = useState(7);
+
+  const handleAddSession = () => {
+    const sessions = props.value as unknown as Session[];
+    const lastSession = sessions.at(-1);
+    if (!lastSession?.startsAt) return;
+    const newSession = {
+      startsAt: add(new Date(lastSession.startsAt), {
+        days: value,
+      }).toISOString(),
+      duration: lastSession.duration,
+      _type: "session",
+      _key: crypto.randomUUID(),
+    } satisfies Session & { _key: string };
+    props.onChange(set([...sessions, newSession]));
+  };
+
+  return (
+    <Flex gap=".5rem" alignItems="center">
+      Legg til ny sesjon
+      <Input
+        width="3rem"
+        pattern="\d*"
+        value={value}
+        onChange={(e) => setValue(Number(e.currentTarget.value) || 0)}
+      />
+      dager senere
+      <Button onClick={handleAddSession}>Legg til</Button>
+    </Flex>
+  );
+};
 
 export const sessionSeries = defineType({
   name: "sessionSeries",
@@ -21,6 +77,9 @@ export const sessionSeries = defineType({
       title: "Sesjoner",
       type: "array",
       of: [{ type: "session" }],
+      components: {
+        input: SessionsInput,
+      },
     }),
     defineField({
       name: "description",
@@ -50,6 +109,10 @@ export const sessionSeries = defineType({
       title: "Sted",
       type: "reference",
       to: [{ type: "location" }],
+    }),
+    defineField({
+      type: "paymentInfo",
+      name: "paymentInfo",
     }),
     {
       name: "images",
@@ -150,7 +213,7 @@ export const session = defineType({
       });
       return {
         title: formatNorwegianDate(startsAt, "PPP"),
-        subtitle: `${formatNorwegianDate(startsAt, "p")} - ${formatNorwegianDate(endTime, "p")}`,
+        subtitle: `${formatNorwegianDate(startsAt, "E p")} - ${formatNorwegianDate(endTime, "p")}`,
         media: () => "🏋️‍♀️",
       };
     },

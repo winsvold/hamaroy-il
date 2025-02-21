@@ -134,6 +134,7 @@ export type SessionSeries = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "location";
   };
+  paymentInfo?: PaymentInfo;
   images?: Array<{
     asset?: {
       _ref: string;
@@ -147,6 +148,29 @@ export type SessionSeries = {
     _key: string;
   }>;
   slug?: Slug;
+};
+
+export type PaymentInfo = {
+  _type: "paymentInfo";
+  vippsNumber?: string;
+  body?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h2";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
 };
 
 export type Location = {
@@ -345,6 +369,7 @@ export type AllSanitySchemaTypes =
   | Geopoint
   | Person
   | SessionSeries
+  | PaymentInfo
   | Location
   | Slug
   | Session
@@ -460,6 +485,7 @@ export type SessionsSeriesQueryResult = Array<{
     }>;
     slug?: Slug;
   } | null;
+  paymentInfo?: PaymentInfo;
   images?: Array<{
     asset?: {
       _ref: string;
@@ -630,6 +656,7 @@ export type AktivitetQueryResult = {
     }>;
     slug?: Slug;
   } | null;
+  paymentInfo?: PaymentInfo;
   images?: Array<{
     asset?: {
       _ref: string;
