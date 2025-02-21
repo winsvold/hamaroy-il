@@ -2,7 +2,7 @@ import { DefaultContainer } from "@/components/DefaultContainer";
 import { RichText } from "@/components/RichText";
 import { sanityClient } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { Box, Flex, Heading, Stack } from "@chakra-ui/react";
+import { Box, Heading, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -25,24 +25,27 @@ const Page = async (props: Props) => {
 
   return (
     <DefaultContainer>
-      <Stack gap="1rem">
-        <Heading as="h1" size="4xl">
-          {data?.name}
-        </Heading>
-        {data?.images?.[0] && (
-          <Box asChild borderRadius="lg">
-            <Image
-              alt=""
-              src={urlFor(data.images[0]).size(800, 400).url()}
-              width={800}
-              height={400}
-            />
-          </Box>
-        )}
-        <Stack gap="2rem">
-          <Flex gap="4rem">
-            <RichText blockContent={data.description} />
-          </Flex>
+      <Stack gap="2rem">
+        <Stack gap="1rem">
+          <Heading as="h1" size="4xl">
+            {data?.name}
+          </Heading>
+          {data?.images?.[0] && (
+            <Box asChild borderRadius="lg">
+              <Image
+                alt=""
+                src={urlFor(data.images[0]).size(800, 400).url()}
+                width={800}
+                height={400}
+              />
+            </Box>
+          )}
+        </Stack>
+        <RichText blockContent={data.body} />
+        <Stack>
+          <Heading as="h2" size="2xl">
+            Aktiviteter i {data?.name}:
+          </Heading>
           <Sessions locationId={data?._id} />
         </Stack>
       </Stack>

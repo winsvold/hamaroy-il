@@ -50,7 +50,7 @@ export const location = defineType({
       hidden: ({ parent }) => !!parent?.parent,
     },
     defineField({
-      name: "description",
+      name: "body",
       title: "Beskrivelse",
       type: "blockContent",
     }),

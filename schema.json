@@ -1601,7 +1601,7 @@
         },
         "optional": true
       },
-      "description": {
+      "body": {
         "type": "objectAttribute",
         "value": {
           "type": "array",
