@@ -16,7 +16,10 @@ import { ActivitiesQueryResult, Session } from "../../../../sanity.types";
 
 export type SessionOccurrence = Session &
   KeyedSegment & {
-    series: ActivitiesQueryResult["sessionSeries"][number];
+    series: Extract<
+      ActivitiesQueryResult["eventsAndSessionSeries"][number],
+      { _type: "sessionSeries" }
+    >;
   };
 
 export const SessionCard = ({ session }: { session: SessionOccurrence }) => {

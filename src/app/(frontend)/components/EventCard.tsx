@@ -13,7 +13,10 @@ import Link from "next/link";
 import { Clock, MapPin } from "react-feather";
 import { ActivitiesQueryResult } from "../../../../sanity.types";
 
-export type Data = ActivitiesQueryResult["events"][number];
+export type Data = Extract<
+  ActivitiesQueryResult["eventsAndSessionSeries"][number],
+  { _type: "event" }
+>;
 
 export const EventCard = ({
   event,
