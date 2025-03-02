@@ -3,7 +3,7 @@ import { DefaultContainer } from "@/components/DefaultContainer";
 import { VippsIkon } from "@/components/ikoner/vipps";
 import { LocationCard } from "@/components/Location";
 import { RichText } from "@/components/RichText";
-import { sanityClient } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import {
   Box,
@@ -32,7 +32,7 @@ type Props = {
 
 const Page = async (props: Props) => {
   const params = await props.params;
-  const data = await sanityClient.fetch(aktivitetQuery, { slug: params.slug });
+  const data = await sanityFetch(aktivitetQuery, { slug: params.slug });
 
   if (!data) return notFound();
 

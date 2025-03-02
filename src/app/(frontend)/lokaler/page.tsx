@@ -1,5 +1,5 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
-import { sanityClient } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import {
   Box,
@@ -16,7 +16,7 @@ import Link from "next/link";
 const locationsQuery = defineQuery(`*[_type == "location"]`);
 
 const Page = async () => {
-  const data = await sanityClient.fetch(locationsQuery);
+  const data = await sanityFetch(locationsQuery);
 
   return (
     <DefaultContainer>

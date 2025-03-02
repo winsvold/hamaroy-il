@@ -1,4 +1,4 @@
-import { sanityClient } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { formatNorwegianDate } from "@/utils/date";
 import { getSessionEndsAt } from "@/utils/session";
 import { Box, Flex, FlexProps, Grid, Stack } from "@chakra-ui/react";
@@ -28,7 +28,7 @@ type Props = {
 };
 
 export const Activities = async (props: Props) => {
-  const { sessionSeries, events } = await sanityClient.fetch(activitiesQuery, {
+  const { sessionSeries, events } = await sanityFetch(activitiesQuery, {
     seriesId: props.seriesId ?? null,
     locationId: props.locationId ?? null,
   });

@@ -1,6 +1,6 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { RichText } from "@/components/RichText";
-import { sanityClient } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { Heading, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import { notFound } from "next/navigation";
@@ -15,7 +15,7 @@ type Props = {
 
 const Page = async (props: Props) => {
   const params = await props.params;
-  const data = await sanityClient.fetch(infoPageQuery, { slug: params.slug });
+  const data = await sanityFetch(infoPageQuery, { slug: params.slug });
 
   if (!data) return notFound();
 

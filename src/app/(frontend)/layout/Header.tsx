@@ -1,5 +1,5 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
-import { sanityClient } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { Box, Flex, Heading, HStack, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
@@ -13,7 +13,7 @@ const headerQuery = defineQuery(`{
 }`);
 
 export const Header = async () => {
-  const data = await sanityClient.fetch(headerQuery);
+  const data = await sanityFetch(headerQuery);
   const logoUrl =
     data?.siteSettings?.logo &&
     urlFor(data?.siteSettings?.logo).size(100, 100).url();

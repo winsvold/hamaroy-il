@@ -1,6 +1,6 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { RichText } from "@/components/RichText";
-import { sanityClient } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { Box, Heading, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
@@ -19,7 +19,7 @@ type Props = {
 
 const Page = async (props: Props) => {
   const params = await props.params;
-  const data = await sanityClient.fetch(lokasjonQuery, { slug: params.slug });
+  const data = await sanityFetch(lokasjonQuery, { slug: params.slug });
 
   if (!data) return notFound();
 
