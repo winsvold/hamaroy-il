@@ -59,7 +59,15 @@ export const location = defineType({
       options: {
         source: "name",
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => [
+        Rule.required(),
+        Rule.custom((slug) => {
+          if (!slug?.current) return true;
+          if (slug.current.match(/\s/))
+            return "Url-segment kan ikke inneholde mellomrom";
+          return true;
+        }),
+      ],
       components: {
         field: (props) => (
           <Stack>

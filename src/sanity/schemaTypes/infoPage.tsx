@@ -22,7 +22,15 @@ export const infoPage = defineType({
       options: {
         source: "title",
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => [
+        Rule.required(),
+        Rule.custom((slug) => {
+          if (!slug?.current) return true;
+          if (slug.current.match(/\s/))
+            return "Url-segment kan ikke inneholde mellomrom";
+          return true;
+        }),
+      ],
       components: {
         field: (props) => (
           <Stack>
