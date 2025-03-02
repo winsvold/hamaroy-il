@@ -11,17 +11,20 @@ export const event = defineType({
       name: "title",
       title: "Navn",
       type: "string",
+      validation: (Rule) => Rule.required(),
     }),
     getBlockContentType({ headings: ["h2"] }),
     defineField({
       name: "startsAt",
       title: "Starttid",
       type: "datetime",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "endsAt",
       title: "Sluttid",
       type: "datetime",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "location",

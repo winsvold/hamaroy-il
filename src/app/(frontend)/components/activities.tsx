@@ -9,16 +9,11 @@ import { EventCard } from "./EventCard";
 import { SessionCard, SessionOccurrence } from "./SessionCard";
 
 const activitiesQuery = defineQuery(`{
-  "sessionSeries": *[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{
+  "eventsAndSessionSeries": *[_type in ["sessionSeries", "event"] && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{
     ...,
     location->,
     organizers[]->,
   },
-  "events": *[_type == "event"] {
-    ...,
-    location->,
-    organizers[]->,
-  }
 }`);
 
 type Props = {
@@ -28,10 +23,14 @@ type Props = {
 };
 
 export const Activities = async (props: Props) => {
-  const { sessionSeries, events } = await sanityFetch(activitiesQuery, {
+  const { eventsAndSessionSeries } = await sanityFetch(activitiesQuery, {
     seriesId: props.seriesId ?? null,
     locationId: props.locationId ?? null,
   });
+
+  const sessionSeries = eventsAndSessionSeries.filter(
+    (item) => item._type === "sessionSeries",
+  );
 
   const sessions: SessionOccurrence[] = sift(
     sessionSeries.flatMap((series) =>
@@ -44,6 +43,12 @@ export const Activities = async (props: Props) => {
     (session) =>
       session && isAfter(new Date(getSessionEndsAt(session)), new Date()),
   );
+
+  const events = eventsAndSessionSeries
+    .filter((item) => item._type === "event")
+    .filter(
+      (event) => event.endsAt && isAfter(new Date(event.endsAt), new Date()),
+    );
 
   const sortedEventsAndSessions = [...events, ...sessions]
     .sort(

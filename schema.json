@@ -1486,20 +1486,6 @@
             "value": "paymentInfo"
           }
         },
-        "vippsNumber": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": true
-        },
-        "url": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": true
-        },
         "body": {
           "type": "objectAttribute",
           "value": {
@@ -1648,6 +1634,20 @@
                 }
               }
             }
+          },
+          "optional": true
+        },
+        "vippsNumber": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "url": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
           },
           "optional": true
         }
