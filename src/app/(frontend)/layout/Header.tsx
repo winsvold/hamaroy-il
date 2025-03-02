@@ -1,15 +1,22 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { sanityClient } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { Stack, Heading, Flex, Box, HStack } from "@chakra-ui/react";
-import { groq } from "next-sanity";
+import { Box, Flex, Heading, HStack, Stack } from "@chakra-ui/react";
+import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
 import { HeaderLink } from "./HeaderLink";
 
+const headerQuery = defineQuery(`{
+  "siteSettings": *[_type == "siteSettings"][0],
+  "infoPages": *[_type == "infoPage"]
+}`);
+
 export const Header = async () => {
-  const data = await sanityClient.fetch(groq`*[_type == "siteSettings"][0]`);
-  const logoUrl = urlFor(data?.logo).size(100, 100).url();
+  const data = await sanityClient.fetch(headerQuery);
+  const logoUrl =
+    data?.siteSettings?.logo &&
+    urlFor(data?.siteSettings?.logo).size(100, 100).url();
 
   return (
     <Box as="header" paddingY="1.5rem">
@@ -17,9 +24,16 @@ export const Header = async () => {
         <Stack gap="1rem">
           <HStack asChild gap="1rem">
             <Link href="/">
-              <Box borderRadius="50%" overflow="hidden" width="2.5rem" asChild>
-                <Image alt="" src={logoUrl} width={100} height={100} />
-              </Box>
+              {logoUrl && (
+                <Box
+                  borderRadius="50%"
+                  overflow="hidden"
+                  width="2.5rem"
+                  asChild
+                >
+                  <Image alt="" src={logoUrl} width={100} height={100} />
+                </Box>
+              )}
               <Heading as="h1" size="2xl">
                 Hamarøy IL
               </Heading>
@@ -30,6 +44,11 @@ export const Header = async () => {
             {/* <Box>Klubber</Box> */}
             <HeaderLink href="/lokaler">Lokaler</HeaderLink>
             {/* <Box>Info</Box> */}
+            {data.infoPages.map((page) => (
+              <HeaderLink key={page._id} href={`/info/${page.slug?.current}`}>
+                {page.title}
+              </HeaderLink>
+            ))}
           </Flex>
         </Stack>
       </DefaultContainer>

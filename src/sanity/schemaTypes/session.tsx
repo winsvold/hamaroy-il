@@ -108,6 +108,7 @@ export const sessionSeries = defineType({
     }),
     defineField({
       type: "paymentInfo",
+      title: "Betalingsinformasjon",
       name: "paymentInfo",
     }),
     {

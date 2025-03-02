@@ -27,7 +27,7 @@ export const SessionCard = ({ session }: { session: SessionOccurrence }) => {
   return (
     <LinkBox
       display="flex"
-      padding="1rem"
+      padding=".75rem"
       borderRadius="md"
       backgroundColor="blue.100"
       gap=".5rem"
@@ -35,28 +35,6 @@ export const SessionCard = ({ session }: { session: SessionOccurrence }) => {
       _hover={{ backgroundColor: "blue.200" }}
       transition=".3s"
     >
-      <Flex
-        flexDirection="column"
-        as="p"
-        padding=".5rem"
-        minWidth="3.5rem"
-        textAlign="center"
-        alignItems="center"
-        borderRadius="md"
-        backgroundColor="blackAlpha.200"
-        fontWeight={600}
-        lineHeight={1}
-        title={formatNorwegianDate(startsAt, "PPP p")}
-        fontSize="0.9rem"
-      >
-        <Box as="span">{formatNorwegianDate(startsAt, "E")}</Box>
-        <Box as="span" fontSize="1.5em">
-          {formatNorwegianDate(startsAt, "d")}
-        </Box>
-        <Box as="span">
-          {formatNorwegianDate(startsAt, "MMM").replace(".", "")}
-        </Box>
-      </Flex>
       <Box>
         <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
           <Link href={`/aktiviteter/${session.series.slug?.current}`}>

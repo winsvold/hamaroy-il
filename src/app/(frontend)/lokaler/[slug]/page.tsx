@@ -6,7 +6,7 @@ import { Box, Heading, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Sessions } from "../../components/activities";
+import { Activities } from "../../components/activities";
 
 const lokasjonQuery =
   defineQuery(`*[_type == "location" && slug.current == $slug][0]{
@@ -46,7 +46,7 @@ const Page = async (props: Props) => {
           <Heading as="h2" size="2xl">
             Aktiviteter i {data?.name}:
           </Heading>
-          <Sessions locationId={data?._id} />
+          <Activities locationId={data?._id} />
         </Stack>
       </Stack>
     </DefaultContainer>

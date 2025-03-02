@@ -12,6 +12,7 @@ import { apiVersion, dataset, projectId } from "./src/sanity/env";
 import { schema } from "./src/sanity/schemaTypes";
 import { structure } from "./src/sanity/structure";
 import { StudioLayout } from "@/sanity/StudioLayout";
+import { linkToFrontpage } from "@/sanity/tools/linkToFrontpage";
 
 export default defineConfig({
   title: "Hamarøy IL",
@@ -24,6 +25,7 @@ export default defineConfig({
     visionTool({ defaultApiVersion: apiVersion }),
     unsplashImageAsset(),
   ],
+  tools: [linkToFrontpage()],
   studio: {
     components: {
       layout: StudioLayout,

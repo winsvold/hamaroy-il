@@ -37,6 +37,7 @@ export const event = defineType({
     }),
     defineField({
       type: "paymentInfo",
+      title: "Betalingsinformasjon",
       name: "paymentInfo",
     }),
     {

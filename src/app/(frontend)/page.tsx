@@ -1,6 +1,6 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { Button, Heading, Stack, Text } from "@chakra-ui/react";
-import { Sessions } from "./components/activities";
+import { Activities } from "./components/activities";
 import Link from "next/link";
 
 export default function Home() {
@@ -19,8 +19,8 @@ export default function Home() {
           <Heading as="h2" size="xl">
             Kommende aktiviteter
           </Heading>
-          <Sessions limit={6} />
-          <Button size="lg" variant="solid" asChild alignSelf="flex-end">
+          <Activities limit={6} />
+          <Button size="lg" variant="solid" asChild alignSelf="flex-start">
             <Link href="/aktiviteter">Se alle</Link>
           </Button>
         </Stack>

@@ -1,19 +1,10 @@
 import { Avatar } from "@/components/Avatar";
 import { DefaultContainer } from "@/components/DefaultContainer";
-import { VippsIkon } from "@/components/ikoner/vipps";
 import { LocationCard } from "@/components/Location";
 import { RichText } from "@/components/RichText";
 import { sanityClient } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import {
-  Box,
-  Button,
-  Grid,
-  Heading,
-  Icon,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Grid, Heading, Stack, Text } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -69,21 +60,14 @@ const Page = async (props: Props) => {
               )}
               {data.paymentInfo && (
                 <Section title="Betaling">
-                  {data.paymentInfo?.body && (
-                    <RichText blockContent={data.paymentInfo.body} />
-                  )}
                   {data.paymentInfo?.vippsNumber && (
-                    <Text fontWeight={600}>
-                      <Icon asChild height="1.5rem">
-                        <VippsIkon />
-                      </Icon>
+                    <Text>
+                      Du kan betale med vipps til:{" "}
                       {data.paymentInfo.vippsNumber}
                     </Text>
                   )}
-                  {data.paymentInfo?.url && (
-                    <Button asChild>
-                      <a href={data.paymentInfo.url}>Betal på nett</a>
-                    </Button>
+                  {data.paymentInfo?.body && (
+                    <RichText blockContent={data.paymentInfo.body} />
                   )}
                 </Section>
               )}

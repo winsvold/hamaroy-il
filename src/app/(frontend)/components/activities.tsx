@@ -1,11 +1,12 @@
 import { sanityClient } from "@/sanity/lib/client";
+import { formatNorwegianDate } from "@/utils/date";
 import { getSessionEndsAt } from "@/utils/session";
-import { Grid } from "@chakra-ui/react";
-import { isAfter } from "date-fns";
+import { Box, Flex, FlexProps, Grid, Stack } from "@chakra-ui/react";
+import { isAfter, startOfDay } from "date-fns";
 import { defineQuery } from "next-sanity";
-import { sift } from "radash";
-import { SessionCard, SessionOccurrence } from "./SessionCard";
+import { group, sift } from "radash";
 import { EventCard } from "./EventCard";
+import { SessionCard, SessionOccurrence } from "./SessionCard";
 
 const activitiesQuery = defineQuery(`{
   "sessionSeries": *[_type == "sessionSeries" && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{
@@ -26,7 +27,7 @@ type Props = {
   locationId?: string;
 };
 
-export const Sessions = async (props: Props) => {
+export const Activities = async (props: Props) => {
   const { sessionSeries, events } = await sanityClient.fetch(activitiesQuery, {
     seriesId: props.seriesId ?? null,
     locationId: props.locationId ?? null,
@@ -51,18 +52,64 @@ export const Sessions = async (props: Props) => {
     )
     .slice(0, props.limit);
 
+  const groupedByDate = group(
+    sortedEventsAndSessions,
+    (item) =>
+      (item.startsAt && startOfDay(new Date(item.startsAt)).toISOString()) ||
+      "Ukjent dato",
+  );
+
   return (
-    <Grid
-      gap=".5rem"
-      gridTemplateColumns="repeat(auto-fill, minmax(15rem, 1fr))"
-    >
-      {sortedEventsAndSessions.map((session) =>
-        session._type === "event" ? (
-          <EventCard gridColumn="span 2" key={session._id} event={session} />
-        ) : (
-          <SessionCard key={session._key} session={session} />
-        ),
-      )}
-    </Grid>
+    <Stack gap="1rem">
+      {Object.entries(groupedByDate).map(([date, activities]) => (
+        <Grid key={date} gap="1rem" gridTemplateColumns="4rem 1fr">
+          <Box position="relative">
+            <Box
+              position="absolute"
+              height="calc(100% + 1rem)"
+              top="0"
+              left="50%"
+              transform="translateX(-50%)"
+              border=".1rem solid"
+              borderColor="gray.200"
+            />
+            <DatoBadge position="sticky" top=".75rem" date={date} />
+          </Box>
+          <Stack gap=".5rem" alignItems="flex-start">
+            {activities?.map((session) =>
+              session._type === "event" ? (
+                <EventCard key={session._id} event={session} />
+              ) : (
+                <SessionCard key={session._key} session={session} />
+              ),
+            )}
+          </Stack>
+        </Grid>
+      ))}
+    </Stack>
   );
 };
+
+const DatoBadge = ({ date, ...chakraProps }: { date: string } & FlexProps) => (
+  <Flex
+    flexDirection="column"
+    as="p"
+    padding=".5rem"
+    minWidth="3.5rem"
+    textAlign="center"
+    alignItems="center"
+    borderRadius="md"
+    backgroundColor="gray.200"
+    fontWeight={600}
+    lineHeight={1}
+    title={formatNorwegianDate(date, "PPP p")}
+    fontSize="0.9rem"
+    {...chakraProps}
+  >
+    <Box as="span">{formatNorwegianDate(date, "E")}</Box>
+    <Box as="span" fontSize="1.5em">
+      {formatNorwegianDate(date, "d")}
+    </Box>
+    <Box as="span">{formatNorwegianDate(date, "MMM").replace(".", "")}</Box>
+  </Flex>
+);

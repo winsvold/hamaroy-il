@@ -7,7 +7,7 @@ type Options = {
 
 export const getBlockContentType = (options: Options) =>
   defineField({
-    title: "Beskrivelse",
+    title: "Fritekst",
     name: "body",
     type: "array",
     of: [
@@ -20,7 +20,10 @@ export const getBlockContentType = (options: Options) =>
             value: "h2",
           },
         ]),
-        lists: [{ title: "Bullet", value: "bullet" }],
+        lists: sift([
+          { title: "Bullet", value: "bullet" },
+          { title: "Number", value: "number" },
+        ]),
         // Marks let you mark up inline text in the Portable Text Editor
         marks: {
           decorators: [],

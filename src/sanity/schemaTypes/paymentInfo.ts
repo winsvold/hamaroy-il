@@ -6,11 +6,16 @@ export const paymentInfo = defineType({
   title: "Betalingsinformasjon",
   type: "object",
   fields: [
+    getBlockContentType({}),
     defineField({
       name: "vippsNumber",
       title: "Vippsnummer",
       type: "string",
     }),
-    getBlockContentType({}),
+    defineField({
+      name: "url",
+      title: "Url til betaling",
+      type: "url",
+    }),
   ],
 });

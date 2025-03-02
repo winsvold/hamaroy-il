@@ -1,18 +1,17 @@
+import { urlFor } from "@/sanity/lib/image";
 import { formatNorwegianDate } from "@/utils/date";
 import {
   Box,
   BoxProps,
-  Flex,
   Heading,
   LinkBox,
   LinkOverlay,
   Text,
 } from "@chakra-ui/react";
+import Image from "next/image";
 import Link from "next/link";
 import { Clock, MapPin } from "react-feather";
 import { ActivitiesQueryResult } from "../../../../sanity.types";
-import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
 
 export type Data = ActivitiesQueryResult["events"][number];
 
@@ -27,7 +26,7 @@ export const EventCard = ({
   return (
     <LinkBox
       display="flex"
-      padding="1rem"
+      padding=".75rem"
       borderRadius="md"
       backgroundColor="blue.100"
       gap=".5rem"
@@ -46,28 +45,6 @@ export const EventCard = ({
           />
         </Box>
       )}
-      <Flex
-        flexDirection="column"
-        as="p"
-        padding=".5rem"
-        minWidth="3.5rem"
-        textAlign="center"
-        alignItems="center"
-        borderRadius="md"
-        backgroundColor="blackAlpha.200"
-        fontWeight={600}
-        lineHeight={1}
-        title={formatNorwegianDate(startsAt, "PPP p")}
-        fontSize="0.9rem"
-      >
-        <Box as="span">{formatNorwegianDate(startsAt, "E")}</Box>
-        <Box as="span" fontSize="1.5em">
-          {formatNorwegianDate(startsAt, "d")}
-        </Box>
-        <Box as="span">
-          {formatNorwegianDate(startsAt, "MMM").replace(".", "")}
-        </Box>
-      </Flex>
       <Box>
         <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
           <Link href={`/aktiviteter/${event._id}`}>
