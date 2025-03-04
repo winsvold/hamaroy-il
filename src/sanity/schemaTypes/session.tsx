@@ -179,6 +179,9 @@ export const session = defineType({
         nearestTo: 30,
       }).toISOString(),
       validation: (Rule) => Rule.required(),
+      options: {
+        timeStep: 15,
+      },
     }),
     defineField({
       name: "duration",

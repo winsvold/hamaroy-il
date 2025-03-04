@@ -7,20 +7,12 @@ import {
   Heading,
   LinkBox,
   LinkOverlay,
+  Stack,
   Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { Clock, MapPin } from "react-feather";
-import { KeyedSegment } from "sanity";
-import { ActivitiesQueryResult, Session } from "../../../../sanity.types";
-
-export type SessionOccurrence = Session &
-  KeyedSegment & {
-    series: Extract<
-      ActivitiesQueryResult["eventsAndSessionSeries"][number],
-      { _type: "sessionSeries" }
-    >;
-  };
+import { MapPin } from "react-feather";
+import { SessionOccurrence } from "./activities";
 
 export const SessionCard = ({ session }: { session: SessionOccurrence }) => {
   if (!session) return null;
@@ -30,36 +22,42 @@ export const SessionCard = ({ session }: { session: SessionOccurrence }) => {
   return (
     <LinkBox
       display="flex"
-      padding=".75rem"
       borderRadius="md"
       backgroundColor="blue.100"
       gap=".5rem"
       alignItems="flex-start"
       _hover={{ backgroundColor: "blue.200" }}
       transition=".3s"
+      overflow="hidden"
     >
-      <Box>
+      <Stack
+        background="blue.300"
+        gap="0"
+        padding=".75rem 1rem"
+        fontWeight={600}
+        alignItems="center"
+      >
+        <Box>{formatNorwegianDate(startsAt, "p")}</Box>
+        <Box lineHeight={0.5}>-</Box>
+        <Box>{formatNorwegianDate(getSessionEndsAt(session), "p")}</Box>
+      </Stack>
+      <Box padding=".75rem 1rem .75rem .5rem">
         <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
           <Link href={`/aktiviteter/${session.series.slug?.current}`}>
             <Flex alignItems="center" gap=".5rem">
-              <Heading as="h3">{session.series.title}</Heading>{" "}
+              <Heading as="h3" size="md">
+                {session.series.title}
+              </Heading>{" "}
               {session.series.sport && sports[session.series.sport].icon}
             </Flex>
           </Link>
         </LinkOverlay>
-        <Text fontWeight={600} display="flex" alignItems="center" gap=".5em">
-          <Clock />
-          {formatNorwegianDate(startsAt, "p")} -{" "}
-          {formatNorwegianDate(getSessionEndsAt(session), "p")}
-        </Text>
-        <Text
-          _hover={{ textDecoration: "underline" }}
-          display="flex"
-          alignItems="center"
-          gap=".5em"
-        >
-          <MapPin /> {session.series.location?.name}
-        </Text>
+        {session.series.location && (
+          <Text display="flex" alignItems="center" gap=".25em" fontSize="sm">
+            <MapPin size="1em" />
+            {session.series.location?.name}
+          </Text>
+        )}
       </Box>
     </LinkBox>
   );

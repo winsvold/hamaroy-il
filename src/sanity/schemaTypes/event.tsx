@@ -19,12 +19,18 @@ export const event = defineType({
       title: "Starttid",
       type: "datetime",
       validation: (Rule) => Rule.required(),
+      options: {
+        timeStep: 15,
+      },
     }),
     defineField({
       name: "endsAt",
       title: "Sluttid",
       type: "datetime",
       validation: (Rule) => Rule.required(),
+      options: {
+        timeStep: 15,
+      },
     }),
     defineField({
       name: "location",

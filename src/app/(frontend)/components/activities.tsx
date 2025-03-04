@@ -6,7 +6,9 @@ import { isAfter, startOfDay } from "date-fns";
 import { defineQuery } from "next-sanity";
 import { group, sift } from "radash";
 import { EventCard } from "./EventCard";
-import { SessionCard, SessionOccurrence } from "./SessionCard";
+import { SessionCard } from "./SessionCard";
+import { KeyedSegment } from "sanity";
+import { ActivitiesQueryResult, Session } from "../../../../sanity.types";
 
 const activitiesQuery = defineQuery(`{
   "eventsAndSessionSeries": *[_type in ["sessionSeries", "event"] && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{
@@ -21,6 +23,14 @@ type Props = {
   seriesId?: string;
   locationId?: string;
 };
+
+export type SessionOccurrence = Session &
+  KeyedSegment & {
+    series: Extract<
+      ActivitiesQueryResult["eventsAndSessionSeries"][number],
+      { _type: "sessionSeries" }
+    >;
+  };
 
 export const Activities = async (props: Props) => {
   const { eventsAndSessionSeries } = await sanityFetch(activitiesQuery, {
@@ -104,7 +114,8 @@ const DatoBadge = ({ date, ...chakraProps }: { date: string } & FlexProps) => (
     textAlign="center"
     alignItems="center"
     borderRadius="md"
-    backgroundColor="gray.200"
+    backgroundColor="blue.500"
+    color="white"
     fontWeight={600}
     lineHeight={1}
     title={formatNorwegianDate(date, "PPP p")}
