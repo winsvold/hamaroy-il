@@ -31,15 +31,15 @@ export const EventCard = ({
   return (
     <LinkBox
       borderRadius="md"
-      backgroundColor="blue.100"
+      backgroundColor="green.100"
       display="flex"
-      _hover={{ backgroundColor: "blue.200" }}
+      _hover={{ backgroundColor: "green.200" }}
       transition=".3s"
       overflow="hidden"
       {...chakraProps}
     >
       <Stack
-        background="blue.300"
+        background="green.200"
         gap="0"
         padding=".75rem 1rem"
         fontWeight={600}

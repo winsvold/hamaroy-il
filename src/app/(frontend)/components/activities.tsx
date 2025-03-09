@@ -114,7 +114,7 @@ const DatoBadge = ({ date, ...chakraProps }: { date: string } & FlexProps) => (
     textAlign="center"
     alignItems="center"
     borderRadius="md"
-    backgroundColor="blue.500"
+    backgroundColor="green.700"
     color="white"
     fontWeight={600}
     lineHeight={1}

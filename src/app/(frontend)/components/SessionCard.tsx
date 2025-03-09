@@ -23,15 +23,15 @@ export const SessionCard = ({ session }: { session: SessionOccurrence }) => {
     <LinkBox
       display="flex"
       borderRadius="md"
-      backgroundColor="blue.100"
+      backgroundColor="green.100"
       gap=".5rem"
       alignItems="flex-start"
-      _hover={{ backgroundColor: "blue.200" }}
+      _hover={{ backgroundColor: "green.200" }}
       transition=".3s"
       overflow="hidden"
     >
       <Stack
-        background="blue.300"
+        background="green.200"
         gap="0"
         padding=".75rem 1rem"
         fontWeight={600}
