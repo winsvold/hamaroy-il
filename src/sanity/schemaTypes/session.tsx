@@ -31,19 +31,23 @@ const SessionsInput = (props: ArrayOfObjectsInputProps) => {
 const AddMultipleSessions = (props: ArrayOfObjectsInputProps) => {
   const [value, setValue] = useState(7);
 
+  const sessions = props.value as unknown as Session[];
+  const lastSession = sessions.at(-1);
+  const nextSession =
+    (lastSession?.startsAt &&
+      ({
+        startsAt: add(new Date(lastSession.startsAt), {
+          days: value,
+        }).toISOString(),
+        duration: lastSession.duration,
+        _type: "session",
+        _key: crypto.randomUUID(),
+      } satisfies Session & { _key: string })) ||
+    undefined;
+
   const handleAddSession = () => {
-    const sessions = props.value as unknown as Session[];
-    const lastSession = sessions.at(-1);
-    if (!lastSession?.startsAt) return;
-    const newSession = {
-      startsAt: add(new Date(lastSession.startsAt), {
-        days: value,
-      }).toISOString(),
-      duration: lastSession.duration,
-      _type: "session",
-      _key: crypto.randomUUID(),
-    } satisfies Session & { _key: string };
-    props.onChange(set([...sessions, newSession]));
+    if (!nextSession) return;
+    props.onChange(set([...sessions, nextSession]));
   };
 
   return (
@@ -56,7 +60,11 @@ const AddMultipleSessions = (props: ArrayOfObjectsInputProps) => {
         onChange={(e) => setValue(Number(e.currentTarget.value) || 0)}
       />
       dager senere
-      <Button onClick={handleAddSession}>Legg til</Button>
+      <Button onClick={handleAddSession}>
+        Legg til{" "}
+        {nextSession?.startsAt &&
+          formatNorwegianDate(nextSession?.startsAt, "PPP p")}
+      </Button>
     </Flex>
   );
 };
