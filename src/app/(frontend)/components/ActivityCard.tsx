@@ -1,4 +1,4 @@
-import { formatNorwegianDate } from "@/utils/date";
+import { formatNorwegianDate, formatNorwegianDuration } from "@/utils/date";
 import {
   Box,
   Flex,
@@ -33,21 +33,23 @@ export const ActivityCard = (props: Props) => {
       borderRadius="md"
       backgroundColor="green.100"
       gap=".5rem"
-      alignItems="flex-start"
       _hover={{ backgroundColor: "green.200" }}
       transition=".3s"
       overflow="hidden"
     >
       <Stack
+        justifyContent="center"
         background="green.200"
         gap="0"
         padding=".75rem 1rem"
         fontWeight={600}
         alignItems="center"
+        lineHeight={1.2}
       >
         <Box>{formatNorwegianDate(startsAt, "p")}</Box>
-        <Box lineHeight={0.5}>-</Box>
-        <Box>{formatNorwegianDate(endsAt, "p")}</Box>
+        <Box fontSize="xs" opacity={0.6}>
+          {formatNorwegianDuration(startsAt, endsAt)}
+        </Box>
       </Stack>
       <Stack>
         {image && (
