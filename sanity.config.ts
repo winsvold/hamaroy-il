@@ -4,7 +4,7 @@
  * This configuration is used to for the Sanity Studio that’s mounted on the `/app/cms/[[...tool]]/page.tsx` route
  */
 
-import { StudioLayout } from "@/sanity/StudioLayout";
+import { StudioNavbar } from "@/sanity/StudioNavbar";
 import { linkToFrontpage } from "@/sanity/tools/linkToFrontpage";
 import { nbNOLocale } from "@sanity/locale-nb-no";
 import { visionTool } from "@sanity/vision";
@@ -30,7 +30,7 @@ export default defineConfig({
   tools: [linkToFrontpage()],
   studio: {
     components: {
-      layout: StudioLayout,
+      navbar: StudioNavbar,
     },
   },
   document: {

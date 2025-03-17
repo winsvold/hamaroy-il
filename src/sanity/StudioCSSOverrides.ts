@@ -10,19 +10,9 @@ const hideReviewOptions = css`
     }
 
     // Kebab menus in document list and document editor
-    div[data-testid="pane-header"] {
-      button[data-ui="MenuButton"]:has(
-          svg[data-sanity-icon="ellipsis-horizontal"]
-        ) {
-        display: none;
-      }
-    }
-
-    /* "Current version" - menu in editor header */
-    div[data-testid="document-pane"]
-      div[data-testid="pane-header"]
-      > div
-      > div:nth-child(2) {
+    button[data-testid="pane-context-menu-button"][data-ui="MenuButton"]:has(
+        svg[data-sanity-icon="ellipsis-horizontal"]
+      ) {
       display: none;
     }
   }
@@ -61,23 +51,6 @@ const hideFieldActions = css`
   }
 `;
 
-// The font size in the left menu is too small, so we increase it here
-const fontSizeDocumentTypeMenu = css`
-  div[data-testid="structure-tool-list-pane"] {
-    div[data-testid="pane-content"] {
-      a {
-        padding: 0.25rem 0;
-        div[data-testid="compact-preview__header"] {
-          font-size: 1rem;
-        }
-        span[data-testid="Media"] {
-          font-size: 1.2rem;
-        }
-      }
-    }
-  }
-`;
-
 const buttonStyles = css`
   button {
     cursor: pointer;
@@ -100,12 +73,28 @@ const schemaAcordionButton = css`
   }
 `;
 
+// Hide "Published" and "Draft" badges
+const hidePublishedDraftBadgesAndRepositionHeaderPane = css`
+  div[data-testid="document-pane"] > div[data-ui="Flex"] > div[data-ui="Card"] {
+    display: none;
+  }
+`;
+
+export const schemaBackground = "#f9f9f9";
+
+const grayBackgroundSchema = css`
+  div[data-testid="document-pane"] div[data-testid="pane-content"] {
+    background-color: ${schemaBackground};
+  }
+`;
+
 export const StudioCSSOverrides = createGlobalStyle`
   ${hideDefaultBadges};
   ${hideReviewOptions};
   ${hideReferenceInputLinks};
-  ${fontSizeDocumentTypeMenu};
   ${hideFieldActions};
   ${buttonStyles};
   ${schemaAcordionButton};
+  ${hidePublishedDraftBadgesAndRepositionHeaderPane};
+  ${grayBackgroundSchema};
 `;
