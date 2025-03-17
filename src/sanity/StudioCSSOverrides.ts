@@ -80,14 +80,6 @@ const hidePublishedDraftBadgesAndRepositionHeaderPane = css`
   }
 `;
 
-export const schemaBackground = "#f9f9f9";
-
-const grayBackgroundSchema = css`
-  div[data-testid="document-pane"] div[data-testid="pane-content"] {
-    background-color: ${schemaBackground};
-  }
-`;
-
 export const StudioCSSOverrides = createGlobalStyle`
   ${hideDefaultBadges};
   ${hideReviewOptions};
@@ -96,5 +88,4 @@ export const StudioCSSOverrides = createGlobalStyle`
   ${buttonStyles};
   ${schemaAcordionButton};
   ${hidePublishedDraftBadgesAndRepositionHeaderPane};
-  ${grayBackgroundSchema};
 `;
