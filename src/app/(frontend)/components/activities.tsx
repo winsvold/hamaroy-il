@@ -5,8 +5,7 @@ import { Box, Flex, FlexProps, Grid, Stack } from "@chakra-ui/react";
 import { isAfter, startOfDay } from "date-fns";
 import { defineQuery } from "next-sanity";
 import { group, sift } from "radash";
-import { EventCard } from "./EventCard";
-import { SessionCard } from "./SessionCard";
+import { ActivityCard } from "./ActivityCard";
 import { KeyedSegment } from "sanity";
 import { ActivitiesQueryResult, Session } from "../../../../sanity.types";
 
@@ -93,9 +92,24 @@ export const Activities = async (props: Props) => {
           <Stack gap=".5rem" alignItems="flex-start">
             {activities?.map((session) =>
               session._type === "event" ? (
-                <EventCard key={session._id} event={session} />
+                <ActivityCard
+                  key={session._id}
+                  startsAt={session.startsAt}
+                  endsAt={session.endsAt}
+                  title={session.title}
+                  location={session.location}
+                  slug={session._id}
+                  image={session.images?.[0]}
+                />
               ) : (
-                <SessionCard key={session._key} session={session} />
+                <ActivityCard
+                  key={session._key}
+                  startsAt={session.startsAt}
+                  endsAt={getSessionEndsAt(session).toISOString()}
+                  title={session.series.title}
+                  location={session.series.location}
+                  slug={session.series.slug?.current}
+                />
               ),
             )}
           </Stack>

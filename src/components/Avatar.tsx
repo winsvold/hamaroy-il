@@ -19,7 +19,9 @@ export const Avatar = (person: Person) => {
       )}
 
       <Stack gap="0">
-        <Heading as="h2">{person.name}</Heading>
+        <Heading as="h2" size="md">
+          {person.name}
+        </Heading>
         <Text fontSize="sm" display="flex" alignItems="center" gap=".5em">
           <Phone size="1em" />
           <Link href={`tel:${person.phone}`}>{person.phone}</Link>

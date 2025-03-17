@@ -1,5 +1,4 @@
 import { formatNorwegianDate } from "@/utils/date";
-import { Sports, sports } from "@/utils/sports";
 import { Button, Flex, Input, Stack, Text } from "@chakra-ui/react";
 import { add, roundToNearestMinutes } from "date-fns";
 import { alphabetical, isEqual } from "radash";
@@ -95,17 +94,6 @@ export const sessionSeries = defineType({
     }),
     getBlockContentType({ headings: ["h2"] }),
     defineField({
-      name: "sport",
-      title: "Sport",
-      type: "string",
-      options: {
-        list: Object.entries(sports).map(([key, value]) => ({
-          title: value.label,
-          value: key,
-        })),
-      },
-    }),
-    defineField({
       name: "organizers",
       title: "Arrangør(er)",
       type: "array",
@@ -168,11 +156,9 @@ export const sessionSeries = defineType({
   preview: {
     select: {
       title: "title",
-      sport: "sport",
     },
-    prepare: ({ title, sport }) => ({
+    prepare: ({ title }) => ({
       title: title,
-      media: () => sports[sport as Sports]?.icon,
     }),
   },
 });

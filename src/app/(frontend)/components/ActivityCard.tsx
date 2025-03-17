@@ -1,42 +1,42 @@
 import { formatNorwegianDate } from "@/utils/date";
-import { urlFor } from "@/sanity/lib/image";
 import {
   Box,
-  BoxProps,
+  Flex,
   Heading,
   LinkBox,
   LinkOverlay,
-  Text,
-  Flex,
   Stack,
+  Text,
 } from "@chakra-ui/react";
-import Image from "next/image";
 import Link from "next/link";
 import { MapPin } from "react-feather";
-import { ActivitiesQueryResult } from "../../../../sanity.types";
+import { Event, Location } from "../../../../sanity.types";
+import Image from "next/image";
+import { urlFor } from "@/sanity/lib/image";
 
-export type Data = Extract<
-  ActivitiesQueryResult["eventsAndSessionSeries"][number],
-  { _type: "event" }
->;
+type Props = {
+  startsAt?: string;
+  endsAt?: string;
+  title?: string;
+  location: Location | null;
+  slug?: string;
+  image?: NonNullable<Event["images"]>[0];
+};
 
-export const EventCard = ({
-  event,
-  ...chakraProps
-}: { event: Data } & BoxProps) => {
-  if (!event) return null;
-  const { startsAt } = event;
+export const ActivityCard = (props: Props) => {
+  const { startsAt, endsAt, title, location, slug, image } = props;
   if (!startsAt) return null;
 
   return (
     <LinkBox
+      display="flex"
       borderRadius="md"
       backgroundColor="green.100"
-      display="flex"
+      gap=".5rem"
+      alignItems="flex-start"
       _hover={{ backgroundColor: "green.200" }}
       transition=".3s"
       overflow="hidden"
-      {...chakraProps}
     >
       <Stack
         background="green.200"
@@ -44,36 +44,40 @@ export const EventCard = ({
         padding=".75rem 1rem"
         fontWeight={600}
         alignItems="center"
-        justifyContent="center"
       >
         <Box>{formatNorwegianDate(startsAt, "p")}</Box>
         <Box lineHeight={0.5}>-</Box>
-        <Box>{formatNorwegianDate(event.endsAt, "p")}</Box>
+        <Box>{formatNorwegianDate(endsAt, "p")}</Box>
       </Stack>
-      <Flex gap=".5rem" padding=".75rem 1rem .75rem .75rem">
-        {event?.images?.[0] && (
+      <Stack>
+        {image && (
           <Box asChild borderRadius="sm" maxWidth="10rem">
             <Image
               alt=""
-              src={urlFor(event.images[0]).width(300).height(200).url()}
+              src={urlFor(image).width(300).height(200).url()}
               width={300}
               height={200}
             />
           </Box>
         )}
-        <Box>
+        <Box padding=".75rem 1rem .75rem .5rem">
           <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
-            <Link href={`/aktiviteter/${event._id}`}>
-              <Heading as="h3">{event.title}</Heading>
+            <Link href={`/aktiviteter/${slug}`}>
+              <Flex alignItems="center" gap=".5rem">
+                <Heading as="h3" size="md">
+                  {title}
+                </Heading>
+              </Flex>
             </Link>
           </LinkOverlay>
-          {event.location && (
+          {location && (
             <Text display="flex" alignItems="center" gap=".25em" fontSize="sm">
-              <MapPin /> {event.location?.name}
+              <MapPin size="1em" />
+              {location?.name}
             </Text>
           )}
         </Box>
-      </Flex>
+      </Stack>
     </LinkBox>
   );
 };

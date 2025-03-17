@@ -18,6 +18,7 @@ import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Activities } from "../../components/activities";
+import { formatNorwegianDate } from "@/utils/date";
 
 const aktivitetQuery =
   defineQuery(`*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{
@@ -55,11 +56,19 @@ const Page = async (props: Props) => {
         <Stack gap="1rem">
           <Grid gap="1rem" gridTemplateColumns={{ base: "1fr", md: "1fr 1fr" }}>
             <Stack>
+              {data._type === "event" && (
+                <Box fontWeight={600} padding="0 .75rem">
+                  {formatNorwegianDate(data.startsAt, "p")} -{" "}
+                  {formatNorwegianDate(data.endsAt, "p")}
+                </Box>
+              )}
               {data.organizers?.length && (
                 <Section title="Kontakt">
-                  {data.organizers?.map((organizer) => (
-                    <Avatar key={organizer._id} {...organizer} />
-                  ))}
+                  <Stack>
+                    {data.organizers?.map((organizer) => (
+                      <Avatar key={organizer._id} {...organizer} />
+                    ))}
+                  </Stack>
                 </Section>
               )}
               {data.location && (
