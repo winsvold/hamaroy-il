@@ -32,7 +32,10 @@ const AddMultipleSessions = (props: ArrayOfObjectsInputProps) => {
   const [value, setValue] = useState(7);
 
   const sessions = props.value as unknown as Session[];
-  const lastSession = sessions.at(-1);
+  const lastSession = sessions?.at(-1);
+
+  if (!lastSession) return null;
+
   const nextSession =
     (lastSession?.startsAt &&
       ({
