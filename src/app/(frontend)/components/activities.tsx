@@ -76,7 +76,11 @@ export const Activities = async (props: Props) => {
   return (
     <Stack gap="1rem">
       {Object.entries(groupedByDate).map(([date, activities]) => (
-        <Grid key={date} gap="1rem" gridTemplateColumns="4rem 1fr">
+        <Grid
+          key={date}
+          gap={{ base: ".5rem", sm: "1rem" }}
+          gridTemplateColumns={{ base: "3rem 1fr", sm: "4rem 1fr" }}
+        >
           <Box position="relative">
             <Box
               position="absolute"
@@ -124,7 +128,7 @@ const DatoBadge = ({ date, ...chakraProps }: { date: string } & FlexProps) => (
     flexDirection="column"
     as="p"
     padding=".5rem"
-    minWidth="3.5rem"
+    minWidth={{ sm: "3.5rem" }}
     textAlign="center"
     alignItems="center"
     borderRadius="md"
@@ -133,7 +137,7 @@ const DatoBadge = ({ date, ...chakraProps }: { date: string } & FlexProps) => (
     fontWeight={600}
     lineHeight={1}
     title={formatNorwegianDate(date, "PPP p")}
-    fontSize="0.9rem"
+    fontSize={{ base: ".8rem", sm: "0.9rem" }}
     {...chakraProps}
   >
     <Box as="span">{formatNorwegianDate(date, "E")}</Box>

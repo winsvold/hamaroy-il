@@ -41,7 +41,7 @@ export const ActivityCard = (props: Props) => {
         justifyContent="center"
         background="green.200"
         gap="0"
-        padding=".75rem 1rem"
+        padding={{ base: ".5rem", sm: ".75rem 1rem" }}
         fontWeight={600}
         alignItems="center"
         lineHeight={1.2}
@@ -62,11 +62,14 @@ export const ActivityCard = (props: Props) => {
             />
           </Box>
         )}
-        <Box padding=".75rem 1rem .75rem .5rem">
+        <Stack
+          gap=".25rem"
+          padding={{ base: ".5rem", sm: ".75rem 1rem .75rem .5rem" }}
+        >
           <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
             <Link href={`/aktiviteter/${slug}`}>
               <Flex alignItems="center" gap=".5rem">
-                <Heading as="h3" size="md">
+                <Heading as="h3" size={{ base: "sm", sm: "md" }}>
                   {title}
                 </Heading>
               </Flex>
@@ -78,7 +81,7 @@ export const ActivityCard = (props: Props) => {
               {location?.name}
             </Text>
           )}
-        </Box>
+        </Stack>
       </Stack>
     </LinkBox>
   );
