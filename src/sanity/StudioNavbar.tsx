@@ -1,7 +1,7 @@
 import { StudioComponentsPluginOptions } from "sanity";
 import { StudioCSSOverrides } from "./StudioCSSOverrides";
 import { useState } from "react";
-import { Button, Link, Flex, Heading } from "@chakra-ui/react";
+import { Button, Flex, Heading, Box } from "@sanity/ui";
 
 export const StudioNavbar: StudioComponentsPluginOptions["navbar"] = (
   props,
@@ -9,27 +9,25 @@ export const StudioNavbar: StudioComponentsPluginOptions["navbar"] = (
   const [simpleNavbar, setSimpleNavbar] = useState(true);
 
   return (
-    <Flex borderBottom="1px solid" borderColor="gray.200">
+    <Flex style={{ borderBottom: "1px solid #ccc" }}>
       {simpleNavbar ? (
-        <Flex gap=".5rem" padding=".25rem">
-          <Heading as="h1" padding=".25rem">
+        <Flex gap={2} padding={2} align="center">
+          <Heading as="h1" size={1}>
             Hamarøy IL - Redaktørverktøy
           </Heading>
           <StudioCSSOverrides />
-          <Button asChild>
-            <Link href="/">Gå til forsiden</Link>
+          <Button padding={1} as="a" href="/">
+            Gå til forsiden
           </Button>
         </Flex>
       ) : (
         props.renderDefault(props)
       )}
-      <Button
-        margin=".25rem"
-        marginLeft="auto"
-        onClick={() => setSimpleNavbar(!simpleNavbar)}
-      >
-        {simpleNavbar ? "Avansert" : "Skru av avansert"}
-      </Button>
+      <Box padding={2} style={{ marginLeft: "auto" }}>
+        <Button padding={1} onClick={() => setSimpleNavbar(!simpleNavbar)}>
+          {simpleNavbar ? "Avansert" : "Skru av avansert"}
+        </Button>
+      </Box>
     </Flex>
   );
 };

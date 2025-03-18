@@ -6,7 +6,7 @@ import { SessionSeries } from "../../sanity.types";
 const components: ComponentProps<typeof PortableText>["components"] = {
   block: {
     h2: ({ children }) => <Heading>{children}</Heading>,
-    normal: ({ children }) => <Text marginBottom="1em">{children}</Text>,
+    normal: ({ children }) => <Text marginBottom="1.5em">{children}</Text>,
   },
   list: {
     bullet: ({ children }) => (
@@ -33,7 +33,7 @@ export const RichText = ({ blockContent, ...chakraProps }: Props) => {
   if (!blockContent) return null;
 
   return (
-    <Box {...chakraProps}>
+    <Box fontSize="lg" {...chakraProps}>
       <PortableText value={blockContent} components={components} />
     </Box>
   );

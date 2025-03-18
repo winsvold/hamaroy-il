@@ -1,7 +1,6 @@
-import { DefaultContainer } from "@/components/DefaultContainer";
 import { RichText } from "@/components/RichText";
 import { sanityFetch } from "@/sanity/lib/client";
-import { Heading, Stack } from "@chakra-ui/react";
+import { Heading, Stack, Container } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import { notFound } from "next/navigation";
 
@@ -20,14 +19,14 @@ const Page = async (props: Props) => {
   if (!data) return notFound();
 
   return (
-    <DefaultContainer>
+    <Container maxWidth="35rem">
       <Stack gap="1rem">
         <Heading as="h1" size="4xl">
           {data?.title}
         </Heading>
         <RichText blockContent={data.body} />
       </Stack>
-    </DefaultContainer>
+    </Container>
   );
 };
 

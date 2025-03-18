@@ -1,10 +1,13 @@
-import { format as dateFnsFormat, intervalToDuration } from "date-fns";
+import { intervalToDuration } from "date-fns";
 import { nb } from "date-fns/locale";
 import { sift } from "radash";
+import { formatInTimeZone } from "date-fns-tz";
 
 export const formatNorwegianDate = (date?: string | Date, format = "PPP") => {
   if (!date) return "Ukjent dato";
-  return dateFnsFormat(new Date(date), format, { locale: nb });
+  return formatInTimeZone(new Date(date), "Europe/Oslo", format, {
+    locale: nb,
+  });
 };
 
 export const formatNorwegianDuration = (from?: string, to?: string) => {
