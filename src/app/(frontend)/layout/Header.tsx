@@ -39,7 +39,12 @@ export const Header = async () => {
               </Heading>
             </Link>
           </HStack>
-          <Flex as="ul" gap="2rem" fontSize="1.35rem">
+          <Flex
+            as="ul"
+            gap="1rem 2rem"
+            fontSize={{ base: "1rem", sm: "1.35rem" }}
+            flexWrap="wrap"
+          >
             <HeaderLink href="/aktiviteter">Hva skjer</HeaderLink>
             {/* <Box>Klubber</Box> */}
             <HeaderLink href="/lokaler">Lokaler</HeaderLink>
