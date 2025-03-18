@@ -10,7 +10,7 @@ const components: ComponentProps<typeof PortableText>["components"] = {
   },
   marks: {
     link: ({ value, children }) => {
-      const target = (value?.href || "").startsWith("http")
+      const target = !(value?.href || "").startsWith("https://")
         ? "_blank"
         : undefined;
       return (
