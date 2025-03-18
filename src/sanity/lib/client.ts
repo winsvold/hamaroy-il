@@ -18,6 +18,7 @@ export async function sanityFetch<const QueryString extends string>(
   },
 ) {
   return sanityClient.fetch(query, params, {
+    perspective: "published",
     next: {
       revalidate: options?.tags?.length ? false : (options?.revalidate ?? 5), // for simple, time-based revalidation
       tags: options?.tags, // for tag-based revalidation
