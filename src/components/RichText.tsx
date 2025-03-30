@@ -1,11 +1,23 @@
-import { Box, BoxProps, Heading, Link, List, Text } from "@chakra-ui/react";
+import {
+  Box,
+  BoxProps,
+  Heading,
+  Link,
+  List,
+  SystemStyleObject,
+  Text,
+} from "@chakra-ui/react";
 import { PortableText } from "@portabletext/react";
 import { ComponentProps } from "react";
 import { SessionSeries } from "../../sanity.types";
 
 const components: ComponentProps<typeof PortableText>["components"] = {
   block: {
-    h2: ({ children }) => <Heading>{children}</Heading>,
+    h2: ({ children }) => (
+      <Heading marginTop="2em" marginBottom=".5em">
+        {children}
+      </Heading>
+    ),
     normal: ({ children }) => <Text marginBottom="1.5em">{children}</Text>,
   },
   marks: {
@@ -48,11 +60,21 @@ type Props = {
   blockContent?: SessionSeries["body"];
 } & BoxProps;
 
+const css: SystemStyleObject = {
+  // Reset margin for the first and last child to remove extra space against the container
+  "& > *:first-child": {
+    marginTop: "0",
+  },
+  "& > *:last-child": {
+    marginBottom: "0",
+  },
+};
+
 export const RichText = ({ blockContent, ...chakraProps }: Props) => {
   if (!blockContent) return null;
 
   return (
-    <Box fontSize="lg" {...chakraProps}>
+    <Box fontSize="lg" css={css} {...chakraProps}>
       <PortableText value={blockContent} components={components} />
     </Box>
   );

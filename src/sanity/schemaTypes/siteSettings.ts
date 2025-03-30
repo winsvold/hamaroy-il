@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { getBlockContentType } from "./blockContentType";
 
 export const siteSettings = defineType({
   name: "siteSettings",
@@ -14,6 +15,11 @@ export const siteSettings = defineType({
         hotspot: true,
       },
     }),
+    {
+      ...getBlockContentType({ headings: ["h2"] }),
+      name: "intro",
+      title: "Introduksjon",
+    },
   ],
   preview: {
     prepare: () => ({

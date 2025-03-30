@@ -148,7 +148,6 @@ export type SessionSeries = {
     _type: "block";
     _key: string;
   }>;
-  sport?: "climbing" | "circle";
   organizers?: Array<{
     _ref: string;
     _type: "reference";
@@ -338,6 +337,24 @@ export type SiteSettings = {
     crop?: SanityImageCrop;
     _type: "image";
   };
+  intro?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h2";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
 };
 
 export type SanityImageCrop = {
@@ -418,7 +435,7 @@ export type AllSanitySchemaTypes =
   | SanityAssetSourceData
   | SanityImageMetadata;
 export declare const internalGroqTypeReferenceTo: unique symbol;
-// Source: ./src/app/(frontend)/aktiviteter copy/[slug]/page.tsx
+// Source: ./src/app/(frontend)/aktiviteter/[slug]/page.tsx
 // Variable: aktivitetQuery
 // Query: *[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{  ...,  location->,  organizers[]->,}
 export type AktivitetQueryResult =
@@ -562,7 +579,6 @@ export type AktivitetQueryResult =
         _type: "block";
         _key: string;
       }>;
-      sport?: "circle" | "climbing";
       organizers: Array<{
         _id: string;
         _type: "person";
@@ -794,7 +810,6 @@ export type ActivitiesQueryResult = {
           _type: "block";
           _key: string;
         }>;
-        sport?: "circle" | "climbing";
         organizers: Array<{
           _id: string;
           _type: "person";
@@ -934,6 +949,24 @@ export type HeaderQueryResult = {
       crop?: SanityImageCrop;
       _type: "image";
     };
+    intro?: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "h2" | "normal";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }>;
   } | null;
   infoPages: Array<{
     _id: string;
@@ -1068,6 +1101,30 @@ export type LocationsQueryResult = Array<{
   slug?: Slug;
 }>;
 
+// Source: ./src/app/(frontend)/page.tsx
+// Variable: frontPageQuery
+// Query: {  "intro": *[_type == "siteSettings"][0].intro}
+export type FrontPageQueryResult = {
+  intro: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "h2" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }> | null;
+};
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -1078,5 +1135,6 @@ declare module "@sanity/client" {
     '{\n  "siteSettings": *[_type == "siteSettings"][0],\n  "infoPages": *[_type == "infoPage"]\n}': HeaderQueryResult;
     '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
     '*[_type == "location"]': LocationsQueryResult;
+    '{\n  "intro": *[_type == "siteSettings"][0].intro\n}': FrontPageQueryResult;
   }
 }

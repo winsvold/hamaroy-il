@@ -1,20 +1,26 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
-import { Button, Heading, Stack, Text } from "@chakra-ui/react";
-import { Activities } from "./components/activities";
+import { RichText } from "@/components/RichText";
+import { sanityFetch } from "@/sanity/lib/client";
+import { Box, Button, Heading, Stack } from "@chakra-ui/react";
+import { defineQuery } from "next-sanity";
 import Link from "next/link";
+import { Activities } from "./components/activities";
 
-export default function Home() {
+const frontPageQuery = defineQuery(`{
+  "intro": *[_type == "siteSettings"][0].intro
+}`);
+
+export default async function Home() {
+  const data = await sanityFetch(frontPageQuery);
+
   return (
     <DefaultContainer marginY="1rem">
       <Stack gap="3rem">
-        <Stack backgroundColor="yellow.100" borderRadius="md" padding="1rem">
-          <Heading>Under utvikling</Heading>
-          <Text fontSize="lg">
-            Vi får nye nettsider, og for øyeblikket ser de ikke all verden ut,
-            men her vil det komme mye nytt iløpet av vinteren. Følg med, og si
-            gjerne fra om du har innspill!
-          </Text>
-        </Stack>
+        {data.intro && (
+          <Box backgroundColor="yellow.100" borderRadius="md" padding="1rem">
+            <RichText blockContent={data.intro} />
+          </Box>
+        )}
         <Stack gap="1rem">
           <Heading as="h2" size="xl">
             Kommende aktiviteter
