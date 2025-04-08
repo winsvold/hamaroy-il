@@ -74,7 +74,7 @@ export const RichText = ({ blockContent, ...chakraProps }: Props) => {
   if (!blockContent) return null;
 
   return (
-    <Box fontSize="lg" css={css} {...chakraProps}>
+    <Box fontSize="lg" css={css} maxWidth="35rem" {...chakraProps}>
       <PortableText value={blockContent} components={components} />
     </Box>
   );

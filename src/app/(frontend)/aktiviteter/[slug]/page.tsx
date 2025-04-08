@@ -109,12 +109,18 @@ const Page = async (props: Props) => {
 };
 
 const Section = (props: { title: string; children: React.ReactNode }) => (
-  <Stack background="gray.100" padding="1rem" borderRadius="md">
-    <Heading as="h3" size="lg">
+  <Box background="gray.100" borderRadius="md">
+    <Heading
+      padding=".5rem"
+      background="gray.200"
+      borderTopRadius="md"
+      as="h3"
+      size="sm"
+    >
       {props.title}
     </Heading>
-    {props.children}
-  </Stack>
+    <Box padding=".5rem">{props.children}</Box>
+  </Box>
 );
 
 export default Page;

@@ -42,12 +42,10 @@ const Page = async (props: Props) => {
           )}
         </Stack>
         <RichText blockContent={data.body} />
-        <Stack>
-          <Heading as="h2" size="2xl">
-            Aktiviteter i {data?.name}:
-          </Heading>
-          <Activities locationId={data?._id} />
-        </Stack>
+        <Activities
+          heading={`Aktiviteter i ${data?.name}:`}
+          locationId={data?._id}
+        />
       </Stack>
     </DefaultContainer>
   );

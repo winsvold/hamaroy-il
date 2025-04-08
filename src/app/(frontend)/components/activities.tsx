@@ -1,13 +1,13 @@
 import { sanityFetch } from "@/sanity/lib/client";
 import { formatNorwegianDate } from "@/utils/date";
 import { getSessionEndsAt } from "@/utils/session";
-import { Box, Flex, FlexProps, Grid, Stack } from "@chakra-ui/react";
+import { Box, Flex, FlexProps, Grid, Heading, Stack } from "@chakra-ui/react";
 import { isAfter, startOfDay } from "date-fns";
 import { defineQuery } from "next-sanity";
 import { group, sift } from "radash";
-import { ActivityCard } from "./ActivityCard";
 import { KeyedSegment } from "sanity";
 import { ActivitiesQueryResult, Session } from "../../../../sanity.types";
+import { ActivityCard } from "./ActivityCard";
 
 const activitiesQuery = defineQuery(`{
   "eventsAndSessionSeries": *[_type in ["sessionSeries", "event"] && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{
@@ -21,6 +21,7 @@ type Props = {
   limit?: number;
   seriesId?: string;
   locationId?: string;
+  heading?: string;
 };
 
 export type SessionOccurrence = Session &
@@ -73,52 +74,59 @@ export const Activities = async (props: Props) => {
       "Ukjent dato",
   );
 
+  const entries = Object.entries(groupedByDate);
+
+  if (entries.length === 0) return null;
+
   return (
-    <Stack gap="1rem">
-      {Object.entries(groupedByDate).map(([date, activities]) => (
-        <Grid
-          key={date}
-          gap={{ base: ".5rem", sm: "1rem" }}
-          gridTemplateColumns={{ base: "3rem 1fr", sm: "4rem 1fr" }}
-        >
-          <Box position="relative">
-            <Box
-              position="absolute"
-              height="calc(100% + 1rem)"
-              top="0"
-              left="50%"
-              transform="translateX(-50%)"
-              border=".1rem solid"
-              borderColor="gray.200"
-            />
-            <DatoBadge position="sticky" top=".75rem" date={date} />
-          </Box>
-          <Stack gap=".5rem" alignItems="flex-start">
-            {activities?.map((session) =>
-              session._type === "event" ? (
-                <ActivityCard
-                  key={session._id}
-                  startsAt={session.startsAt}
-                  endsAt={session.endsAt}
-                  title={session.title}
-                  location={session.location}
-                  slug={session._id}
-                  image={session.images?.[0]}
-                />
-              ) : (
-                <ActivityCard
-                  key={session._key}
-                  startsAt={session.startsAt}
-                  endsAt={getSessionEndsAt(session).toISOString()}
-                  title={session.series.title}
-                  location={session.series.location}
-                  slug={session.series.slug?.current}
-                />
-              ),
-            )}
-          </Stack>
-        </Grid>
-      ))}
+    <Stack>
+      {props.heading && <Heading as="h2">{props.heading}</Heading>}
+      <Stack gap="1rem">
+        {entries.map(([date, activities]) => (
+          <Grid
+            key={date}
+            gap={{ base: ".5rem", sm: "1rem" }}
+            gridTemplateColumns={{ base: "3rem 1fr", sm: "4rem 1fr" }}
+          >
+            <Box position="relative">
+              <Box
+                position="absolute"
+                height="calc(100% + 1rem)"
+                top="0"
+                left="50%"
+                transform="translateX(-50%)"
+                border=".1rem solid"
+                borderColor="gray.200"
+              />
+              <DatoBadge position="sticky" top=".75rem" date={date} />
+            </Box>
+            <Stack gap=".5rem" alignItems="flex-start">
+              {activities?.map((session) =>
+                session._type === "event" ? (
+                  <ActivityCard
+                    key={session._id}
+                    startsAt={session.startsAt}
+                    endsAt={session.endsAt}
+                    title={session.title}
+                    location={session.location}
+                    slug={session._id}
+                    image={session.images?.[0]}
+                  />
+                ) : (
+                  <ActivityCard
+                    key={session._key}
+                    startsAt={session.startsAt}
+                    endsAt={getSessionEndsAt(session).toISOString()}
+                    title={session.series.title}
+                    location={session.series.location}
+                    slug={session.series.slug?.current}
+                  />
+                ),
+              )}
+            </Stack>
+          </Grid>
+        ))}
+      </Stack>
     </Stack>
   );
 };

@@ -18,18 +18,24 @@ export const Avatar = (person: Person) => {
         </Box>
       )}
 
-      <Stack gap="0">
+      <Stack gap=".25rem">
         <Heading as="h2" size="md">
           {person.name}
         </Heading>
-        <Text fontSize="sm" display="flex" alignItems="center" gap=".5em">
-          <Phone size="1em" />
-          <Link href={`tel:${person.phone}`}>{person.phone}</Link>
-        </Text>
-        <Text fontSize="sm" display="flex" alignItems="center" gap=".5em">
-          <Mail size="1em" />
-          <Link href={`mailto:${person.email}`}>{person.email}</Link>
-        </Text>
+        <Box>
+          {person.phone && (
+            <Text fontSize="sm" display="flex" alignItems="center" gap=".75em">
+              <Phone size="1em" strokeWidth={2.2} />
+              <Link href={`tel:${person.phone}`}>{person.phone}</Link>
+            </Text>
+          )}
+          {person.email && (
+            <Text fontSize="sm" display="flex" alignItems="center" gap=".75em">
+              <Mail size="1em" strokeWidth={2.2} />
+              <Link href={`mailto:${person.email}`}>{person.email}</Link>
+            </Text>
+          )}
+        </Box>
       </Stack>
     </Flex>
   );

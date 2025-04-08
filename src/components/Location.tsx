@@ -21,7 +21,9 @@ export const LocationCard = (location: Location) => {
       <Stack gap="0">
         <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
           <Link href={`/lokaler/${location.slug?.current}`}>
-            <Heading as="h2">{location.name}</Heading>
+            <Heading as="h2" size="md">
+              {location.name}
+            </Heading>
           </Link>
         </LinkOverlay>
       </Stack>
