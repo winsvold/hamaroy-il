@@ -10,7 +10,7 @@ export const getBlockContentType = (options: Options) =>
     title: "Fritekst",
     name: "body",
     type: "array",
-    of: [
+    of: sift([
       defineArrayMember({
         type: "block",
         styles: sift([
@@ -43,6 +43,12 @@ export const getBlockContentType = (options: Options) =>
           ],
         },
       }),
+      // options.persons &&
+      //   defineArrayMember({
+      //     type: "reference",
+      //     title: "Person",
+      //     to: [{ type: "person" }],
+      //   }),
       // defineArrayMember({
       //   type: "image",
       //   icon: ImageIcon,
@@ -55,5 +61,5 @@ export const getBlockContentType = (options: Options) =>
       //     },
       //   ],
       // }),
-    ],
+    ]),
   });
