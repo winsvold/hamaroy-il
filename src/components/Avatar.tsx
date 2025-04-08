@@ -1,42 +1,66 @@
 import { urlFor } from "@/sanity/lib/image";
-import { Box, Flex, Heading, Link, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  BoxProps,
+  Heading,
+  Link,
+  LinkBox,
+  LinkOverlay,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import Image from "next/image";
 import { Mail, Phone } from "react-feather";
-import { Person } from "../../sanity.types";
+import { Club, Person } from "../../sanity.types";
 
-export const Avatar = (person: Person) => {
+export const Avatar = ({
+  entity,
+  ...chakraProps
+}: { entity: Person | Club } & BoxProps) => {
+  const image = entity._type === "person" ? entity.image : entity.images?.[0];
+  const phone = entity._type === "person" ? entity.phone : undefined;
+  const email = entity._type === "person" ? entity.email : undefined;
+  const name = entity._type === "person" ? entity.name : entity.name;
+  const url =
+    entity._type === "club" ? `/klubber/${entity.slug?.current}` : undefined;
+
   return (
-    <Flex gap="1rem">
-      {person.image && (
+    <LinkBox display="flex" gap="1rem" {...chakraProps}>
+      {image && (
         <Box asChild borderRadius="50%" height="4rem" width="4rem">
           <Image
             height={200}
             width={200}
-            src={urlFor(person.image).size(200, 200).url()}
-            alt={person.name ?? ""}
+            src={urlFor(image).size(200, 200).url()}
+            alt={entity.name ?? ""}
           />
         </Box>
       )}
-
       <Stack gap=".25rem">
         <Heading as="h2" size="md">
-          {person.name}
+          {url ? (
+            <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
+              <Link href={url}>{name}</Link>
+            </LinkOverlay>
+          ) : (
+            name
+          )}
         </Heading>
         <Box>
-          {person.phone && (
+          {phone && (
             <Text fontSize="sm" display="flex" alignItems="center" gap=".75em">
               <Phone size="1em" strokeWidth={2.2} />
-              <Link href={`tel:${person.phone}`}>{person.phone}</Link>
+              <Link href={`tel:${phone}`}>{phone}</Link>
             </Text>
           )}
-          {person.email && (
+          {email && (
             <Text fontSize="sm" display="flex" alignItems="center" gap=".75em">
               <Mail size="1em" strokeWidth={2.2} />
-              <Link href={`mailto:${person.email}`}>{person.email}</Link>
+              <Link href={`mailto:${email}`}>{email}</Link>
             </Text>
           )}
         </Box>
       </Stack>
-    </Flex>
+    </LinkBox>
   );
 };

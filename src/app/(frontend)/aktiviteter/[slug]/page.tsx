@@ -64,9 +64,9 @@ const Page = async (props: Props) => {
               )}
               {data.organizers?.length && (
                 <Section title="Kontakt">
-                  <Stack>
+                  <Stack gap="1rem">
                     {data.organizers?.map((organizer) => (
-                      <Avatar key={organizer._id} {...organizer} />
+                      <Avatar key={organizer._id} entity={organizer} />
                     ))}
                   </Stack>
                 </Section>

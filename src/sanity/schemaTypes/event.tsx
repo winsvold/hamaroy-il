@@ -42,7 +42,7 @@ export const event = defineType({
       name: "organizers",
       title: "Arrangør(er)",
       type: "array",
-      of: [{ type: "reference", to: [{ type: "person" }] }],
+      of: [{ type: "reference", to: [{ type: "person" }, { type: "club" }] }],
     }),
     defineField({
       type: "paymentInfo",

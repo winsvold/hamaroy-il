@@ -2,16 +2,17 @@ import { Stack, Text } from "@chakra-ui/react";
 import { defineField, defineType } from "sanity";
 import { getBlockContentType } from "./blockContentType";
 
-export const location = defineType({
-  name: "location",
-  title: "Lokasjon",
+export const club = defineType({
+  name: "club",
+  title: "Klubb",
   type: "document",
-  icon: () => "📍",
+  icon: () => "🏢",
   fields: [
     {
       name: "name",
       title: "Navn",
       type: "string",
+      validation: (Rule) => Rule.required(),
     },
     {
       name: "images",
@@ -26,35 +27,41 @@ export const location = defineType({
         },
       ],
     },
-    {
-      name: "parent",
-      title: "Ligger inni en annen lokasjon",
-      type: "reference",
-      to: [{ type: "location" }],
-    },
-    {
-      name: "address",
-      title: "Address",
-      type: "string",
-      hidden: ({ parent }) => !!parent?.parent,
-    },
-    {
-      name: "zip",
-      title: "Postkode",
-      type: "string",
-      hidden: ({ parent }) => !!parent?.parent,
-    },
-    {
-      name: "city",
-      title: "City",
-      type: "string",
-      hidden: ({ parent }) => !!parent?.parent,
-    },
+    defineField({
+      name: "managers",
+      title: "Ledere",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            defineField({
+              name: "person",
+              title: "Person",
+              type: "reference",
+              to: [{ type: "person" }],
+            }),
+            defineField({
+              name: "role",
+              title: "Rolle",
+              type: "string",
+            }),
+          ],
+          preview: {
+            select: {
+              title: "person.name",
+              subtitle: "role",
+              media: "person.image",
+            },
+          },
+        },
+      ],
+    }),
     getBlockContentType({ headings: ["h2"] }),
     defineField({
       name: "slug",
       title: "Url-segment",
-      description: "Feks «klatrehall» eller «skateparken»",
+      description: "Feks «klatreklubben» eller «fotballklubben»",
       type: "slug",
       options: {
         source: "name",
@@ -78,7 +85,7 @@ export const location = defineType({
             <Text
               fontSize="xs"
               color="gray.600"
-            >{`URL: https://hamaroyil.no/lokaler/${props.value?.current ?? "din-verdi-her"}`}</Text>
+            >{`URL: https://hamaroyil.no/klubb/${props.value?.current ?? "din-verdi-her"}`}</Text>
           </Stack>
         ),
       },

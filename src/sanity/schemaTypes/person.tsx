@@ -10,6 +10,7 @@ export const person = defineType({
       name: "name",
       title: "Name",
       type: "string",
+      validation: (Rule) => Rule.required(),
     },
     {
       name: "email",

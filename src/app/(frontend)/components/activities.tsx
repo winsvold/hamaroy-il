@@ -10,7 +10,13 @@ import { ActivitiesQueryResult, Session } from "../../../../sanity.types";
 import { ActivityCard } from "./ActivityCard";
 
 const activitiesQuery = defineQuery(`{
-  "eventsAndSessionSeries": *[_type in ["sessionSeries", "event"] && (!defined($seriesId) || _id == $seriesId) && (!defined($locationId) || location._ref == $locationId)]{
+  "eventsAndSessionSeries": *[
+    _type in ["sessionSeries", "event"] && 
+    (!defined($seriesId) || _id == $seriesId) && 
+    (!defined($locationId) || location._ref == $locationId) &&
+    (!defined($clubId) || references($clubId))
+  ]
+  {
     ...,
     location->,
     organizers[]->,
@@ -22,6 +28,7 @@ type Props = {
   seriesId?: string;
   locationId?: string;
   heading?: string;
+  clubId?: string;
 };
 
 export type SessionOccurrence = Session &
@@ -36,6 +43,7 @@ export const Activities = async (props: Props) => {
   const { eventsAndSessionSeries } = await sanityFetch(activitiesQuery, {
     seriesId: props.seriesId ?? null,
     locationId: props.locationId ?? null,
+    clubId: props.clubId ?? null,
   });
 
   const sessionSeries = eventsAndSessionSeries.filter(

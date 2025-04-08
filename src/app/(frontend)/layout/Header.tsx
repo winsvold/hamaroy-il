@@ -46,9 +46,8 @@ export const Header = async () => {
             flexWrap="wrap"
           >
             <HeaderLink href="/aktiviteter">Hva skjer</HeaderLink>
-            {/* <Box>Klubber</Box> */}
+            <HeaderLink href="/klubber">Klubber</HeaderLink>
             <HeaderLink href="/lokaler">Lokaler</HeaderLink>
-            {/* <Box>Info</Box> */}
             {data.infoPages.map((page) => (
               <HeaderLink key={page._id} href={`/info/${page.slug?.current}`}>
                 {page.title}
