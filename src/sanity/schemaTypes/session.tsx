@@ -135,8 +135,11 @@ export const sessionSeries = defineType({
         Rule.required(),
         Rule.custom((slug) => {
           if (!slug?.current) return true;
-          if (slug.current.match(/\s/))
+          if (slug.current.match(/\s/g))
             return "Url-segment kan ikke inneholde mellomrom";
+          const illegalChars = slug.current.match(/[^\w-]/g);
+          if (illegalChars)
+            return `Kan ikke inneholde spesialtegn: ${illegalChars.map((it) => `"${it}"`).join(", ")}`;
           return true;
         }),
       ],
