@@ -6,6 +6,7 @@ import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
 import { HeaderLink } from "./HeaderLink";
+import { MobileMenu } from "./MobileMenu";
 
 const headerQuery = defineQuery(`{
   "siteSettings": *[_type == "siteSettings"][0],
@@ -19,46 +20,62 @@ export const Header = async () => {
     data?.siteSettings?.logo &&
     urlFor(data?.siteSettings?.logo).size(100, 100).url();
 
+  const links = [
+    { href: "/aktiviteter", label: "Hva skjer" },
+    { href: "/lokaler", label: "Lokaler" },
+    ...data.infoPages.map((page) => ({
+      href: `/info/${page.slug?.current}`,
+      label: page.title,
+    })),
+    ...data.clubs.map((club) => ({
+      href: `/klubber/${club.slug?.current}`,
+      label: club.name,
+    })),
+  ];
+
+  const logo = (
+    <HStack gap="1rem" asChild>
+      <Link href="/">
+        {logoUrl && (
+          <Box borderRadius="50%" overflow="hidden" width="2.5rem" asChild>
+            <Image alt="" src={logoUrl} width={100} height={100} />
+          </Box>
+        )}
+        <Heading as="h1" size="2xl">
+          Hamarøy IL
+        </Heading>
+      </Link>
+    </HStack>
+  );
+
   return (
     <Box as="header" paddingY="1.5rem">
       <DefaultContainer>
         <Stack gap="1rem">
-          <HStack asChild gap="1rem">
-            <Link href="/">
-              {logoUrl && (
-                <Box
-                  borderRadius="50%"
-                  overflow="hidden"
-                  width="2.5rem"
-                  asChild
-                >
-                  <Image alt="" src={logoUrl} width={100} height={100} />
-                </Box>
-              )}
-              <Heading as="h1" size="2xl">
-                Hamarøy IL
-              </Heading>
-            </Link>
-          </HStack>
+          <Flex justify="space-between" align="center">
+            {logo}
+            <Box display={{ base: "block", md: "none" }}>
+              <MobileMenu logo={logo}>
+                <Stack gap=".75rem" fontSize="1.25rem">
+                  {links.map((link) => (
+                    <HeaderLink key={link.href} href={link.href}>
+                      {link.label}
+                    </HeaderLink>
+                  ))}
+                </Stack>
+              </MobileMenu>
+            </Box>
+          </Flex>
           <Flex
             as="ul"
             gap="1rem 2rem"
-            fontSize={{ base: "1rem", sm: "1.35rem" }}
+            fontSize="1.35rem"
             flexWrap="wrap"
+            display={{ base: "none", md: "flex" }}
           >
-            <HeaderLink href="/aktiviteter">Hva skjer</HeaderLink>
-            <HeaderLink href="/lokaler">Lokaler</HeaderLink>
-            {data.infoPages.map((page) => (
-              <HeaderLink key={page._id} href={`/info/${page.slug?.current}`}>
-                {page.title}
-              </HeaderLink>
-            ))}
-            {data.clubs.map((club) => (
-              <HeaderLink
-                key={club._id}
-                href={`/klubber/${club.slug?.current}`}
-              >
-                {club.name}
+            {links.map((link) => (
+              <HeaderLink key={link.href} href={link.href}>
+                {link.label}
               </HeaderLink>
             ))}
           </Flex>
