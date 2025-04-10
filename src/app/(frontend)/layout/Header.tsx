@@ -9,7 +9,8 @@ import { HeaderLink } from "./HeaderLink";
 
 const headerQuery = defineQuery(`{
   "siteSettings": *[_type == "siteSettings"][0],
-  "infoPages": *[_type == "infoPage"]
+  "infoPages": *[_type == "infoPage"],
+  "clubs": *[_type == "club"]
 }`);
 
 export const Header = async () => {
@@ -46,11 +47,18 @@ export const Header = async () => {
             flexWrap="wrap"
           >
             <HeaderLink href="/aktiviteter">Hva skjer</HeaderLink>
-            <HeaderLink href="/klubber">Klubber</HeaderLink>
             <HeaderLink href="/lokaler">Lokaler</HeaderLink>
             {data.infoPages.map((page) => (
               <HeaderLink key={page._id} href={`/info/${page.slug?.current}`}>
                 {page.title}
+              </HeaderLink>
+            ))}
+            {data.clubs.map((club) => (
+              <HeaderLink
+                key={club._id}
+                href={`/klubber/${club.slug?.current}`}
+              >
+                {club.name}
               </HeaderLink>
             ))}
           </Flex>

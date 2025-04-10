@@ -1265,62 +1265,9 @@ export type ClubPageQueryResult = {
   slug?: Slug;
 } | null;
 
-// Source: ./src/app/(frontend)/klubber/page.tsx
-// Variable: clubsQuery
-// Query: *[_type == "club"]
-export type ClubsQueryResult = Array<{
-  _id: string;
-  _type: "club";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  images?: Array<{
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-    _key: string;
-  }>;
-  managers?: Array<{
-    person?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "person";
-    };
-    role?: string;
-    _key: string;
-  }>;
-  body?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "h2" | "normal";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  slug?: Slug;
-}>;
-
 // Source: ./src/app/(frontend)/layout/Header.tsx
 // Variable: headerQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0],  "infoPages": *[_type == "infoPage"]}
+// Query: {  "siteSettings": *[_type == "siteSettings"][0],  "infoPages": *[_type == "infoPage"],  "clubs": *[_type == "club"]}
 export type HeaderQueryResult = {
   siteSettings: {
     _id: string;
@@ -1365,6 +1312,55 @@ export type HeaderQueryResult = {
     _updatedAt: string;
     _rev: string;
     title?: string;
+    body?: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "h2" | "normal";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }>;
+    slug?: Slug;
+  }>;
+  clubs: Array<{
+    _id: string;
+    _type: "club";
+    _createdAt: string;
+    _updatedAt: string;
+    _rev: string;
+    name?: string;
+    images?: Array<{
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+      _key: string;
+    }>;
+    managers?: Array<{
+      person?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "person";
+      };
+      role?: string;
+      _key: string;
+    }>;
     body?: Array<{
       children?: Array<{
         marks?: Array<string>;
@@ -1523,8 +1519,7 @@ declare module "@sanity/client" {
     '{\n  "eventsAndSessionSeries": *[\n    _type in ["sessionSeries", "event"] && \n    (!defined($seriesId) || _id == $seriesId) && \n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ]\n  {\n    ...,\n    location->,\n    organizers[]->,\n  },\n}': ActivitiesQueryResult;
     '*[_type == "infoPage" && slug.current == $slug][0]': InfoPageQueryResult;
     '\n  *[_type == "club" && slug.current == $slug][0] {\n    ...,\n    managers[] {\n      ...,\n      person->\n    }\n  }\n': ClubPageQueryResult;
-    '*[_type == "club"]': ClubsQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0],\n  "infoPages": *[_type == "infoPage"]\n}': HeaderQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0],\n  "infoPages": *[_type == "infoPage"],\n  "clubs": *[_type == "club"]\n}': HeaderQueryResult;
     '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
     '*[_type == "location"]': LocationsQueryResult;
     '{\n  "intro": *[_type == "siteSettings"][0].intro\n}': FrontPageQueryResult;
