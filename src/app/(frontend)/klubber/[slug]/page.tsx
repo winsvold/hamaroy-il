@@ -45,7 +45,7 @@ const Page = async (props: Props) => {
             />
           </Box>
         )}
-        <Flex gap="1rem">
+        <Flex gap="1rem" flexWrap="wrap">
           <Stack gap="1rem">
             <Stack gap="1rem">
               {data.managers?.map((manager) => (
