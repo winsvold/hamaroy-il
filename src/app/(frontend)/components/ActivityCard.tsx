@@ -9,7 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { MapPin } from "react-feather";
+import { MapPin, AlertCircle } from "react-feather";
 import { Event, Location } from "../../../../sanity.types";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
@@ -21,6 +21,8 @@ type Props = {
   location: Location | null;
   slug?: string;
   image?: NonNullable<Event["images"]>[0];
+  cancelled?: boolean;
+  note?: string;
 };
 
 export const ActivityCard = (props: Props) => {
@@ -31,15 +33,15 @@ export const ActivityCard = (props: Props) => {
     <LinkBox
       display="flex"
       borderRadius="md"
-      backgroundColor="green.100"
+      backgroundColor={props.cancelled ? "red.100" : "green.100"}
       gap=".5rem"
-      _hover={{ backgroundColor: "green.200" }}
+      _hover={{ backgroundColor: props.cancelled ? "red.200" : "green.200" }}
       transition=".3s"
       overflow="hidden"
     >
       <Stack
         justifyContent="center"
-        background="green.200"
+        background={props.cancelled ? "red.200" : "green.200"}
         gap="0"
         padding={{ base: ".5rem", sm: ".75rem 1rem" }}
         fontWeight={600}
@@ -66,19 +68,34 @@ export const ActivityCard = (props: Props) => {
           gap=".25rem"
           padding={{ base: ".5rem", sm: ".75rem 1rem .75rem .5rem" }}
         >
+          {props.cancelled && (
+            <Flex
+              fontSize="sm"
+              fontWeight={600}
+              color="red.600"
+              align="center"
+              gap=".25em"
+            >
+              <AlertCircle size="1em" />
+              <Text>Avlyst</Text>
+            </Flex>
+          )}
           <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
             <Link href={`/aktiviteter/${slug}`}>
-              <Flex alignItems="center" gap=".5rem">
-                <Heading as="h3" size={{ base: "sm", sm: "md" }}>
-                  {title}
-                </Heading>
-              </Flex>
+              <Heading as="h3" size={{ base: "sm", sm: "md" }}>
+                {title}
+              </Heading>
             </Link>
           </LinkOverlay>
           {location && (
             <Text display="flex" alignItems="center" gap=".25em" fontSize="sm">
               <MapPin size="1em" />
               {location?.name}
+            </Text>
+          )}
+          {props.note && (
+            <Text fontSize="sm" maxWidth="30rem">
+              {props.note}
             </Text>
           )}
         </Stack>

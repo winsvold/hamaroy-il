@@ -10,13 +10,18 @@ import { getBlockContentType } from "./blockContentType";
 const SessionsInput = (props: ArrayOfObjectsInputProps) => {
   // Make sure sessions are sorted by date
   useEffect(() => {
-    const sessions = props.value as unknown as Session[];
-    const sortedByDate = alphabetical(
-      sessions,
-      (session) => session.startsAt ?? "N/A",
-    );
-    if (isEqual(sortedByDate, sessions)) return;
-    props.onChange(set(sortedByDate));
+    // Timeout for debouncing the sorting operation
+    const timeout = setTimeout(() => {
+      const sessions = props.value as unknown as Session[];
+      const sortedByDate = alphabetical(
+        sessions,
+        (session) => session.startsAt ?? "N/A",
+      );
+      if (isEqual(sortedByDate, sessions)) return;
+      props.onChange(set(sortedByDate));
+    }, 1000);
+
+    return () => clearTimeout(timeout);
   }, [props]);
 
   return (
@@ -208,20 +213,39 @@ export const session = defineType({
         }),
       ],
     }),
+    defineField({
+      name: "cancelled",
+      title: "Avlyst",
+      description:
+        "Huk av hvis denne sesjonen er avlyst. Det vil da vises en advarsel i aktivitetslisten.",
+      type: "boolean",
+    }),
+    defineField({
+      name: "note",
+      title: "Kort notat",
+      description:
+        "Valgfritt notat som vises i aktivitetslisten, maks 160 tegn.",
+      type: "text",
+      rows: 2,
+      validation: (Rule) => Rule.max(160),
+    }),
   ],
   preview: {
     select: {
       startsAt: "startsAt",
       duration: "duration",
+      cancelled: "cancelled",
     },
-    prepare({ startsAt, duration }) {
+    prepare({ startsAt, duration, cancelled }) {
       const endTime = add(new Date(startsAt), {
         hours: duration.hours,
         minutes: duration.minutes,
       });
       return {
         title: formatNorwegianDate(startsAt, "PPP"),
-        subtitle: `${formatNorwegianDate(startsAt, "E p")} - ${formatNorwegianDate(endTime, "p")}`,
+        subtitle: cancelled
+          ? "Avlyst"
+          : `${formatNorwegianDate(startsAt, "E p")} - ${formatNorwegianDate(endTime, "p")}`,
         media: () => "🏋️‍♀️",
       };
     },

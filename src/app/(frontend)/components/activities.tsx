@@ -143,6 +143,8 @@ export const Activities = async (props: Props) => {
                     title={session.series.title}
                     location={session.series.location}
                     slug={session.series.slug?.current}
+                    cancelled={session.cancelled}
+                    note={session.note}
                   />
                 ),
               )}

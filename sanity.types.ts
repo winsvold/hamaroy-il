@@ -241,6 +241,8 @@ export type Session = {
     hours?: number;
     minutes?: number;
   };
+  cancelled?: boolean;
+  note?: string;
 };
 
 export type Event = {
