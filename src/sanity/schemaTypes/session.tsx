@@ -224,7 +224,7 @@ export const session = defineType({
       name: "note",
       title: "Kort notat",
       description:
-        "Valgfritt notat som vises i aktivitetslisten, maks 160 tegn.",
+        "Valgfritt notat til denne enkeltsesjonen som vises i aktivitetslisten. Maks 160 tegn.",
       type: "text",
       rows: 2,
       validation: (Rule) => Rule.max(160),
