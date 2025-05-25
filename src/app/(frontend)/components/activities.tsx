@@ -1,7 +1,15 @@
 import { sanityFetch } from "@/sanity/lib/client";
 import { formatNorwegianDate } from "@/utils/date";
 import { getSessionEndsAt } from "@/utils/session";
-import { Box, Flex, FlexProps, Grid, Heading, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  FlexProps,
+  Grid,
+  Heading,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { isAfter, startOfDay } from "date-fns";
 import { defineQuery } from "next-sanity";
 import { group, sift } from "radash";
@@ -29,6 +37,7 @@ type Props = {
   locationId?: string;
   heading?: string;
   clubId?: string;
+  childrenAfter?: React.ReactNode;
 };
 
 export type SessionOccurrence = Session &
@@ -84,7 +93,13 @@ export const Activities = async (props: Props) => {
 
   const entries = Object.entries(groupedByDate);
 
-  if (entries.length === 0) return null;
+  if (entries.length === 0)
+    return (
+      <Stack>
+        <Heading as="h2">{props.heading}</Heading>
+        <Text>Vi har for øyeblikket ingen planlagte aktiviteter</Text>
+      </Stack>
+    );
 
   return (
     <Stack>
@@ -135,6 +150,7 @@ export const Activities = async (props: Props) => {
           </Grid>
         ))}
       </Stack>
+      {props.childrenAfter}
     </Stack>
   );
 };
