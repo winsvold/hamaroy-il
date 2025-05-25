@@ -1,18 +1,19 @@
+import { urlFor } from "@/sanity/lib/image";
 import { formatNorwegianDate, formatNorwegianDuration } from "@/utils/date";
 import {
   Box,
-  Flex,
   Heading,
+  Icon,
   LinkBox,
   LinkOverlay,
   Stack,
   Text,
+  TextProps,
 } from "@chakra-ui/react";
-import Link from "next/link";
-import { MapPin, AlertCircle } from "react-feather";
-import { Event, Location } from "../../../../sanity.types";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import Link from "next/link";
+import { AlertCircle, MapPin } from "react-feather";
+import { Event, Location } from "../../../../sanity.types";
 
 type Props = {
   startsAt?: string;
@@ -69,16 +70,14 @@ export const ActivityCard = (props: Props) => {
           padding={{ base: ".5rem", sm: ".75rem 1rem .75rem .5rem" }}
         >
           {props.cancelled && (
-            <Flex
+            <TextWithIcon
               fontSize="sm"
               fontWeight={600}
               color="red.600"
-              align="center"
-              gap=".25em"
+              icon={<AlertCircle size="1em" />}
             >
-              <AlertCircle size="1em" />
-              <Text>Avlyst</Text>
-            </Flex>
+              Avlyst
+            </TextWithIcon>
           )}
           <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
             <Link href={`/aktiviteter/${slug}`}>
@@ -88,10 +87,9 @@ export const ActivityCard = (props: Props) => {
             </Link>
           </LinkOverlay>
           {location && (
-            <Text display="flex" alignItems="center" gap=".25em" fontSize="sm">
-              <MapPin size="1em" />
+            <TextWithIcon icon={<MapPin size="1em" />}>
               {location?.name}
-            </Text>
+            </TextWithIcon>
           )}
           {props.note && (
             <Text fontSize="sm" maxWidth="30rem">
@@ -103,3 +101,17 @@ export const ActivityCard = (props: Props) => {
     </LinkBox>
   );
 };
+
+const TextWithIcon = ({
+  icon,
+  children,
+  ...chakraProps
+}: {
+  icon: React.ReactNode;
+  children: React.ReactNode;
+} & TextProps) => (
+  <Text display="flex" alignItems="center" gap=".5em" {...chakraProps}>
+    <Icon flexShrink={0}>{icon}</Icon>
+    {children}
+  </Text>
+);
