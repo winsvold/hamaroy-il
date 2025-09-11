@@ -2,7 +2,6 @@ import { DefaultContainer } from "@/components/DefaultContainer";
 import { sanityFetch } from "@/sanity/lib/client";
 import { formatNorwegianDate } from "@/utils/date";
 import {
-  Box,
   Grid,
   Heading,
   Link,
@@ -58,18 +57,16 @@ const RecurringEvents = async () => {
                 key={series._id}
                 padding=".75rem"
               >
-                <Box>
-                  <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
-                    <Link href={`/aktiviteter/${series._id}`}>
-                      <Heading size="md">{series.title}</Heading>
-                    </Link>
-                  </LinkOverlay>
-                  <Text>
-                    {nextOccurrence
-                      ? `Neste: ${formatNorwegianDate(nextOccurrence, "EEEE d MMM p")}`
-                      : "Ikke planlagt"}
-                  </Text>
-                </Box>
+                <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
+                  <Link href={`/aktiviteter/${series._id}`}>
+                    <Heading size="md">{series.title}</Heading>
+                  </Link>
+                </LinkOverlay>
+                <Text>
+                  {nextOccurrence
+                    ? `Neste: ${formatNorwegianDate(nextOccurrence, "EEEE d MMM p")}`
+                    : "Ikke planlagt"}
+                </Text>
               </LinkBox>
             );
           })}
