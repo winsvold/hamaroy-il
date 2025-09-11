@@ -13,61 +13,6 @@
  */
 
 // Source: schema.json
-export type SanityImagePaletteSwatch = {
-  _type: "sanity.imagePaletteSwatch";
-  background?: string;
-  foreground?: string;
-  population?: number;
-  title?: string;
-};
-
-export type SanityImagePalette = {
-  _type: "sanity.imagePalette";
-  darkMuted?: SanityImagePaletteSwatch;
-  lightVibrant?: SanityImagePaletteSwatch;
-  darkVibrant?: SanityImagePaletteSwatch;
-  vibrant?: SanityImagePaletteSwatch;
-  dominant?: SanityImagePaletteSwatch;
-  lightMuted?: SanityImagePaletteSwatch;
-  muted?: SanityImagePaletteSwatch;
-};
-
-export type SanityImageDimensions = {
-  _type: "sanity.imageDimensions";
-  height?: number;
-  width?: number;
-  aspectRatio?: number;
-};
-
-export type SanityFileAsset = {
-  _id: string;
-  _type: "sanity.fileAsset";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  originalFilename?: string;
-  label?: string;
-  title?: string;
-  description?: string;
-  altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
-  uploadId?: string;
-  path?: string;
-  url?: string;
-  source?: SanityAssetSourceData;
-};
-
-export type Geopoint = {
-  _type: "geopoint";
-  lat?: number;
-  lng?: number;
-  alt?: number;
-};
-
 export type Club = {
   _id: string;
   _type: "club";
@@ -82,6 +27,7 @@ export type Club = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -162,6 +108,7 @@ export type Person = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -226,6 +173,7 @@ export type SessionSeries = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -300,6 +248,7 @@ export type Event = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -345,6 +294,7 @@ export type Location = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -380,12 +330,6 @@ export type Location = {
   slug?: Slug;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type SiteSettings = {
   _id: string;
   _type: "siteSettings";
@@ -399,6 +343,7 @@ export type SiteSettings = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -423,12 +368,30 @@ export type SiteSettings = {
   }>;
 };
 
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
+export type SanityImagePaletteSwatch = {
+  _type: "sanity.imagePaletteSwatch";
+  background?: string;
+  foreground?: string;
+  population?: number;
+  title?: string;
+};
+
+export type SanityImagePalette = {
+  _type: "sanity.imagePalette";
+  darkMuted?: SanityImagePaletteSwatch;
+  lightVibrant?: SanityImagePaletteSwatch;
+  darkVibrant?: SanityImagePaletteSwatch;
+  vibrant?: SanityImagePaletteSwatch;
+  dominant?: SanityImagePaletteSwatch;
+  lightMuted?: SanityImagePaletteSwatch;
+  muted?: SanityImagePaletteSwatch;
+};
+
+export type SanityImageDimensions = {
+  _type: "sanity.imageDimensions";
+  height?: number;
+  width?: number;
+  aspectRatio?: number;
 };
 
 export type SanityImageHotspot = {
@@ -437,6 +400,36 @@ export type SanityImageHotspot = {
   y?: number;
   height?: number;
   width?: number;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityFileAsset = {
+  _id: string;
+  _type: "sanity.fileAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  originalFilename?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  altText?: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
+  uploadId?: string;
+  path?: string;
+  url?: string;
+  source?: SanityAssetSourceData;
 };
 
 export type SanityImageAsset = {
@@ -462,13 +455,6 @@ export type SanityImageAsset = {
   source?: SanityAssetSourceData;
 };
 
-export type SanityAssetSourceData = {
-  _type: "sanity.assetSourceData";
-  name?: string;
-  id?: string;
-  url?: string;
-};
-
 export type SanityImageMetadata = {
   _type: "sanity.imageMetadata";
   location?: Geopoint;
@@ -480,12 +466,27 @@ export type SanityImageMetadata = {
   isOpaque?: boolean;
 };
 
+export type Geopoint = {
+  _type: "geopoint";
+  lat?: number;
+  lng?: number;
+  alt?: number;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type SanityAssetSourceData = {
+  _type: "sanity.assetSourceData";
+  name?: string;
+  id?: string;
+  url?: string;
+};
+
 export type AllSanitySchemaTypes =
-  | SanityImagePaletteSwatch
-  | SanityImagePalette
-  | SanityImageDimensions
-  | SanityFileAsset
-  | Geopoint
   | Club
   | InfoPage
   | Person
@@ -494,13 +495,18 @@ export type AllSanitySchemaTypes =
   | Event
   | PaymentInfo
   | Location
-  | Slug
   | SiteSettings
-  | SanityImageCrop
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
   | SanityImageHotspot
+  | SanityImageCrop
+  | SanityFileAsset
   | SanityImageAsset
-  | SanityAssetSourceData
-  | SanityImageMetadata;
+  | SanityImageMetadata
+  | Geopoint
+  | Slug
+  | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/app/(frontend)/aktiviteter/[slug]/page.tsx
 // Variable: aktivitetQuery
@@ -547,6 +553,7 @@ export type AktivitetQueryResult =
             _weak?: boolean;
             [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
           };
+          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           _type: "image";
@@ -596,6 +603,7 @@ export type AktivitetQueryResult =
                 _weak?: boolean;
                 [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
               };
+              media?: unknown;
               hotspot?: SanityImageHotspot;
               crop?: SanityImageCrop;
               _type: "image";
@@ -647,6 +655,7 @@ export type AktivitetQueryResult =
                 _weak?: boolean;
                 [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
               };
+              media?: unknown;
               hotspot?: SanityImageHotspot;
               crop?: SanityImageCrop;
               _type: "image";
@@ -661,6 +670,7 @@ export type AktivitetQueryResult =
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
+        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         _type: "image";
@@ -712,6 +722,7 @@ export type AktivitetQueryResult =
                 _weak?: boolean;
                 [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
               };
+              media?: unknown;
               hotspot?: SanityImageHotspot;
               crop?: SanityImageCrop;
               _type: "image";
@@ -763,6 +774,7 @@ export type AktivitetQueryResult =
                 _weak?: boolean;
                 [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
               };
+              media?: unknown;
               hotspot?: SanityImageHotspot;
               crop?: SanityImageCrop;
               _type: "image";
@@ -783,6 +795,7 @@ export type AktivitetQueryResult =
             _weak?: boolean;
             [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
           };
+          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           _type: "image";
@@ -825,6 +838,7 @@ export type AktivitetQueryResult =
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
+        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         _type: "image";
@@ -880,6 +894,7 @@ export type ActivitiesQueryResult = {
               _weak?: boolean;
               [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
             };
+            media?: unknown;
             hotspot?: SanityImageHotspot;
             crop?: SanityImageCrop;
             _type: "image";
@@ -929,6 +944,7 @@ export type ActivitiesQueryResult = {
                   _weak?: boolean;
                   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
                 };
+                media?: unknown;
                 hotspot?: SanityImageHotspot;
                 crop?: SanityImageCrop;
                 _type: "image";
@@ -980,6 +996,7 @@ export type ActivitiesQueryResult = {
                   _weak?: boolean;
                   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
                 };
+                media?: unknown;
                 hotspot?: SanityImageHotspot;
                 crop?: SanityImageCrop;
                 _type: "image";
@@ -994,6 +1011,7 @@ export type ActivitiesQueryResult = {
             _weak?: boolean;
             [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
           };
+          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           _type: "image";
@@ -1045,6 +1063,7 @@ export type ActivitiesQueryResult = {
                   _weak?: boolean;
                   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
                 };
+                media?: unknown;
                 hotspot?: SanityImageHotspot;
                 crop?: SanityImageCrop;
                 _type: "image";
@@ -1096,6 +1115,7 @@ export type ActivitiesQueryResult = {
                   _weak?: boolean;
                   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
                 };
+                media?: unknown;
                 hotspot?: SanityImageHotspot;
                 crop?: SanityImageCrop;
                 _type: "image";
@@ -1116,6 +1136,7 @@ export type ActivitiesQueryResult = {
               _weak?: boolean;
               [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
             };
+            media?: unknown;
             hotspot?: SanityImageHotspot;
             crop?: SanityImageCrop;
             _type: "image";
@@ -1158,6 +1179,7 @@ export type ActivitiesQueryResult = {
             _weak?: boolean;
             [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
           };
+          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           _type: "image";
@@ -1166,6 +1188,153 @@ export type ActivitiesQueryResult = {
         slug?: Slug;
       }
   >;
+};
+
+// Source: ./src/app/(frontend)/faste-aktiviteter/page.tsx
+// Variable: reoccurringEventsQuery
+// Query: {  "sessionSeries": *[    _type == "sessionSeries"  ]  {    _id,    title,    images,    sessions[] {      ...,      "startsAt": dateTime(startsAt),      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...1],    location->,    organizers[]->,  } | order(title asc),}
+export type ReoccurringEventsQueryResult = {
+  sessionSeries: Array<{
+    _id: string;
+    title: string | null;
+    images: Array<{
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+      _key: string;
+    }> | null;
+    sessions: Array<never> | null;
+    location: {
+      _id: string;
+      _type: "location";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      name?: string;
+      images?: Array<{
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }>;
+      parent?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "location";
+      };
+      address?: string;
+      zip?: string;
+      city?: string;
+      body?: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "h2" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }>;
+      slug?: Slug;
+    } | null;
+    organizers: Array<
+      | {
+          _id: string;
+          _type: "club";
+          _createdAt: string;
+          _updatedAt: string;
+          _rev: string;
+          name?: string;
+          images?: Array<{
+            asset?: {
+              _ref: string;
+              _type: "reference";
+              _weak?: boolean;
+              [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+            };
+            media?: unknown;
+            hotspot?: SanityImageHotspot;
+            crop?: SanityImageCrop;
+            _type: "image";
+            _key: string;
+          }>;
+          managers?: Array<{
+            person?: {
+              _ref: string;
+              _type: "reference";
+              _weak?: boolean;
+              [internalGroqTypeReferenceTo]?: "person";
+            };
+            role?: string;
+            _key: string;
+          }>;
+          body?: Array<{
+            children?: Array<{
+              marks?: Array<string>;
+              text?: string;
+              _type: "span";
+              _key: string;
+            }>;
+            style?: "h2" | "normal";
+            listItem?: "bullet" | "number";
+            markDefs?: Array<{
+              href?: string;
+              _type: "link";
+              _key: string;
+            }>;
+            level?: number;
+            _type: "block";
+            _key: string;
+          }>;
+          slug?: Slug;
+        }
+      | {
+          _id: string;
+          _type: "person";
+          _createdAt: string;
+          _updatedAt: string;
+          _rev: string;
+          name?: string;
+          email?: string;
+          phone?: string;
+          image?: {
+            asset?: {
+              _ref: string;
+              _type: "reference";
+              _weak?: boolean;
+              [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+            };
+            media?: unknown;
+            hotspot?: SanityImageHotspot;
+            crop?: SanityImageCrop;
+            _type: "image";
+          };
+        }
+    > | null;
+  }>;
 };
 
 // Source: ./src/app/(frontend)/info/[slug]/page.tsx
@@ -1216,6 +1385,7 @@ export type ClubPageQueryResult = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -1238,6 +1408,7 @@ export type ClubPageQueryResult = {
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
+        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         _type: "image";
@@ -1284,6 +1455,7 @@ export type HeaderQueryResult = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
+      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -1348,6 +1520,7 @@ export type HeaderQueryResult = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
+      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -1402,6 +1575,7 @@ export type LokasjonQueryResult = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -1454,6 +1628,7 @@ export type LocationsQueryResult = Array<{
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -1519,6 +1694,7 @@ declare module "@sanity/client" {
   interface SanityQueries {
     '*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{\n  ...,\n  location->,\n  organizers[]->,\n}': AktivitetQueryResult;
     '{\n  "eventsAndSessionSeries": *[\n    _type in ["sessionSeries", "event"] && \n    (!defined($seriesId) || _id == $seriesId) && \n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ]\n  {\n    ...,\n    location->,\n    organizers[]->,\n  },\n}': ActivitiesQueryResult;
+    '{\n  "sessionSeries": *[\n    _type == "sessionSeries"\n  ]\n  {\n    _id,\n    title,\n    images,\n    sessions[] {\n      ...,\n      "startsAt": dateTime(startsAt),\n      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...1],\n    location->,\n    organizers[]->,\n  } | order(title asc),\n}': ReoccurringEventsQueryResult;
     '*[_type == "infoPage" && slug.current == $slug][0]': InfoPageQueryResult;
     '\n  *[_type == "club" && slug.current == $slug][0] {\n    ...,\n    managers[] {\n      ...,\n      person->\n    }\n  }\n': ClubPageQueryResult;
     '{\n  "siteSettings": *[_type == "siteSettings"][0],\n  "infoPages": *[_type == "infoPage"],\n  "clubs": *[_type == "club"]\n}': HeaderQueryResult;

@@ -21,7 +21,8 @@ export const Header = async () => {
     urlFor(data?.siteSettings?.logo).size(100, 100).url();
 
   const links = [
-    { href: "/aktiviteter", label: "Hva skjer" },
+    { href: "/kalender", label: "Kalender" },
+    { href: "/faste-aktiviteter", label: "Faste aktiviteter" },
     { href: "/lokaler", label: "Lokaler" },
     ...data.infoPages.map((page) => ({
       href: `/info/${page.slug?.current}`,
