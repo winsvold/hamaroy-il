@@ -26,7 +26,7 @@ export default async function Home() {
           limit={6}
           childrenAfter={
             <Button size="lg" variant="solid" asChild alignSelf="flex-start">
-              <Link href="/aktiviteter">Se alle</Link>
+              <Link href="/kalender">Se alle</Link>
             </Button>
           }
         />
