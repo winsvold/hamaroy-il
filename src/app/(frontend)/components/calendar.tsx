@@ -159,7 +159,10 @@ export const Calendar = async (props: Props) => {
   );
 };
 
-const DatoBadge = ({ date, ...chakraProps }: { date: string } & FlexProps) => (
+export const DatoBadge = ({
+  date,
+  ...chakraProps
+}: { date: string } & FlexProps) => (
   <Flex
     flexDirection="column"
     as="p"

@@ -848,7 +848,7 @@ export type AktivitetQueryResult =
     }
   | null;
 
-// Source: ./src/app/(frontend)/components/activities.tsx
+// Source: ./src/app/(frontend)/components/calendar.tsx
 // Variable: activitiesQuery
 // Query: {  "eventsAndSessionSeries": *[    _type in ["sessionSeries", "event"] &&     (!defined($seriesId) || _id == $seriesId) &&     (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ]  {    ...,    location->,    organizers[]->,  },}
 export type ActivitiesQueryResult = {
@@ -1666,7 +1666,7 @@ export type LocationsQueryResult = Array<{
 
 // Source: ./src/app/(frontend)/page.tsx
 // Variable: frontPageQuery
-// Query: {  "intro": *[_type == "siteSettings"][0].intro}
+// Query: {  "intro": *[_type == "siteSettings"][0].intro,  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {    ...,    location->,  }}
 export type FrontPageQueryResult = {
   intro: Array<{
     children?: Array<{
@@ -1686,6 +1686,111 @@ export type FrontPageQueryResult = {
     _type: "block";
     _key: string;
   }> | null;
+  events: Array<{
+    _id: string;
+    _type: "event";
+    _createdAt: string;
+    _updatedAt: string;
+    _rev: string;
+    title?: string;
+    body?: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "h2" | "normal";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }>;
+    startsAt?: string;
+    endsAt?: string;
+    location: {
+      _id: string;
+      _type: "location";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      name?: string;
+      images?: Array<{
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }>;
+      parent?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "location";
+      };
+      address?: string;
+      zip?: string;
+      city?: string;
+      body?: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "h2" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }>;
+      slug?: Slug;
+    } | null;
+    organizers?: Array<
+      | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "club";
+        }
+      | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "person";
+        }
+    >;
+    paymentInfo?: PaymentInfo;
+    images?: Array<{
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+      _key: string;
+    }>;
+  }>;
 };
 
 // Query TypeMap
@@ -1700,6 +1805,6 @@ declare module "@sanity/client" {
     '{\n  "siteSettings": *[_type == "siteSettings"][0],\n  "infoPages": *[_type == "infoPage"],\n  "clubs": *[_type == "club"]\n}': HeaderQueryResult;
     '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
     '*[_type == "location"]': LocationsQueryResult;
-    '{\n  "intro": *[_type == "siteSettings"][0].intro\n}': FrontPageQueryResult;
+    '{\n  "intro": *[_type == "siteSettings"][0].intro,\n  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {\n    ...,\n    location->,\n  }\n}': FrontPageQueryResult;
   }
 }

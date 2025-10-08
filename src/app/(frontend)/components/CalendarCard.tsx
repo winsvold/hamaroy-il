@@ -114,7 +114,7 @@ export const CalendarCard = (props: Props) => {
   );
 };
 
-const TextWithIcon = ({
+export const TextWithIcon = ({
   icon,
   children,
   ...chakraProps
