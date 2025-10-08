@@ -6,7 +6,7 @@ import { Box, Flex, Heading, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Activities } from "../../components/activities";
+import { Calendar } from "../../components/calendar";
 import { urlFor } from "@/sanity/lib/image";
 
 const clubPageQuery = defineQuery(`
@@ -63,7 +63,7 @@ const Page = async (props: Props) => {
           </Stack>
           <RichText blockContent={data.body} />
         </Flex>
-        <Activities heading="Aktiviteter:" clubId={data._id} />
+        <Calendar heading="Aktiviteter:" clubId={data._id} />
       </Stack>
     </DefaultContainer>
   );

@@ -27,7 +27,7 @@ type Props = {
   type: "event" | "session";
 };
 
-export const ActivityCard = (props: Props) => {
+export const CalendarCard = (props: Props) => {
   const { startsAt, endsAt, title, location, slug, image } = props;
   if (!startsAt) return null;
 

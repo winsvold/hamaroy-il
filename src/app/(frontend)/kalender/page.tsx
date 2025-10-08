@@ -1,12 +1,12 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { Stack } from "@chakra-ui/react";
-import { Activities } from "../components/activities";
+import { Calendar } from "../components/calendar";
 
 const Page = async () => {
   return (
     <DefaultContainer>
       <Stack>
-        <Activities />
+        <Calendar />
       </Stack>
     </DefaultContainer>
   );

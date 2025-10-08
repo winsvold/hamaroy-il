@@ -4,7 +4,7 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { Box, Button, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Link from "next/link";
-import { Activities } from "./components/activities";
+import { Calendar } from "./components/calendar";
 
 const frontPageQuery = defineQuery(`{
   "intro": *[_type == "siteSettings"][0].intro
@@ -21,7 +21,7 @@ export default async function Home() {
             <RichText blockContent={data.intro} />
           </Box>
         )}
-        <Activities
+        <Calendar
           heading="Kommende aktiviteter"
           limit={6}
           childrenAfter={

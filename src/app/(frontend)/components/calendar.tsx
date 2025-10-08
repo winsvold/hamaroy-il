@@ -15,7 +15,7 @@ import { defineQuery } from "next-sanity";
 import { group, sift } from "radash";
 import { KeyedSegment } from "sanity";
 import { ActivitiesQueryResult, Session } from "../../../../sanity.types";
-import { ActivityCard } from "./ActivityCard";
+import { CalendarCard } from "./CalendarCard";
 
 const activitiesQuery = defineQuery(`{
   "eventsAndSessionSeries": *[
@@ -48,7 +48,7 @@ export type SessionOccurrence = Session &
     >;
   };
 
-export const Activities = async (props: Props) => {
+export const Calendar = async (props: Props) => {
   const { eventsAndSessionSeries } = await sanityFetch(activitiesQuery, {
     seriesId: props.seriesId ?? null,
     locationId: props.locationId ?? null,
@@ -126,7 +126,7 @@ export const Activities = async (props: Props) => {
             <Stack gap=".5rem" alignItems="flex-start">
               {activities?.map((session) =>
                 session._type === "event" ? (
-                  <ActivityCard
+                  <CalendarCard
                     key={session._id}
                     startsAt={session.startsAt}
                     endsAt={session.endsAt}
@@ -137,7 +137,7 @@ export const Activities = async (props: Props) => {
                     type="event"
                   />
                 ) : (
-                  <ActivityCard
+                  <CalendarCard
                     key={session._key}
                     startsAt={session.startsAt}
                     endsAt={getSessionEndsAt(session).toISOString()}

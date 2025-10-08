@@ -17,7 +17,7 @@ import {
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Activities } from "../../components/activities";
+import { Calendar } from "../../components/calendar";
 import { formatNorwegianDate } from "@/utils/date";
 
 const aktivitetQuery =
@@ -99,9 +99,7 @@ const Page = async (props: Props) => {
             </Stack>
             <RichText blockContent={data.body} />
           </Grid>
-          {data._type === "sessionSeries" && (
-            <Activities seriesId={data?._id} />
-          )}
+          {data._type === "sessionSeries" && <Calendar seriesId={data?._id} />}
         </Stack>
       </Stack>
     </DefaultContainer>

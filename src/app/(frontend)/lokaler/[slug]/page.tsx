@@ -6,7 +6,7 @@ import { Box, Heading, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Activities } from "../../components/activities";
+import { Calendar } from "../../components/calendar";
 
 const lokasjonQuery =
   defineQuery(`*[_type == "location" && slug.current == $slug][0]{
@@ -42,7 +42,7 @@ const Page = async (props: Props) => {
           )}
         </Stack>
         <RichText blockContent={data.body} />
-        <Activities
+        <Calendar
           heading={`Aktiviteter i ${data?.name}:`}
           locationId={data?._id}
         />
