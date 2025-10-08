@@ -24,25 +24,30 @@ type Props = {
   image?: NonNullable<Event["images"]>[0];
   cancelled?: boolean;
   note?: string;
+  type: "event" | "session";
 };
 
 export const ActivityCard = (props: Props) => {
   const { startsAt, endsAt, title, location, slug, image } = props;
   if (!startsAt) return null;
 
+  const palette = props.type === "session" ? "green" : "blue";
+
   return (
     <LinkBox
       display="flex"
       borderRadius="md"
-      backgroundColor={props.cancelled ? "red.100" : "green.100"}
+      backgroundColor={props.cancelled ? "red.100" : `${palette}.100`}
       gap=".5rem"
-      _hover={{ backgroundColor: props.cancelled ? "red.200" : "green.200" }}
+      _hover={{
+        backgroundColor: props.cancelled ? "red.200" : `${palette}.200`,
+      }}
       transition=".3s"
       overflow="hidden"
     >
       <Stack
         justifyContent="center"
-        background={props.cancelled ? "red.200" : "green.200"}
+        background={props.cancelled ? "red.200" : `${palette}.200`}
         gap="0"
         padding={{ base: ".5rem", sm: ".75rem 1rem" }}
         fontWeight={600}
@@ -81,7 +86,14 @@ export const ActivityCard = (props: Props) => {
           )}
           <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
             <Link href={`/aktiviteter/${slug}`}>
-              <Heading as="h3" size={{ base: "sm", sm: "md" }}>
+              <Heading
+                as="h3"
+                size={
+                  props.type === "session"
+                    ? { base: "sm", sm: "md" }
+                    : { base: "md", sm: "lg" }
+                }
+              >
                 {title}
               </Heading>
             </Link>

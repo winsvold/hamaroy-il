@@ -134,6 +134,7 @@ export const Activities = async (props: Props) => {
                     location={session.location}
                     slug={session._id}
                     image={session.images?.[0]}
+                    type="event"
                   />
                 ) : (
                   <ActivityCard
@@ -145,6 +146,7 @@ export const Activities = async (props: Props) => {
                     slug={session.series.slug?.current}
                     cancelled={session.cancelled}
                     note={session.note}
+                    type="session"
                   />
                 ),
               )}
