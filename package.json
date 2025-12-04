@@ -12,7 +12,7 @@
     "generate-types": "sanity schema extract && sanity typegen generate"
   },
   "dependencies": {
-    "@chakra-ui/react": "^3.8.1",
+    "@chakra-ui/react": "^3.30.0",
     "@emotion/react": "^11.14.0",
     "@portabletext/react": "^3.2.1",
     "@sanity/image-url": "^1.2.0",
@@ -34,15 +34,15 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.1",
     "eslint": "^9.35.0",
     "eslint-config-next": "^15.5.3",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
     "prettier": "^3.6.2",
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   },
   "lint-staged": {
     "*.{js,ts,tsx}": "eslint --cache --fix",
