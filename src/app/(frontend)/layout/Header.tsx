@@ -57,7 +57,7 @@ export const Header = async () => {
             {logo}
             <Box display={{ base: "block", md: "none" }}>
               <MobileMenu logo={logo}>
-                <Stack gap=".75rem" fontSize="1.25rem">
+                <Stack gap="1rem" fontSize="1.25rem">
                   {links.map((link) => (
                     <HeaderLink key={link.href} href={link.href}>
                       {link.label}

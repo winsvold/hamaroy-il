@@ -30,50 +30,54 @@ const reoccurringEventsQuery = defineQuery(`{
   } | order(title asc),
 }`);
 
-const RecurringEvents = async () => {
+export const RecurringEvents = async () => {
   const { sessionSeries } = await sanityFetch(reoccurringEventsQuery);
 
   return (
-    <DefaultContainer>
-      <Stack>
-        <Heading as="h1">Faste aktiviteter</Heading>
-        <Grid
-          gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
-          gap=".75rem"
-        >
-          {sessionSeries.map((series) => {
-            const nextOccurrence =
-              // @ts-expect-error for some reason sessions[0] becomes type 'never'
-              series.sessions?.[0]?.startsAt;
-            return (
-              <LinkBox
-                borderRadius="md"
-                backgroundColor="green.100"
-                _hover={{
-                  backgroundColor: "green.200",
-                }}
-                transition=".3s"
-                overflow="hidden"
-                key={series._id}
-                padding=".75rem"
-              >
-                <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
-                  <Link href={`/aktiviteter/${series._id}`}>
-                    <Heading size="md">{series.title}</Heading>
-                  </Link>
-                </LinkOverlay>
-                <Text>
-                  {nextOccurrence
-                    ? `Neste: ${formatNorwegianDate(nextOccurrence, "EEEE d MMM p")}`
-                    : "Ikke planlagt"}
-                </Text>
-              </LinkBox>
-            );
-          })}
-        </Grid>
-      </Stack>
-    </DefaultContainer>
+    <Stack>
+      <Heading as="h1">Faste aktiviteter</Heading>
+      <Grid
+        gridTemplateColumns="repeat(auto-fill, minmax(20rem, 1fr))"
+        gap=".75rem"
+      >
+        {sessionSeries.map((series) => {
+          const nextOccurrence =
+            // @ts-expect-error for some reason sessions[0] becomes type 'never'
+            series.sessions?.[0]?.startsAt;
+          return (
+            <LinkBox
+              borderRadius="md"
+              backgroundColor="green.100"
+              _hover={{
+                backgroundColor: "green.200",
+              }}
+              transition=".3s"
+              overflow="hidden"
+              key={series._id}
+              padding=".75rem"
+            >
+              <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
+                <Link href={`/aktiviteter/${series._id}`}>
+                  <Heading size="md">{series.title}</Heading>
+                </Link>
+              </LinkOverlay>
+              <Text>
+                {nextOccurrence
+                  ? `Neste: ${formatNorwegianDate(nextOccurrence, "EEEE d MMM p")}`
+                  : "Ikke planlagt"}
+              </Text>
+            </LinkBox>
+          );
+        })}
+      </Grid>
+    </Stack>
   );
 };
 
-export default RecurringEvents;
+const Page = () => (
+  <DefaultContainer>
+    <RecurringEvents />
+  </DefaultContainer>
+);
+
+export default Page;

@@ -6,6 +6,7 @@ import { defineQuery } from "next-sanity";
 import Link from "next/link";
 import { Calendar } from "./components/calendar";
 import { EventCard } from "./components/EventCard";
+import { RecurringEvents } from "./faste-aktiviteter/page";
 
 const frontPageQuery = defineQuery(`{
   "intro": *[_type == "siteSettings"][0].intro,
@@ -19,7 +20,7 @@ export default async function Home() {
   const data = await sanityFetch(frontPageQuery);
 
   return (
-    <DefaultContainer marginY="1rem">
+    <DefaultContainer marginY="1rem" paddingX=".75rem">
       <Stack gap="3rem">
         {data.intro && (
           <Box backgroundColor="yellow.100" borderRadius="md" padding="1rem">
@@ -51,6 +52,7 @@ export default async function Home() {
             </Button>
           }
         />
+        <RecurringEvents />
       </Stack>
     </DefaultContainer>
   );

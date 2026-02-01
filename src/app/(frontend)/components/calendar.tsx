@@ -166,7 +166,7 @@ export const DatoBadge = ({
   <Flex
     flexDirection="column"
     as="p"
-    padding=".5rem"
+    padding=".5rem 1rem"
     minWidth={{ sm: "3.5rem" }}
     textAlign="center"
     alignItems="center"

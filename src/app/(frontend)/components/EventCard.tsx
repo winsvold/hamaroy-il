@@ -44,7 +44,7 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
           />
         </Box>
       )}
-      <Flex gap="1rem" justifyContent="space-between">
+      <Flex gap="1rem" justifyContent="space-between" alignItems="flex-start">
         <Stack>
           <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
             <Link href={`/aktiviteter/${props._id}`}>
