@@ -1,10 +1,11 @@
 import { Avatar } from "@/components/Avatar";
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { VippsIkon } from "@/components/ikoner/vipps";
+import { ImageGallery } from "@/components/ImageGallery";
 import { LocationCard } from "@/components/Location";
 import { RichText } from "@/components/RichText";
 import { sanityFetch } from "@/sanity/lib/client";
-import { urlFor } from "@/sanity/lib/image";
+import { formatNorwegianDate } from "@/utils/date";
 import {
   Box,
   Button,
@@ -15,10 +16,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Calendar } from "../../components/calendar";
-import { formatNorwegianDate } from "@/utils/date";
 
 const aktivitetQuery =
   defineQuery(`*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{
@@ -43,22 +42,13 @@ const Page = async (props: Props) => {
         <Heading as="h1" size="4xl">
           {data?.title}
         </Heading>
-        {data?.images?.[0] && (
-          <Box asChild borderRadius="lg" width="100%">
-            <Image
-              alt=""
-              src={urlFor(data.images[0]).width(800).height(400).url()}
-              width={800}
-              height={400}
-            />
-          </Box>
-        )}
+        <ImageGallery images={data.images} aspectRatio={2 / 1} />
         <Stack gap="1rem">
           <Grid gap="1rem" gridTemplateColumns={{ base: "1fr", md: "1fr 1fr" }}>
             <Stack>
               {data._type === "event" && (
-                <Box fontWeight={600} padding="0 .75rem">
-                  {formatNorwegianDate(data.startsAt, "p")} -{" "}
+                <Box fontSize="lg" fontWeight={600} padding="0 .75rem .25rem">
+                  {formatNorwegianDate(data.startsAt, "d. MMM p")} -{" "}
                   {formatNorwegianDate(data.endsAt, "p")}
                 </Box>
               )}
@@ -78,22 +68,24 @@ const Page = async (props: Props) => {
               )}
               {data.paymentInfo && (
                 <Section title="Betaling">
-                  {data.paymentInfo?.body && (
-                    <RichText blockContent={data.paymentInfo.body} />
-                  )}
-                  {data.paymentInfo?.vippsNumber && (
-                    <Text fontWeight={600}>
-                      <Icon asChild height="1.5rem">
-                        <VippsIkon />
-                      </Icon>
-                      {data.paymentInfo.vippsNumber}
-                    </Text>
-                  )}
-                  {data.paymentInfo?.url && (
-                    <Button asChild>
-                      <a href={data.paymentInfo.url}>Betal på nett</a>
-                    </Button>
-                  )}
+                  <Stack gap=".5rem" alignItems="flex-start">
+                    {data.paymentInfo?.body && (
+                      <RichText blockContent={data.paymentInfo.body} />
+                    )}
+                    {data.paymentInfo?.vippsNumber && (
+                      <Text fontWeight={600}>
+                        <Icon asChild height="1.5rem">
+                          <VippsIkon />
+                        </Icon>
+                        {data.paymentInfo.vippsNumber}
+                      </Text>
+                    )}
+                    {data.paymentInfo?.url && (
+                      <Button asChild size="sm">
+                        <a href={data.paymentInfo.url}>Betal på nett</a>
+                      </Button>
+                    )}
+                  </Stack>
                 </Section>
               )}
             </Stack>

@@ -1,7 +1,6 @@
 import { urlFor } from "@/sanity/lib/image";
 import { formatNorwegianDate } from "@/utils/date";
 import {
-  Box,
   Flex,
   Heading,
   Image,
@@ -35,14 +34,13 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
       padding=".75rem"
     >
       {image && (
-        <Box asChild borderRadius="sm">
-          <Image
-            alt=""
-            src={urlFor(image).width(400).height(200).url()}
-            width={400}
-            height={200}
-          />
-        </Box>
+        <Image
+          borderRadius="sm"
+          alt=""
+          src={urlFor(image).width(400).height(200).url()}
+          width={400}
+          height={200}
+        />
       )}
       <Flex gap="1rem" justifyContent="space-between" alignItems="flex-start">
         <Stack>

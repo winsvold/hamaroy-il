@@ -48,13 +48,13 @@ export const Avatar = ({
         </Heading>
         <Box>
           {phone && (
-            <Text fontSize="sm" display="flex" alignItems="center" gap=".75em">
+            <Text display="flex" alignItems="center" gap=".75em">
               <Phone size="1em" strokeWidth={2.2} />
               <Link href={`tel:${phone}`}>{phone}</Link>
             </Text>
           )}
           {email && (
-            <Text fontSize="sm" display="flex" alignItems="center" gap=".75em">
+            <Text display="flex" alignItems="center" gap=".75em">
               <Mail size="1em" strokeWidth={2.2} />
               <Link href={`mailto:${email}`}>{email}</Link>
             </Text>
