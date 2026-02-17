@@ -1,10 +1,9 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
+import { ImageGallery } from "@/components/ImageGallery";
 import { RichText } from "@/components/RichText";
 import { sanityFetch } from "@/sanity/lib/client";
-import { urlFor } from "@/sanity/lib/image";
-import { Box, Heading, Stack } from "@chakra-ui/react";
+import { Heading, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Calendar } from "../../components/calendar";
 
@@ -30,16 +29,7 @@ const Page = async (props: Props) => {
           <Heading as="h1" size="4xl">
             {data?.name}
           </Heading>
-          {data?.images?.[0] && (
-            <Box asChild borderRadius="lg">
-              <Image
-                alt=""
-                src={urlFor(data.images[0]).size(800, 400).url()}
-                width={800}
-                height={400}
-              />
-            </Box>
-          )}
+          <ImageGallery images={data.images} aspectRatio={2 / 1} />
         </Stack>
         <RichText blockContent={data.body} />
         <Calendar
