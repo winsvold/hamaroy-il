@@ -12,7 +12,34 @@
  * ---------------------------------------------------------------------------------
  */
 
+export declare const internalGroqTypeReferenceTo: unique symbol;
+
+type ArrayOf<T> = Array<
+  T & {
+    _key: string;
+  }
+>;
+
 // Source: schema.json
+export type Duration = {
+  hours?: number;
+  minutes?: number;
+};
+
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
+export type PersonReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "person";
+};
+
 export type Club = {
   _id: string;
   _type: "club";
@@ -21,12 +48,7 @@ export type Club = {
   _rev: string;
   name?: string;
   images?: Array<{
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
+    asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
@@ -34,12 +56,7 @@ export type Club = {
     _key: string;
   }>;
   managers?: Array<{
-    person?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "person";
-    };
+    person?: PersonReference;
     role?: string;
     _key: string;
   }>;
@@ -64,6 +81,28 @@ export type Club = {
   slug?: Slug;
 };
 
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
 export type InfoPage = {
   _id: string;
   _type: "infoPage";
@@ -71,6 +110,8 @@ export type InfoPage = {
   _updatedAt: string;
   _rev: string;
   title?: string;
+  menuPlacement?: Array<string>;
+  order?: number;
   body?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -90,170 +131,6 @@ export type InfoPage = {
     _key: string;
   }>;
   slug?: Slug;
-};
-
-export type Person = {
-  _id: string;
-  _type: "person";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  email?: string;
-  phone?: string;
-  image?: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-};
-
-export type SessionSeries = {
-  _id: string;
-  _type: "sessionSeries";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  sessions?: Array<
-    {
-      _key: string;
-    } & Session
-  >;
-  body?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h2";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  organizers?: Array<
-    | {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "person";
-      }
-    | {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "club";
-      }
-  >;
-  location?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "location";
-  };
-  paymentInfo?: PaymentInfo;
-  images?: Array<{
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-    _key: string;
-  }>;
-  slug?: Slug;
-};
-
-export type Session = {
-  _type: "session";
-  startsAt?: string;
-  duration?: {
-    hours?: number;
-    minutes?: number;
-  };
-  cancelled?: boolean;
-  note?: string;
-};
-
-export type Event = {
-  _id: string;
-  _type: "event";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  body?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h2";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  startsAt?: string;
-  endsAt?: string;
-  location?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "location";
-  };
-  organizers?: Array<
-    | {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "person";
-      }
-    | {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "club";
-      }
-  >;
-  paymentInfo?: PaymentInfo;
-  images?: Array<{
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-    _key: string;
-  }>;
 };
 
 export type PaymentInfo = {
@@ -280,6 +157,175 @@ export type PaymentInfo = {
   url?: string;
 };
 
+export type Person = {
+  _id: string;
+  _type: "person";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+};
+
+export type Message = {
+  _id: string;
+  _type: "message";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  label?: string;
+  body?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  publishedAt?: string;
+  expiresAt?: string;
+  showInBanner?: boolean;
+  bannerText?: string;
+};
+
+export type ClubReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "club";
+};
+
+export type LocationReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "location";
+};
+
+export type SessionSeries = {
+  _id: string;
+  _type: "sessionSeries";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  sport?:
+    | "fotball"
+    | "klatring"
+    | "handball"
+    | "turn"
+    | "innebandy"
+    | "allidrett";
+  sessions?: Array<
+    {
+      _key: string;
+    } & Session
+  >;
+  body?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h2";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  organizers?: ArrayOf<PersonReference | ClubReference>;
+  location?: LocationReference;
+  paymentInfo?: PaymentInfo;
+  images?: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+  slug?: Slug;
+};
+
+export type Session = {
+  _type: "session";
+  startsAt?: string;
+  duration?: Duration;
+  cancelled?: boolean;
+  note?: string;
+};
+
+export type Event = {
+  _id: string;
+  _type: "event";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  sport?:
+    | "fotball"
+    | "klatring"
+    | "handball"
+    | "turn"
+    | "innebandy"
+    | "allidrett";
+  body?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h2";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  startsAt?: string;
+  endsAt?: string;
+  location?: LocationReference;
+  organizers?: ArrayOf<PersonReference | ClubReference>;
+  paymentInfo?: PaymentInfo;
+  images?: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+};
+
 export type Location = {
   _id: string;
   _type: "location";
@@ -288,24 +334,14 @@ export type Location = {
   _rev: string;
   name?: string;
   images?: Array<{
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
+    asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
     _key: string;
   }>;
-  parent?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "location";
-  };
+  parent?: LocationReference;
   address?: string;
   zip?: string;
   city?: string;
@@ -337,17 +373,16 @@ export type SiteSettings = {
   _updatedAt: string;
   _rev: string;
   logo?: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
+    asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
   };
+  heroTitle?: string;
+  heroText?: string;
+  footerText?: string;
+  contactEmail?: string;
   intro?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -394,20 +429,16 @@ export type SanityImageDimensions = {
   aspectRatio?: number;
 };
 
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
+export type SanityImageMetadata = {
+  _type: "sanity.imageMetadata";
+  location?: Geopoint;
+  dimensions?: SanityImageDimensions;
+  palette?: SanityImagePalette;
+  lqip?: string;
+  blurHash?: string;
+  thumbHash?: string;
+  hasAlpha?: boolean;
+  isOpaque?: boolean;
 };
 
 export type SanityFileAsset = {
@@ -430,6 +461,13 @@ export type SanityFileAsset = {
   path?: string;
   url?: string;
   source?: SanityAssetSourceData;
+};
+
+export type SanityAssetSourceData = {
+  _type: "sanity.assetSourceData";
+  name?: string;
+  id?: string;
+  url?: string;
 };
 
 export type SanityImageAsset = {
@@ -455,17 +493,6 @@ export type SanityImageAsset = {
   source?: SanityAssetSourceData;
 };
 
-export type SanityImageMetadata = {
-  _type: "sanity.imageMetadata";
-  location?: Geopoint;
-  dimensions?: SanityImageDimensions;
-  palette?: SanityImagePalette;
-  lqip?: string;
-  blurHash?: string;
-  hasAlpha?: boolean;
-  isOpaque?: boolean;
-};
-
 export type Geopoint = {
   _type: "geopoint";
   lat?: number;
@@ -473,42 +500,35 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
-export type SanityAssetSourceData = {
-  _type: "sanity.assetSourceData";
-  name?: string;
-  id?: string;
-  url?: string;
-};
-
 export type AllSanitySchemaTypes =
+  | Duration
+  | SanityImageAssetReference
+  | PersonReference
   | Club
+  | Slug
+  | SanityImageCrop
+  | SanityImageHotspot
   | InfoPage
+  | PaymentInfo
   | Person
+  | Message
+  | ClubReference
+  | LocationReference
   | SessionSeries
   | Session
   | Event
-  | PaymentInfo
   | Location
   | SiteSettings
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
-  | SanityImageHotspot
-  | SanityImageCrop
-  | SanityFileAsset
-  | SanityImageAsset
   | SanityImageMetadata
-  | Geopoint
-  | Slug
-  | SanityAssetSourceData;
-export declare const internalGroqTypeReferenceTo: unique symbol;
-// Source: ./src/app/(frontend)/aktiviteter/[slug]/page.tsx
+  | SanityFileAsset
+  | SanityAssetSourceData
+  | SanityImageAsset
+  | Geopoint;
+
+// Source: src/app/(frontend)/aktiviteter/[slug]/page.tsx
 // Variable: aktivitetQuery
 // Query: *[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{  ...,  location->,  organizers[]->,}
 export type AktivitetQueryResult =
@@ -519,6 +539,13 @@ export type AktivitetQueryResult =
       _updatedAt: string;
       _rev: string;
       title?: string;
+      sport?:
+        | "allidrett"
+        | "fotball"
+        | "handball"
+        | "innebandy"
+        | "klatring"
+        | "turn";
       body?: Array<{
         children?: Array<{
           marks?: Array<string>;
@@ -547,24 +574,14 @@ export type AktivitetQueryResult =
         _rev: string;
         name?: string;
         images?: Array<{
-          asset?: {
-            _ref: string;
-            _type: "reference";
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-          };
+          asset?: SanityImageAssetReference;
           media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           _type: "image";
           _key: string;
         }>;
-        parent?: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "location";
-        };
+        parent?: LocationReference;
         address?: string;
         zip?: string;
         city?: string;
@@ -597,12 +614,7 @@ export type AktivitetQueryResult =
             _rev: string;
             name?: string;
             images?: Array<{
-              asset?: {
-                _ref: string;
-                _type: "reference";
-                _weak?: boolean;
-                [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-              };
+              asset?: SanityImageAssetReference;
               media?: unknown;
               hotspot?: SanityImageHotspot;
               crop?: SanityImageCrop;
@@ -610,12 +622,7 @@ export type AktivitetQueryResult =
               _key: string;
             }>;
             managers?: Array<{
-              person?: {
-                _ref: string;
-                _type: "reference";
-                _weak?: boolean;
-                [internalGroqTypeReferenceTo]?: "person";
-              };
+              person?: PersonReference;
               role?: string;
               _key: string;
             }>;
@@ -649,12 +656,7 @@ export type AktivitetQueryResult =
             email?: string;
             phone?: string;
             image?: {
-              asset?: {
-                _ref: string;
-                _type: "reference";
-                _weak?: boolean;
-                [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-              };
+              asset?: SanityImageAssetReference;
               media?: unknown;
               hotspot?: SanityImageHotspot;
               crop?: SanityImageCrop;
@@ -664,12 +666,7 @@ export type AktivitetQueryResult =
       > | null;
       paymentInfo?: PaymentInfo;
       images?: Array<{
-        asset?: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        };
+        asset?: SanityImageAssetReference;
         media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
@@ -684,6 +681,13 @@ export type AktivitetQueryResult =
       _updatedAt: string;
       _rev: string;
       title?: string;
+      sport?:
+        | "allidrett"
+        | "fotball"
+        | "handball"
+        | "innebandy"
+        | "klatring"
+        | "turn";
       sessions?: Array<
         {
           _key: string;
@@ -716,12 +720,7 @@ export type AktivitetQueryResult =
             _rev: string;
             name?: string;
             images?: Array<{
-              asset?: {
-                _ref: string;
-                _type: "reference";
-                _weak?: boolean;
-                [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-              };
+              asset?: SanityImageAssetReference;
               media?: unknown;
               hotspot?: SanityImageHotspot;
               crop?: SanityImageCrop;
@@ -729,12 +728,7 @@ export type AktivitetQueryResult =
               _key: string;
             }>;
             managers?: Array<{
-              person?: {
-                _ref: string;
-                _type: "reference";
-                _weak?: boolean;
-                [internalGroqTypeReferenceTo]?: "person";
-              };
+              person?: PersonReference;
               role?: string;
               _key: string;
             }>;
@@ -768,12 +762,7 @@ export type AktivitetQueryResult =
             email?: string;
             phone?: string;
             image?: {
-              asset?: {
-                _ref: string;
-                _type: "reference";
-                _weak?: boolean;
-                [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-              };
+              asset?: SanityImageAssetReference;
               media?: unknown;
               hotspot?: SanityImageHotspot;
               crop?: SanityImageCrop;
@@ -789,24 +778,14 @@ export type AktivitetQueryResult =
         _rev: string;
         name?: string;
         images?: Array<{
-          asset?: {
-            _ref: string;
-            _type: "reference";
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-          };
+          asset?: SanityImageAssetReference;
           media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           _type: "image";
           _key: string;
         }>;
-        parent?: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "location";
-        };
+        parent?: LocationReference;
         address?: string;
         zip?: string;
         city?: string;
@@ -832,12 +811,7 @@ export type AktivitetQueryResult =
       } | null;
       paymentInfo?: PaymentInfo;
       images?: Array<{
-        asset?: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        };
+        asset?: SanityImageAssetReference;
         media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
@@ -848,9 +822,32 @@ export type AktivitetQueryResult =
     }
   | null;
 
-// Source: ./src/app/(frontend)/components/calendar.tsx
+// Source: src/app/(frontend)/components/NewsBanner.tsx
+// Variable: bannerQuery
+// Query: *[  _type == "message" &&  showInBanner == true &&  defined(bannerText) &&  (!defined(expiresAt) || expiresAt > now())] | order(publishedAt desc)[0] {  label,  bannerText,}
+export type BannerQueryResult = {
+  label: string | null;
+  bannerText: string | null;
+} | null;
+
+// Source: src/app/(frontend)/components/SportTiles.tsx
+// Variable: sportsInUseQuery
+// Query: *[_type in ["sessionSeries", "event"]]{  title,  sport,}
+export type SportsInUseQueryResult = Array<{
+  title: string | null;
+  sport:
+    | "allidrett"
+    | "fotball"
+    | "handball"
+    | "innebandy"
+    | "klatring"
+    | "turn"
+    | null;
+}>;
+
+// Source: src/app/(frontend)/components/calendar.tsx
 // Variable: activitiesQuery
-// Query: {  "eventsAndSessionSeries": *[    _type in ["sessionSeries", "event"] &&     (!defined($seriesId) || _id == $seriesId) &&     (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ]  {    ...,    location->,    organizers[]->,  },}
+// Query: {  "eventsAndSessionSeries": *[    _type in ["sessionSeries", "event"] &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ]  {    ...,    location->,    organizers[]->,  },}
 export type ActivitiesQueryResult = {
   eventsAndSessionSeries: Array<
     | {
@@ -860,6 +857,13 @@ export type ActivitiesQueryResult = {
         _updatedAt: string;
         _rev: string;
         title?: string;
+        sport?:
+          | "allidrett"
+          | "fotball"
+          | "handball"
+          | "innebandy"
+          | "klatring"
+          | "turn";
         body?: Array<{
           children?: Array<{
             marks?: Array<string>;
@@ -888,24 +892,14 @@ export type ActivitiesQueryResult = {
           _rev: string;
           name?: string;
           images?: Array<{
-            asset?: {
-              _ref: string;
-              _type: "reference";
-              _weak?: boolean;
-              [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-            };
+            asset?: SanityImageAssetReference;
             media?: unknown;
             hotspot?: SanityImageHotspot;
             crop?: SanityImageCrop;
             _type: "image";
             _key: string;
           }>;
-          parent?: {
-            _ref: string;
-            _type: "reference";
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: "location";
-          };
+          parent?: LocationReference;
           address?: string;
           zip?: string;
           city?: string;
@@ -938,12 +932,7 @@ export type ActivitiesQueryResult = {
               _rev: string;
               name?: string;
               images?: Array<{
-                asset?: {
-                  _ref: string;
-                  _type: "reference";
-                  _weak?: boolean;
-                  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-                };
+                asset?: SanityImageAssetReference;
                 media?: unknown;
                 hotspot?: SanityImageHotspot;
                 crop?: SanityImageCrop;
@@ -951,12 +940,7 @@ export type ActivitiesQueryResult = {
                 _key: string;
               }>;
               managers?: Array<{
-                person?: {
-                  _ref: string;
-                  _type: "reference";
-                  _weak?: boolean;
-                  [internalGroqTypeReferenceTo]?: "person";
-                };
+                person?: PersonReference;
                 role?: string;
                 _key: string;
               }>;
@@ -990,12 +974,7 @@ export type ActivitiesQueryResult = {
               email?: string;
               phone?: string;
               image?: {
-                asset?: {
-                  _ref: string;
-                  _type: "reference";
-                  _weak?: boolean;
-                  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-                };
+                asset?: SanityImageAssetReference;
                 media?: unknown;
                 hotspot?: SanityImageHotspot;
                 crop?: SanityImageCrop;
@@ -1005,12 +984,7 @@ export type ActivitiesQueryResult = {
         > | null;
         paymentInfo?: PaymentInfo;
         images?: Array<{
-          asset?: {
-            _ref: string;
-            _type: "reference";
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-          };
+          asset?: SanityImageAssetReference;
           media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
@@ -1025,6 +999,13 @@ export type ActivitiesQueryResult = {
         _updatedAt: string;
         _rev: string;
         title?: string;
+        sport?:
+          | "allidrett"
+          | "fotball"
+          | "handball"
+          | "innebandy"
+          | "klatring"
+          | "turn";
         sessions?: Array<
           {
             _key: string;
@@ -1057,12 +1038,7 @@ export type ActivitiesQueryResult = {
               _rev: string;
               name?: string;
               images?: Array<{
-                asset?: {
-                  _ref: string;
-                  _type: "reference";
-                  _weak?: boolean;
-                  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-                };
+                asset?: SanityImageAssetReference;
                 media?: unknown;
                 hotspot?: SanityImageHotspot;
                 crop?: SanityImageCrop;
@@ -1070,12 +1046,7 @@ export type ActivitiesQueryResult = {
                 _key: string;
               }>;
               managers?: Array<{
-                person?: {
-                  _ref: string;
-                  _type: "reference";
-                  _weak?: boolean;
-                  [internalGroqTypeReferenceTo]?: "person";
-                };
+                person?: PersonReference;
                 role?: string;
                 _key: string;
               }>;
@@ -1109,12 +1080,7 @@ export type ActivitiesQueryResult = {
               email?: string;
               phone?: string;
               image?: {
-                asset?: {
-                  _ref: string;
-                  _type: "reference";
-                  _weak?: boolean;
-                  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-                };
+                asset?: SanityImageAssetReference;
                 media?: unknown;
                 hotspot?: SanityImageHotspot;
                 crop?: SanityImageCrop;
@@ -1130,24 +1096,14 @@ export type ActivitiesQueryResult = {
           _rev: string;
           name?: string;
           images?: Array<{
-            asset?: {
-              _ref: string;
-              _type: "reference";
-              _weak?: boolean;
-              [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-            };
+            asset?: SanityImageAssetReference;
             media?: unknown;
             hotspot?: SanityImageHotspot;
             crop?: SanityImageCrop;
             _type: "image";
             _key: string;
           }>;
-          parent?: {
-            _ref: string;
-            _type: "reference";
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: "location";
-          };
+          parent?: LocationReference;
           address?: string;
           zip?: string;
           city?: string;
@@ -1173,12 +1129,7 @@ export type ActivitiesQueryResult = {
         } | null;
         paymentInfo?: PaymentInfo;
         images?: Array<{
-          asset?: {
-            _ref: string;
-            _type: "reference";
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-          };
+          asset?: SanityImageAssetReference;
           media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
@@ -1190,27 +1141,39 @@ export type ActivitiesQueryResult = {
   >;
 };
 
-// Source: ./src/app/(frontend)/faste-aktiviteter/page.tsx
+// Source: src/app/(frontend)/faste-aktiviteter/page.tsx
 // Variable: reoccurringEventsQuery
-// Query: {  "sessionSeries": *[    _type == "sessionSeries"  ]  {    _id,    title,    images,    sessions[] {      ...,      "startsAt": dateTime(startsAt),      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...1],    location->,    organizers[]->,  } | order(title asc),}
+// Query: {  "sessionSeries": *[    _type == "sessionSeries"  ]  {    _id,    title,    slug,    sport,    images,    sessions[] {      ...,      "startsAt": dateTime(startsAt),      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...1],    location->,    organizers[]->,  } | order(title asc),}
 export type ReoccurringEventsQueryResult = {
   sessionSeries: Array<{
     _id: string;
     title: string | null;
+    slug: Slug | null;
+    sport:
+      | "allidrett"
+      | "fotball"
+      | "handball"
+      | "innebandy"
+      | "klatring"
+      | "turn"
+      | null;
     images: Array<{
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
+      asset?: SanityImageAssetReference;
       media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
       _key: string;
     }> | null;
-    sessions: Array<never> | null;
+    sessions: Array<{
+      _key: string;
+      _type: "session";
+      startsAt: string | null;
+      duration?: Duration;
+      cancelled?: boolean;
+      note?: string;
+      endsAt: string | null;
+    }> | null;
     location: {
       _id: string;
       _type: "location";
@@ -1219,24 +1182,14 @@ export type ReoccurringEventsQueryResult = {
       _rev: string;
       name?: string;
       images?: Array<{
-        asset?: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        };
+        asset?: SanityImageAssetReference;
         media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         _type: "image";
         _key: string;
       }>;
-      parent?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "location";
-      };
+      parent?: LocationReference;
       address?: string;
       zip?: string;
       city?: string;
@@ -1269,12 +1222,7 @@ export type ReoccurringEventsQueryResult = {
           _rev: string;
           name?: string;
           images?: Array<{
-            asset?: {
-              _ref: string;
-              _type: "reference";
-              _weak?: boolean;
-              [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-            };
+            asset?: SanityImageAssetReference;
             media?: unknown;
             hotspot?: SanityImageHotspot;
             crop?: SanityImageCrop;
@@ -1282,12 +1230,7 @@ export type ReoccurringEventsQueryResult = {
             _key: string;
           }>;
           managers?: Array<{
-            person?: {
-              _ref: string;
-              _type: "reference";
-              _weak?: boolean;
-              [internalGroqTypeReferenceTo]?: "person";
-            };
+            person?: PersonReference;
             role?: string;
             _key: string;
           }>;
@@ -1321,12 +1264,7 @@ export type ReoccurringEventsQueryResult = {
           email?: string;
           phone?: string;
           image?: {
-            asset?: {
-              _ref: string;
-              _type: "reference";
-              _weak?: boolean;
-              [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-            };
+            asset?: SanityImageAssetReference;
             media?: unknown;
             hotspot?: SanityImageHotspot;
             crop?: SanityImageCrop;
@@ -1337,7 +1275,7 @@ export type ReoccurringEventsQueryResult = {
   }>;
 };
 
-// Source: ./src/app/(frontend)/info/[slug]/page.tsx
+// Source: src/app/(frontend)/info/[slug]/page.tsx
 // Variable: infoPageQuery
 // Query: *[_type == "infoPage" && slug.current == $slug][0]
 export type InfoPageQueryResult = {
@@ -1347,6 +1285,8 @@ export type InfoPageQueryResult = {
   _updatedAt: string;
   _rev: string;
   title?: string;
+  menuPlacement?: Array<string>;
+  order?: number;
   body?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -1368,7 +1308,7 @@ export type InfoPageQueryResult = {
   slug?: Slug;
 } | null;
 
-// Source: ./src/app/(frontend)/klubber/[slug]/page.tsx
+// Source: src/app/(frontend)/klubber/[slug]/page.tsx
 // Variable: clubPageQuery
 // Query: *[_type == "club" && slug.current == $slug][0] {    ...,    managers[] {      ...,      person->    }  }
 export type ClubPageQueryResult = {
@@ -1379,12 +1319,7 @@ export type ClubPageQueryResult = {
   _rev: string;
   name?: string;
   images?: Array<{
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
+    asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
@@ -1402,12 +1337,7 @@ export type ClubPageQueryResult = {
       email?: string;
       phone?: string;
       image?: {
-        asset?: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        };
+        asset?: SanityImageAssetReference;
         media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
@@ -1438,127 +1368,46 @@ export type ClubPageQueryResult = {
   slug?: Slug;
 } | null;
 
-// Source: ./src/app/(frontend)/layout/Header.tsx
-// Variable: headerQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0],  "infoPages": *[_type == "infoPage"],  "clubs": *[_type == "club"]}
-export type HeaderQueryResult = {
+// Source: src/app/(frontend)/layout/Footer.tsx
+// Variable: footerQuery
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{ footerText, contactEmail },  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {    title,    slug,    menuPlacement,  }}
+export type FooterQueryResult = {
   siteSettings: {
-    _id: string;
-    _type: "siteSettings";
-    _createdAt: string;
-    _updatedAt: string;
-    _rev: string;
-    logo?: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    };
-    intro?: Array<{
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }>;
-      style?: "h2" | "normal";
-      listItem?: "bullet" | "number";
-      markDefs?: Array<{
-        href?: string;
-        _type: "link";
-        _key: string;
-      }>;
-      level?: number;
-      _type: "block";
-      _key: string;
-    }>;
+    footerText: string | null;
+    contactEmail: string | null;
   } | null;
   infoPages: Array<{
-    _id: string;
-    _type: "infoPage";
-    _createdAt: string;
-    _updatedAt: string;
-    _rev: string;
-    title?: string;
-    body?: Array<{
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }>;
-      style?: "h2" | "normal";
-      listItem?: "bullet" | "number";
-      markDefs?: Array<{
-        href?: string;
-        _type: "link";
-        _key: string;
-      }>;
-      level?: number;
-      _type: "block";
-      _key: string;
-    }>;
-    slug?: Slug;
-  }>;
-  clubs: Array<{
-    _id: string;
-    _type: "club";
-    _createdAt: string;
-    _updatedAt: string;
-    _rev: string;
-    name?: string;
-    images?: Array<{
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-      _key: string;
-    }>;
-    managers?: Array<{
-      person?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "person";
-      };
-      role?: string;
-      _key: string;
-    }>;
-    body?: Array<{
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }>;
-      style?: "h2" | "normal";
-      listItem?: "bullet" | "number";
-      markDefs?: Array<{
-        href?: string;
-        _type: "link";
-        _key: string;
-      }>;
-      level?: number;
-      _type: "block";
-      _key: string;
-    }>;
-    slug?: Slug;
+    title: string | null;
+    slug: Slug | null;
+    menuPlacement: Array<string> | null;
   }>;
 };
 
-// Source: ./src/app/(frontend)/lokaler/[slug]/page.tsx
+// Source: src/app/(frontend)/layout/Header.tsx
+// Variable: headerQuery
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{ logo },  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {    title,    slug,    menuPlacement,  },  "clubs": *[_type == "club"] | order(name asc) { name, slug }}
+export type HeaderQueryResult = {
+  siteSettings: {
+    logo: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+  } | null;
+  infoPages: Array<{
+    title: string | null;
+    slug: Slug | null;
+    menuPlacement: Array<string> | null;
+  }>;
+  clubs: Array<{
+    name: string | null;
+    slug: Slug | null;
+  }>;
+};
+
+// Source: src/app/(frontend)/lokaler/[slug]/page.tsx
 // Variable: lokasjonQuery
 // Query: *[_type == "location" && slug.current == $slug][0]{  ...,}
 export type LokasjonQueryResult = {
@@ -1569,24 +1418,14 @@ export type LokasjonQueryResult = {
   _rev: string;
   name?: string;
   images?: Array<{
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
+    asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
     _key: string;
   }>;
-  parent?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "location";
-  };
+  parent?: LocationReference;
   address?: string;
   zip?: string;
   city?: string;
@@ -1611,9 +1450,9 @@ export type LokasjonQueryResult = {
   slug?: Slug;
 } | null;
 
-// Source: ./src/app/(frontend)/lokaler/page.tsx
+// Source: src/app/(frontend)/lokaler/page.tsx
 // Variable: locationsQuery
-// Query: *[_type == "location"]
+// Query: *[_type == "location"] | order(name asc)
 export type LocationsQueryResult = Array<{
   _id: string;
   _type: "location";
@@ -1622,24 +1461,14 @@ export type LocationsQueryResult = Array<{
   _rev: string;
   name?: string;
   images?: Array<{
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
+    asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
     _key: string;
   }>;
-  parent?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "location";
-  };
+  parent?: LocationReference;
   address?: string;
   zip?: string;
   city?: string;
@@ -1664,10 +1493,14 @@ export type LocationsQueryResult = Array<{
   slug?: Slug;
 }>;
 
-// Source: ./src/app/(frontend)/page.tsx
+// Source: src/app/(frontend)/page.tsx
 // Variable: frontPageQuery
-// Query: {  "intro": *[_type == "siteSettings"][0].intro,  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {    ...,    location->,  }}
+// Query: {  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },  "intro": *[_type == "siteSettings"][0].intro,  "messages": *[    _type == "message" && (!defined(expiresAt) || expiresAt > now())  ] | order(publishedAt desc) {    _id,    label,    body,  },  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {    ...,    location->,  }}
 export type FrontPageQueryResult = {
+  settings: {
+    heroTitle: string | null;
+    heroText: string | null;
+  } | null;
   intro: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -1686,6 +1519,28 @@ export type FrontPageQueryResult = {
     _type: "block";
     _key: string;
   }> | null;
+  messages: Array<{
+    _id: string;
+    label: string | null;
+    body: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }> | null;
+  }>;
   events: Array<{
     _id: string;
     _type: "event";
@@ -1693,6 +1548,13 @@ export type FrontPageQueryResult = {
     _updatedAt: string;
     _rev: string;
     title?: string;
+    sport?:
+      | "allidrett"
+      | "fotball"
+      | "handball"
+      | "innebandy"
+      | "klatring"
+      | "turn";
     body?: Array<{
       children?: Array<{
         marks?: Array<string>;
@@ -1721,24 +1583,14 @@ export type FrontPageQueryResult = {
       _rev: string;
       name?: string;
       images?: Array<{
-        asset?: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        };
+        asset?: SanityImageAssetReference;
         media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         _type: "image";
         _key: string;
       }>;
-      parent?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "location";
-      };
+      parent?: LocationReference;
       address?: string;
       zip?: string;
       city?: string;
@@ -1762,28 +1614,10 @@ export type FrontPageQueryResult = {
       }>;
       slug?: Slug;
     } | null;
-    organizers?: Array<
-      | {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "club";
-        }
-      | {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "person";
-        }
-    >;
+    organizers?: ArrayOf<ClubReference | PersonReference>;
     paymentInfo?: PaymentInfo;
     images?: Array<{
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
+      asset?: SanityImageAssetReference;
       media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
@@ -1798,13 +1632,16 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     '*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{\n  ...,\n  location->,\n  organizers[]->,\n}': AktivitetQueryResult;
-    '{\n  "eventsAndSessionSeries": *[\n    _type in ["sessionSeries", "event"] && \n    (!defined($seriesId) || _id == $seriesId) && \n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ]\n  {\n    ...,\n    location->,\n    organizers[]->,\n  },\n}': ActivitiesQueryResult;
-    '{\n  "sessionSeries": *[\n    _type == "sessionSeries"\n  ]\n  {\n    _id,\n    title,\n    images,\n    sessions[] {\n      ...,\n      "startsAt": dateTime(startsAt),\n      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...1],\n    location->,\n    organizers[]->,\n  } | order(title asc),\n}': ReoccurringEventsQueryResult;
+    '*[\n  _type == "message" &&\n  showInBanner == true &&\n  defined(bannerText) &&\n  (!defined(expiresAt) || expiresAt > now())\n] | order(publishedAt desc)[0] {\n  label,\n  bannerText,\n}': BannerQueryResult;
+    '*[_type in ["sessionSeries", "event"]]{\n  title,\n  sport,\n}': SportsInUseQueryResult;
+    '{\n  "eventsAndSessionSeries": *[\n    _type in ["sessionSeries", "event"] &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ]\n  {\n    ...,\n    location->,\n    organizers[]->,\n  },\n}': ActivitiesQueryResult;
+    '{\n  "sessionSeries": *[\n    _type == "sessionSeries"\n  ]\n  {\n    _id,\n    title,\n    slug,\n    sport,\n    images,\n    sessions[] {\n      ...,\n      "startsAt": dateTime(startsAt),\n      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...1],\n    location->,\n    organizers[]->,\n  } | order(title asc),\n}': ReoccurringEventsQueryResult;
     '*[_type == "infoPage" && slug.current == $slug][0]': InfoPageQueryResult;
     '\n  *[_type == "club" && slug.current == $slug][0] {\n    ...,\n    managers[] {\n      ...,\n      person->\n    }\n  }\n': ClubPageQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0],\n  "infoPages": *[_type == "infoPage"],\n  "clubs": *[_type == "club"]\n}': HeaderQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{ footerText, contactEmail },\n  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {\n    title,\n    slug,\n    menuPlacement,\n  }\n}': FooterQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{ logo },\n  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {\n    title,\n    slug,\n    menuPlacement,\n  },\n  "clubs": *[_type == "club"] | order(name asc) { name, slug }\n}': HeaderQueryResult;
     '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
-    '*[_type == "location"]': LocationsQueryResult;
-    '{\n  "intro": *[_type == "siteSettings"][0].intro,\n  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {\n    ...,\n    location->,\n  }\n}': FrontPageQueryResult;
+    '*[_type == "location"] | order(name asc)': LocationsQueryResult;
+    '{\n  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },\n  "intro": *[_type == "siteSettings"][0].intro,\n  "messages": *[\n    _type == "message" && (!defined(expiresAt) || expiresAt > now())\n  ] | order(publishedAt desc) {\n    _id,\n    label,\n    body,\n  },\n  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {\n    ...,\n    location->,\n  }\n}': FrontPageQueryResult;
   }
 }

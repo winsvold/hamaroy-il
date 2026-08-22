@@ -1,6 +1,8 @@
+import { DefaultContainer } from "@/components/DefaultContainer";
+import { PageIntro } from "@/components/PageIntro";
 import { RichText } from "@/components/RichText";
 import { sanityFetch } from "@/sanity/lib/client";
-import { Heading, Stack, Container } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import { notFound } from "next/navigation";
 
@@ -19,14 +21,13 @@ const Page = async (props: Props) => {
   if (!data) return notFound();
 
   return (
-    <Container maxWidth="35rem">
-      <Stack gap="1rem">
-        <Heading as="h1" size="4xl">
-          {data?.title}
-        </Heading>
-        <RichText blockContent={data.body} />
+    // Rene tekstsider får lesebredde framfor den brede sidemalen
+    <DefaultContainer maxW="42rem" paddingTop={{ base: "2rem", md: "3.5rem" }}>
+      <Stack gap="1.75rem">
+        <PageIntro title={data.title ?? ""} />
+        <RichText blockContent={data.body} fontSize="1rem" maxWidth="none" />
       </Stack>
-    </Container>
+    </DefaultContainer>
   );
 };
 

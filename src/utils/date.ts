@@ -10,6 +10,18 @@ export const formatNorwegianDate = (date?: string | Date, format = "PPP") => {
   });
 };
 
+/**
+ * Stor forbokstav på første ord — resten står som date-fns gir det. Norske måneds- og
+ * ukedagsnavn skrives med liten bokstav, så CSS `capitalize` ville gitt «22. Januar».
+ */
+export const formatNorwegianDateCapitalized = (
+  date?: string | Date,
+  format?: string,
+) => {
+  const formatted = formatNorwegianDate(date, format);
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+};
+
 export const formatNorwegianDuration = (from?: string, to?: string) => {
   if (!from || !to) return "Ukjent varighet";
   const duration = intervalToDuration({

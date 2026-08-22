@@ -5,6 +5,7 @@ import { alphabetical, isEqual } from "radash";
 import { useEffect, useState } from "react";
 import { ArrayOfObjectsInputProps, defineField, defineType, set } from "sanity";
 import { Session } from "../../../sanity.types";
+import { resolveSport, sportOptions } from "../sports";
 import { getBlockContentType } from "./blockContentType";
 
 const SessionsInput = (props: ArrayOfObjectsInputProps) => {
@@ -89,6 +90,14 @@ export const sessionSeries = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "sport",
+      title: "Idrett",
+      description:
+        "Bestemmer ikon, farge og gruppering på «Faste aktiviteter». Gjettes ut fra navnet hvis den står tom.",
+      type: "string",
+      options: { list: sportOptions },
+    }),
+    defineField({
       name: "sessions",
       title: "Sesjoner",
       type: "array",
@@ -164,10 +173,16 @@ export const sessionSeries = defineType({
   preview: {
     select: {
       title: "title",
+      sport: "sport",
     },
-    prepare: ({ title }) => ({
-      title: title,
-    }),
+    prepare: ({ title, sport }) => {
+      const resolved = resolveSport({ sport, title });
+      return {
+        title: title,
+        subtitle: resolved?.title,
+        media: () => resolved?.emoji ?? "🏋️‍♀️",
+      };
+    },
   },
 });
 

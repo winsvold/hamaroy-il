@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { sportOptions } from "../sports";
 import { getBlockContentType } from "./blockContentType";
 
 export const event = defineType({
@@ -12,6 +13,14 @@ export const event = defineType({
       title: "Navn",
       type: "string",
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "sport",
+      title: "Idrett",
+      description:
+        "Bestemmer ikon og farge i aktivitetslista. Gjettes ut fra navnet hvis den står tom.",
+      type: "string",
+      options: { list: sportOptions },
     }),
     getBlockContentType({ headings: ["h2"] }),
     defineField({

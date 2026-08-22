@@ -1,15 +1,8 @@
 import { Box, Grid } from "@chakra-ui/react";
 import type { Metadata } from "next";
-import { Source_Sans_3 } from "next/font/google";
 import { Footer } from "./layout/Footer";
 import { Header } from "./layout/Header";
-
-const sourceSans = Source_Sans_3({
-  weight: ["400", "600", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  display: "swap",
-});
+import { NewsBanner } from "./components/NewsBanner";
 
 export const metadata: Metadata = {
   title: "Hamarøy IL",
@@ -22,13 +15,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // Bakgrunn og tekstfarge settes her og ikke i globalCss, fordi Chakra-provideren
+    // også omslutter Sanity Studio på /cms
     <Grid
       minH="100vh"
-      gridTemplateRows="auto 1fr auto"
-      className={`${sourceSans.className}`}
+      gridTemplateRows="auto auto 1fr auto"
+      background="cream"
+      color="forest.700"
+      fontFamily="body"
     >
       <Header />
-      <Box as="main" marginBottom="5rem">
+      <NewsBanner />
+      <Box as="main" paddingBottom="5rem">
         {children}
       </Box>
       <Footer />

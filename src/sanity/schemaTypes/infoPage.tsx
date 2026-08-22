@@ -1,5 +1,6 @@
 import { Stack, Text } from "@chakra-ui/react";
 import { defineField, defineType } from "sanity";
+import { menuPlacements } from "../menuPlacements";
 import { getBlockContentType } from "./blockContentType";
 
 export const infoPage = defineType({
@@ -12,6 +13,26 @@ export const infoPage = defineType({
       name: "title",
       title: "Tittel",
       type: "string",
+    }),
+    defineField({
+      name: "menuPlacement",
+      title: "Hvor skal siden lenkes opp?",
+      description:
+        "Siden kan stå flere steder samtidig — «Bli medlem» hører gjerne hjemme både som toppknapp og i bunnteksten. Uten valg her er siden bare tilgjengelig via direkte lenke.",
+      type: "array",
+      of: [{ type: "string" }],
+      options: {
+        list: [...menuPlacements],
+        layout: "grid",
+      },
+    }),
+    defineField({
+      name: "order",
+      title: "Sortering",
+      description:
+        "Lavest tall kommer først i menyen. Sider med likt tall sorteres alfabetisk.",
+      type: "number",
+      initialValue: 0,
     }),
     getBlockContentType({ headings: ["h2"] }),
     defineField({

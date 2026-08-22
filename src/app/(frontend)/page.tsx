@@ -1,59 +1,96 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
-import { RichText } from "@/components/RichText";
+import { Kicker } from "@/components/Kicker";
 import { sanityFetch } from "@/sanity/lib/client";
-import { Box, Button, Grid, Heading, Stack } from "@chakra-ui/react";
+import { Box, Button, Grid, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Link from "next/link";
 import { Calendar } from "./components/calendar";
 import { EventCard } from "./components/EventCard";
-import { RecurringEvents } from "./faste-aktiviteter/page";
+import { Hero } from "./components/Hero";
+import { Messages } from "./components/Messages";
+import { SportTiles } from "./components/SportTiles";
 
 const frontPageQuery = defineQuery(`{
+  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },
   "intro": *[_type == "siteSettings"][0].intro,
+  "messages": *[
+    _type == "message" && (!defined(expiresAt) || expiresAt > now())
+  ] | order(publishedAt desc) {
+    _id,
+    label,
+    body,
+  },
   "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {
     ...,
     location->,
   }
 }`);
 
+/** Antall arrangementer som løftes fram i «Gå ikke glipp av» */
+const highlightedEventCount = 3;
+
 export default async function Home() {
   const data = await sanityFetch(frontPageQuery);
 
+  const highlightedEvents = data.events.slice(0, highlightedEventCount);
+
   return (
-    <DefaultContainer marginY="1rem" paddingX=".75rem">
-      <Stack gap="3rem">
-        {data.intro && (
-          <Box backgroundColor="yellow.100" borderRadius="md" padding="1rem">
-            <RichText blockContent={data.intro} />
-          </Box>
-        )}
-        {!!data.events?.length && (
-          <Stack gap=".5rem">
-            <Heading as="h2">Gå ikke glipp av</Heading>
+    <Stack gap={{ base: "3rem", md: "4.5rem" }}>
+      <Hero title={data.settings?.heroTitle} text={data.settings?.heroText} />
+
+      {!!highlightedEvents.length && (
+        <DefaultContainer>
+          <Stack gap="1.25rem" as="section">
+            <Kicker as="h2">Gå ikke glipp av</Kicker>
             <Grid
-              templateColumns={{
-                base: "1fr",
-                sm: "1fr 1fr",
-              }}
-              gap=".75rem"
+              gridTemplateColumns="repeat(auto-fill, minmax(min(20rem, 100%), 1fr))"
+              gap="1rem"
+              alignItems="stretch"
             >
-              {data.events.map((event) => (
+              {highlightedEvents.map((event) => (
                 <EventCard key={event._id} {...event} />
               ))}
             </Grid>
           </Stack>
-        )}
-        <Calendar
-          heading="Kommende aktiviteter"
-          limit={6}
-          childrenAfter={
-            <Button size="lg" variant="solid" asChild alignSelf="flex-start">
-              <Link href="/kalender">Se alle</Link>
-            </Button>
-          }
-        />
-        <RecurringEvents />
-      </Stack>
-    </DefaultContainer>
+        </DefaultContainer>
+      )}
+
+      <DefaultContainer>
+        <Grid
+          gridTemplateColumns={{ base: "1fr", lg: "1.15fr 1fr" }}
+          gap={{ base: "3rem", lg: "2.5rem" }}
+          alignItems="start"
+        >
+          <Calendar
+            heading="Kommende aktiviteter"
+            limit={6}
+            // Arrangementene over står allerede øverst på siden
+            excludeIds={highlightedEvents.map((event) => event._id)}
+            childrenAfter={
+              <Button
+                asChild
+                alignSelf="center"
+                background="forest.700"
+                color="onDark"
+                _hover={{ background: "forest.800" }}
+                borderRadius="lg"
+                fontWeight={700}
+                size="lg"
+              >
+                <Link href="/kalender">Se hele kalenderen →</Link>
+              </Button>
+            }
+          />
+          <Messages messages={data.messages} intro={data.intro} />
+        </Grid>
+      </DefaultContainer>
+
+      <DefaultContainer>
+        <SportTiles />
+      </DefaultContainer>
+
+      {/* Plass under siste seksjon før bunnteksten */}
+      <Box />
+    </Stack>
   );
 }
