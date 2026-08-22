@@ -6,6 +6,10 @@ import {
   defaultConfig,
   defineConfig,
 } from "@chakra-ui/react";
+import createCache from "@emotion/cache";
+import { CacheProvider } from "@emotion/react";
+import { useServerInsertedHTML } from "next/navigation";
+import { useState } from "react";
 
 type Props = {
   children: React.ReactNode;
@@ -115,6 +119,29 @@ const customConfig = defineConfig({
 
 const system = createSystem(defaultConfig, customConfig);
 
+function EmotionRegistry(props: Props) {
+  const [cache] = useState(() => {
+    const instance = createCache({ key: "css" });
+    instance.compat = true;
+    return instance;
+  });
+
+  useServerInsertedHTML(() => (
+    <style
+      data-emotion={`${cache.key} ${Object.keys(cache.inserted).join(" ")}`}
+      dangerouslySetInnerHTML={{
+        __html: Object.values(cache.inserted).join(" "),
+      }}
+    />
+  ));
+
+  return <CacheProvider value={cache}>{props.children}</CacheProvider>;
+}
+
 export function Provider(props: Props) {
-  return <ChakraProvider value={system} {...props} />;
+  return (
+    <EmotionRegistry>
+      <ChakraProvider value={system}>{props.children}</ChakraProvider>
+    </EmotionRegistry>
+  );
 }
