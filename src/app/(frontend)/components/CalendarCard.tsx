@@ -15,17 +15,18 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { AlertCircle } from "react-feather";
-import { Event, Location } from "../../../../sanity.types";
+import { Event } from "../../../../sanity.types";
 
 type Props = {
-  startsAt?: string;
-  endsAt?: string;
-  title?: string;
-  location: Location | null;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  title?: string | null;
+  /** Bare navnet brukes — spørringen henter derfor ikke hele lokasjonen */
+  location?: { name?: string | null } | null;
   slug?: string;
-  image?: NonNullable<Event["images"]>[0];
-  cancelled?: boolean;
-  note?: string;
+  image?: NonNullable<Event["images"]>[0] | null;
+  cancelled?: boolean | null;
+  note?: string | null;
   sport?: Sport;
   /**
    * På en aktivitets egen side er tittelen den samme for hver sesjon, og lenka peker

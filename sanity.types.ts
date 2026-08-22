@@ -847,298 +847,59 @@ export type SportsInUseQueryResult = Array<{
 
 // Source: src/app/(frontend)/components/calendar.tsx
 // Variable: activitiesQuery
-// Query: {  "eventsAndSessionSeries": *[    _type in ["sessionSeries", "event"] &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ]  {    ...,    location->,    organizers[]->,  },}
+// Query: {  "events": *[    _type == "event" &&    endsAt > now() &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ] | order(startsAt asc) {    _id,    _type,    title,    sport,    startsAt,    endsAt,    "image": images[0],    location->{ _id, name },  },  "sessionSeries": *[    _type == "sessionSeries" &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ] {    _id,    title,    slug,    sport,    location->{ _id, name },    "sessions": sessions[] {      _key,      cancelled,      note,      "startsAt": dateTime(startsAt),      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],  },}
 export type ActivitiesQueryResult = {
-  eventsAndSessionSeries: Array<
-    | {
-        _id: string;
-        _type: "event";
-        _createdAt: string;
-        _updatedAt: string;
-        _rev: string;
-        title?: string;
-        sport?:
-          | "allidrett"
-          | "fotball"
-          | "handball"
-          | "innebandy"
-          | "klatring"
-          | "turn";
-        body?: Array<{
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: "span";
-            _key: string;
-          }>;
-          style?: "h2" | "normal";
-          listItem?: "bullet" | "number";
-          markDefs?: Array<{
-            href?: string;
-            _type: "link";
-            _key: string;
-          }>;
-          level?: number;
-          _type: "block";
-          _key: string;
-        }>;
-        startsAt?: string;
-        endsAt?: string;
-        location: {
-          _id: string;
-          _type: "location";
-          _createdAt: string;
-          _updatedAt: string;
-          _rev: string;
-          name?: string;
-          images?: Array<{
-            asset?: SanityImageAssetReference;
-            media?: unknown;
-            hotspot?: SanityImageHotspot;
-            crop?: SanityImageCrop;
-            _type: "image";
-            _key: string;
-          }>;
-          parent?: LocationReference;
-          address?: string;
-          zip?: string;
-          city?: string;
-          body?: Array<{
-            children?: Array<{
-              marks?: Array<string>;
-              text?: string;
-              _type: "span";
-              _key: string;
-            }>;
-            style?: "h2" | "normal";
-            listItem?: "bullet" | "number";
-            markDefs?: Array<{
-              href?: string;
-              _type: "link";
-              _key: string;
-            }>;
-            level?: number;
-            _type: "block";
-            _key: string;
-          }>;
-          slug?: Slug;
-        } | null;
-        organizers: Array<
-          | {
-              _id: string;
-              _type: "club";
-              _createdAt: string;
-              _updatedAt: string;
-              _rev: string;
-              name?: string;
-              images?: Array<{
-                asset?: SanityImageAssetReference;
-                media?: unknown;
-                hotspot?: SanityImageHotspot;
-                crop?: SanityImageCrop;
-                _type: "image";
-                _key: string;
-              }>;
-              managers?: Array<{
-                person?: PersonReference;
-                role?: string;
-                _key: string;
-              }>;
-              body?: Array<{
-                children?: Array<{
-                  marks?: Array<string>;
-                  text?: string;
-                  _type: "span";
-                  _key: string;
-                }>;
-                style?: "h2" | "normal";
-                listItem?: "bullet" | "number";
-                markDefs?: Array<{
-                  href?: string;
-                  _type: "link";
-                  _key: string;
-                }>;
-                level?: number;
-                _type: "block";
-                _key: string;
-              }>;
-              slug?: Slug;
-            }
-          | {
-              _id: string;
-              _type: "person";
-              _createdAt: string;
-              _updatedAt: string;
-              _rev: string;
-              name?: string;
-              email?: string;
-              phone?: string;
-              image?: {
-                asset?: SanityImageAssetReference;
-                media?: unknown;
-                hotspot?: SanityImageHotspot;
-                crop?: SanityImageCrop;
-                _type: "image";
-              };
-            }
-        > | null;
-        paymentInfo?: PaymentInfo;
-        images?: Array<{
-          asset?: SanityImageAssetReference;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
-          _key: string;
-        }>;
-      }
-    | {
-        _id: string;
-        _type: "sessionSeries";
-        _createdAt: string;
-        _updatedAt: string;
-        _rev: string;
-        title?: string;
-        sport?:
-          | "allidrett"
-          | "fotball"
-          | "handball"
-          | "innebandy"
-          | "klatring"
-          | "turn";
-        sessions?: Array<
-          {
-            _key: string;
-          } & Session
-        >;
-        body?: Array<{
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: "span";
-            _key: string;
-          }>;
-          style?: "h2" | "normal";
-          listItem?: "bullet" | "number";
-          markDefs?: Array<{
-            href?: string;
-            _type: "link";
-            _key: string;
-          }>;
-          level?: number;
-          _type: "block";
-          _key: string;
-        }>;
-        organizers: Array<
-          | {
-              _id: string;
-              _type: "club";
-              _createdAt: string;
-              _updatedAt: string;
-              _rev: string;
-              name?: string;
-              images?: Array<{
-                asset?: SanityImageAssetReference;
-                media?: unknown;
-                hotspot?: SanityImageHotspot;
-                crop?: SanityImageCrop;
-                _type: "image";
-                _key: string;
-              }>;
-              managers?: Array<{
-                person?: PersonReference;
-                role?: string;
-                _key: string;
-              }>;
-              body?: Array<{
-                children?: Array<{
-                  marks?: Array<string>;
-                  text?: string;
-                  _type: "span";
-                  _key: string;
-                }>;
-                style?: "h2" | "normal";
-                listItem?: "bullet" | "number";
-                markDefs?: Array<{
-                  href?: string;
-                  _type: "link";
-                  _key: string;
-                }>;
-                level?: number;
-                _type: "block";
-                _key: string;
-              }>;
-              slug?: Slug;
-            }
-          | {
-              _id: string;
-              _type: "person";
-              _createdAt: string;
-              _updatedAt: string;
-              _rev: string;
-              name?: string;
-              email?: string;
-              phone?: string;
-              image?: {
-                asset?: SanityImageAssetReference;
-                media?: unknown;
-                hotspot?: SanityImageHotspot;
-                crop?: SanityImageCrop;
-                _type: "image";
-              };
-            }
-        > | null;
-        location: {
-          _id: string;
-          _type: "location";
-          _createdAt: string;
-          _updatedAt: string;
-          _rev: string;
-          name?: string;
-          images?: Array<{
-            asset?: SanityImageAssetReference;
-            media?: unknown;
-            hotspot?: SanityImageHotspot;
-            crop?: SanityImageCrop;
-            _type: "image";
-            _key: string;
-          }>;
-          parent?: LocationReference;
-          address?: string;
-          zip?: string;
-          city?: string;
-          body?: Array<{
-            children?: Array<{
-              marks?: Array<string>;
-              text?: string;
-              _type: "span";
-              _key: string;
-            }>;
-            style?: "h2" | "normal";
-            listItem?: "bullet" | "number";
-            markDefs?: Array<{
-              href?: string;
-              _type: "link";
-              _key: string;
-            }>;
-            level?: number;
-            _type: "block";
-            _key: string;
-          }>;
-          slug?: Slug;
-        } | null;
-        paymentInfo?: PaymentInfo;
-        images?: Array<{
-          asset?: SanityImageAssetReference;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
-          _key: string;
-        }>;
-        slug?: Slug;
-      }
-  >;
+  events: Array<{
+    _id: string;
+    _type: "event";
+    title: string | null;
+    sport:
+      | "allidrett"
+      | "fotball"
+      | "handball"
+      | "innebandy"
+      | "klatring"
+      | "turn"
+      | null;
+    startsAt: string | null;
+    endsAt: string | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+      _key: string;
+    } | null;
+    location: {
+      _id: string;
+      name: string | null;
+    } | null;
+  }>;
+  sessionSeries: Array<{
+    _id: string;
+    title: string | null;
+    slug: Slug | null;
+    sport:
+      | "allidrett"
+      | "fotball"
+      | "handball"
+      | "innebandy"
+      | "klatring"
+      | "turn"
+      | null;
+    location: {
+      _id: string;
+      name: string | null;
+    } | null;
+    sessions: Array<{
+      _key: string;
+      cancelled: boolean | null;
+      note: string | null;
+      startsAt: string | null;
+      endsAt: string | null;
+    }> | null;
+  }>;
 };
 
 // Source: src/app/(frontend)/faste-aktiviteter/page.tsx
@@ -1634,7 +1395,7 @@ declare module "@sanity/client" {
     '*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{\n  ...,\n  location->,\n  organizers[]->,\n}': AktivitetQueryResult;
     '*[\n  _type == "message" &&\n  showInBanner == true &&\n  defined(bannerText) &&\n  (!defined(expiresAt) || expiresAt > now())\n] | order(publishedAt desc)[0] {\n  label,\n  bannerText,\n}': BannerQueryResult;
     '*[_type in ["sessionSeries", "event"]]{\n  title,\n  sport,\n}': SportsInUseQueryResult;
-    '{\n  "eventsAndSessionSeries": *[\n    _type in ["sessionSeries", "event"] &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ]\n  {\n    ...,\n    location->,\n    organizers[]->,\n  },\n}': ActivitiesQueryResult;
+    '{\n  "events": *[\n    _type == "event" &&\n    endsAt > now() &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] | order(startsAt asc) {\n    _id,\n    _type,\n    title,\n    sport,\n    startsAt,\n    endsAt,\n    "image": images[0],\n    location->{ _id, name },\n  },\n  "sessionSeries": *[\n    _type == "sessionSeries" &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] {\n    _id,\n    title,\n    slug,\n    sport,\n    location->{ _id, name },\n    "sessions": sessions[] {\n      _key,\n      cancelled,\n      note,\n      "startsAt": dateTime(startsAt),\n      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],\n  },\n}': ActivitiesQueryResult;
     '{\n  "sessionSeries": *[\n    _type == "sessionSeries"\n  ]\n  {\n    _id,\n    title,\n    slug,\n    sport,\n    images,\n    sessions[] {\n      ...,\n      "startsAt": dateTime(startsAt),\n      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...1],\n    location->,\n    organizers[]->,\n  } | order(title asc),\n}': ReoccurringEventsQueryResult;
     '*[_type == "infoPage" && slug.current == $slug][0]': InfoPageQueryResult;
     '\n  *[_type == "club" && slug.current == $slug][0] {\n    ...,\n    managers[] {\n      ...,\n      person->\n    }\n  }\n': ClubPageQueryResult;

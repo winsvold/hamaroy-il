@@ -2,29 +2,64 @@ import { Kicker } from "@/components/Kicker";
 import { sanityFetch } from "@/sanity/lib/client";
 import { resolveSport } from "@/sanity/sports";
 import { formatNorwegianDate } from "@/utils/date";
-import { getSessionEndsAt } from "@/utils/session";
 import { Box, Flex, FlexProps, Grid, Stack, Text } from "@chakra-ui/react";
-import { isAfter, startOfDay } from "date-fns";
+import { startOfDay } from "date-fns";
 import { defineQuery } from "next-sanity";
 import Link from "next/link";
-import { group, sift } from "radash";
-import { KeyedSegment } from "sanity";
-import { ActivitiesQueryResult, Session } from "../../../../sanity.types";
+import { group } from "radash";
+import { ActivitiesQueryResult } from "../../../../sanity.types";
 import { CalendarCard } from "./CalendarCard";
 
+/**
+ * Både filtrering på tid og valg av felter skjer i GROQ. Et `...`-spread hentet
+ * tidligere hver eneste sesjon på hver eneste serie (~500 objekter, 150 kB) og
+ * all fritekst, for så å kaste nesten alt i JavaScript.
+ */
 const activitiesQuery = defineQuery(`{
-  "eventsAndSessionSeries": *[
-    _type in ["sessionSeries", "event"] &&
+  "events": *[
+    _type == "event" &&
+    endsAt > now() &&
     (!defined($seriesId) || _id == $seriesId) &&
     (!defined($locationId) || location._ref == $locationId) &&
     (!defined($clubId) || references($clubId))
-  ]
-  {
-    ...,
-    location->,
-    organizers[]->,
+  ] | order(startsAt asc) {
+    _id,
+    _type,
+    title,
+    sport,
+    startsAt,
+    endsAt,
+    "image": images[0],
+    location->{ _id, name },
+  },
+  "sessionSeries": *[
+    _type == "sessionSeries" &&
+    (!defined($seriesId) || _id == $seriesId) &&
+    (!defined($locationId) || location._ref == $locationId) &&
+    (!defined($clubId) || references($clubId))
+  ] {
+    _id,
+    title,
+    slug,
+    sport,
+    location->{ _id, name },
+    "sessions": sessions[] {
+      _key,
+      cancelled,
+      note,
+      "startsAt": dateTime(startsAt),
+      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,
+    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],
   },
 }`);
+
+/**
+ * Når komponenten viser `limit` rader kan ingen enkelt serie bidra med mer enn
+ * `limit` av dem, så det er trygt å kutte per serie allerede i spørringen.
+ * Uten limit (feks /kalender) trengs alle — taket er da satt langt over det en
+ * sesong noen gang inneholder.
+ */
+const NO_SESSION_LIMIT = 1000;
 
 type Props = {
   limit?: number;
@@ -41,50 +76,43 @@ type Props = {
   childrenAfter?: React.ReactNode;
 };
 
-export type SessionOccurrence = Session &
-  KeyedSegment & {
-    series: Extract<
-      ActivitiesQueryResult["eventsAndSessionSeries"][number],
-      { _type: "sessionSeries" }
-    >;
-  };
+type SessionSeries = ActivitiesQueryResult["sessionSeries"][number];
+
+/** Én forekomst av en fast aktivitet, med serien den hører til. */
+export type SessionOccurrence = NonNullable<
+  SessionSeries["sessions"]
+>[number] & {
+  _type: "session";
+  series: SessionSeries;
+};
 
 export const Calendar = async (props: Props) => {
   const variant = props.variant ?? "timeline";
-  const { eventsAndSessionSeries } = await sanityFetch(activitiesQuery, {
+  const { events, sessionSeries } = await sanityFetch(activitiesQuery, {
     seriesId: props.seriesId ?? null,
     locationId: props.locationId ?? null,
     clubId: props.clubId ?? null,
+    sessionLimit: props.limit ?? NO_SESSION_LIMIT,
   });
 
   const excluded = new Set(props.excludeIds ?? []);
 
-  // Diskriminantsjekken må stå alene i sin egen filter for at TypeScript skal
-  // smalne unionen — slås den sammen med excluded-sjekken forsvinner narrowingen
-  const sessionSeries = eventsAndSessionSeries
-    .filter((item) => item._type === "sessionSeries")
-    .filter((series) => !excluded.has(series._id));
-
-  const sessions: SessionOccurrence[] = sift(
-    sessionSeries.flatMap((series) =>
-      series.sessions?.map((session) => ({
-        series,
+  // Tidsfiltrering er allerede gjort i GROQ; her flates seriene ut til
+  // enkeltforekomster. `_type` settes for å skille dem fra arrangementer.
+  const sessions: SessionOccurrence[] = sessionSeries
+    .filter((series) => !excluded.has(series._id))
+    .flatMap((series) =>
+      (series.sessions ?? []).map((session) => ({
         ...session,
+        _type: "session" as const,
+        series,
       })),
-    ),
-  ).filter(
-    (session) =>
-      session && isAfter(new Date(getSessionEndsAt(session)), new Date()),
-  );
-
-  const events = eventsAndSessionSeries
-    .filter((item) => item._type === "event")
-    .filter((event) => !excluded.has(event._id))
-    .filter(
-      (event) => event.endsAt && isAfter(new Date(event.endsAt), new Date()),
     );
 
-  const sortedEventsAndSessions = [...events, ...sessions]
+  const sortedEventsAndSessions = [
+    ...events.filter((event) => !excluded.has(event._id)),
+    ...sessions,
+  ]
     .sort(
       (a, b) =>
         new Date(a.startsAt!).getTime() - new Date(b.startsAt!).getTime(),
@@ -122,7 +150,7 @@ export const Calendar = async (props: Props) => {
         title={item.title}
         location={item.location}
         slug={item._id}
-        image={item.images?.[0]}
+        image={item.image}
         sport={resolveSport(item)}
         type="event"
       />
@@ -130,7 +158,7 @@ export const Calendar = async (props: Props) => {
       <CalendarCard
         key={key}
         startsAt={item.startsAt}
-        endsAt={getSessionEndsAt(item).toISOString()}
+        endsAt={item.endsAt}
         title={item.series.title}
         location={item.series.location}
         slug={item.series.slug?.current}

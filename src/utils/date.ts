@@ -3,7 +3,10 @@ import { nb } from "date-fns/locale";
 import { sift } from "radash";
 import { formatInTimeZone } from "date-fns-tz";
 
-export const formatNorwegianDate = (date?: string | Date, format = "PPP") => {
+export const formatNorwegianDate = (
+  date?: string | Date | null,
+  format = "PPP",
+) => {
   if (!date) return "Ukjent dato";
   return formatInTimeZone(new Date(date), "Europe/Oslo", format, {
     locale: nb,
@@ -15,7 +18,7 @@ export const formatNorwegianDate = (date?: string | Date, format = "PPP") => {
  * ukedagsnavn skrives med liten bokstav, så CSS `capitalize` ville gitt «22. Januar».
  */
 export const formatNorwegianDateCapitalized = (
-  date?: string | Date,
+  date?: string | Date | null,
   format?: string,
 ) => {
   const formatted = formatNorwegianDate(date, format);
