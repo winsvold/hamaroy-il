@@ -8,7 +8,7 @@ import { Calendar } from "./components/calendar";
 import { EventCard } from "./components/EventCard";
 import { Hero } from "./components/Hero";
 import { Messages } from "./components/Messages";
-import { SportTiles } from "./components/SportTiles";
+import { RecurringEvents } from "./components/RecurringEvents";
 
 const frontPageQuery = defineQuery(`{
   "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },
@@ -86,7 +86,7 @@ export default async function Home() {
       </DefaultContainer>
 
       <DefaultContainer>
-        <SportTiles />
+        <RecurringEvents heading="Faste aktiviteter" />
       </DefaultContainer>
 
       {/* Plass under siste seksjon før bunnteksten */}

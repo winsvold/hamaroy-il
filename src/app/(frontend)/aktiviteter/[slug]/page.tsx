@@ -103,28 +103,6 @@ const Page = async (props: Props) => {
     <Stack gap={{ base: "2.5rem", md: "3.5rem" }}>
       <DefaultContainer paddingTop={{ base: "1.25rem", md: "1.75rem" }}>
         <Stack gap="1.5rem">
-          <Flex
-            as="nav"
-            aria-label="Brødsmuler"
-            gap=".4rem"
-            flexWrap="wrap"
-            fontSize="0.78rem"
-            fontWeight={600}
-            color="muted"
-          >
-            <Crumb href="/">Forside</Crumb>
-            <span aria-hidden="true">/</span>
-            {isEvent ? (
-              <Crumb href="/kalender">Kalender</Crumb>
-            ) : (
-              <Crumb href="/faste-aktiviteter">Faste aktiviteter</Crumb>
-            )}
-            <span aria-hidden="true">/</span>
-            <Box as="span" aria-current="page">
-              {data.title}
-            </Box>
-          </Flex>
-
           {/* Hero-kortet */}
           <Box
             position="relative"
@@ -309,12 +287,6 @@ const Page = async (props: Props) => {
     </Stack>
   );
 };
-
-const Crumb = ({ href, children }: { href: string; children: string }) => (
-  <Box asChild _hover={{ color: "amber.700", textDecoration: "underline" }}>
-    <Link href={href}>{children}</Link>
-  </Box>
-);
 
 const SideCard = ({
   title,
