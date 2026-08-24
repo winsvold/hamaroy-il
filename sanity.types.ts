@@ -1114,6 +1114,19 @@ export type ClubPageQueryResult = {
   slug?: Slug;
 } | null;
 
+// Source: src/app/(frontend)/layout.tsx
+// Variable: faviconQuery
+// Query: *[_type == "siteSettings"][0]{ logo }
+export type FaviconQueryResult = {
+  logo: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+} | null;
+
 // Source: src/app/(frontend)/layout/Footer.tsx
 // Variable: footerQuery
 // Query: {  "siteSettings": *[_type == "siteSettings"][0]{ footerText, contactEmail },  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {    title,    slug,    menuPlacement,  }}
@@ -1383,6 +1396,7 @@ declare module "@sanity/client" {
     '{\n  "events": *[\n    _type == "event" &&\n    endsAt > now() &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] | order(startsAt asc) {\n    _id,\n    _type,\n    title,\n    sport,\n    startsAt,\n    endsAt,\n    "image": images[0],\n    location->{ _id, name },\n  },\n  "sessionSeries": *[\n    _type == "sessionSeries" &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] {\n    _id,\n    title,\n    slug,\n    sport,\n    location->{ _id, name },\n    "sessions": sessions[] {\n      _key,\n      cancelled,\n      note,\n      "startsAt": dateTime(startsAt),\n      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],\n  },\n}': ActivitiesQueryResult;
     '*[_type == "infoPage" && slug.current == $slug][0]': InfoPageQueryResult;
     '\n  *[_type == "club" && slug.current == $slug][0] {\n    ...,\n    managers[] {\n      ...,\n      person->\n    }\n  }\n': ClubPageQueryResult;
+    '*[_type == "siteSettings"][0]{ logo }': FaviconQueryResult;
     '{\n  "siteSettings": *[_type == "siteSettings"][0]{ footerText, contactEmail },\n  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {\n    title,\n    slug,\n    menuPlacement,\n  }\n}': FooterQueryResult;
     '{\n  "siteSettings": *[_type == "siteSettings"][0]{ logo },\n  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {\n    title,\n    slug,\n    menuPlacement,\n  },\n  "clubs": *[_type == "club"] | order(name asc) { name, slug }\n}': HeaderQueryResult;
     '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
