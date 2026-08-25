@@ -1,10 +1,9 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
-import { Kicker } from "@/components/Kicker";
+import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
-import { Box, Button, Grid, Stack } from "@chakra-ui/react";
+import { Box, Grid } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
-import Link from "next/link";
-import { Calendar } from "./components/calendar";
+import { Calendar, CalendarActionBar } from "./components/calendar";
 import { EventCard } from "./components/EventCard";
 import { Hero } from "./components/Hero";
 import { Messages } from "./components/Messages";
@@ -35,15 +34,17 @@ export default async function Home() {
   const highlightedEvents = data.events.slice(0, highlightedEventCount);
 
   return (
-    <Stack gap={{ base: "3rem", md: "4.5rem" }}>
+    <>
       <Hero title={data.settings?.heroTitle} text={data.settings?.heroText} />
 
       {!!highlightedEvents.length && (
-        <DefaultContainer>
-          <Stack gap="1.25rem" as="section">
-            <Kicker as="h2">Gå ikke glipp av</Kicker>
+        <DefaultContainer paddingTop="3.75rem">
+          <Box as="section">
+            <SectionHeading marginBottom="1.5rem">
+              Gå ikke glipp av
+            </SectionHeading>
             <Grid
-              gridTemplateColumns="repeat(auto-fill, minmax(min(20rem, 100%), 1fr))"
+              gridTemplateColumns="repeat(auto-fit, minmax(min(20rem, 100%), 1fr))"
               gap="1rem"
               alignItems="stretch"
             >
@@ -51,46 +52,36 @@ export default async function Home() {
                 <EventCard key={event._id} {...event} />
               ))}
             </Grid>
-          </Stack>
+          </Box>
         </DefaultContainer>
       )}
 
-      <DefaultContainer>
+      <DefaultContainer paddingTop="3.75rem">
         <Grid
-          gridTemplateColumns={{ base: "1fr", lg: "1.15fr 1fr" }}
-          gap={{ base: "3rem", lg: "2.5rem" }}
+          gridTemplateColumns={{ base: "1fr", lg: "1.5fr 1fr" }}
+          gap={{ base: "3rem", lg: "4rem" }}
           alignItems="start"
         >
+          {/*
+            Arrangementene over gjentas med vilje her: båndet framhever, mens tidslinja
+            er den fullstendige oversikten over hva som skjer framover.
+          */}
           <Calendar
             heading="Kommende aktiviteter"
             limit={6}
-            // Arrangementene over står allerede øverst på siden
-            excludeIds={highlightedEvents.map((event) => event._id)}
             childrenAfter={
-              <Button
-                asChild
-                alignSelf="center"
-                background="forest.700"
-                color="onDark"
-                _hover={{ background: "forest.800" }}
-                borderRadius="lg"
-                fontWeight={700}
-                size="lg"
-              >
-                <Link href="/kalender">Se hele kalenderen →</Link>
-              </Button>
+              <CalendarActionBar href="/kalender">
+                Se hele kalenderen →
+              </CalendarActionBar>
             }
           />
           <Messages messages={data.messages} intro={data.intro} />
         </Grid>
       </DefaultContainer>
 
-      <DefaultContainer>
+      <DefaultContainer paddingTop="3.75rem" paddingBottom="4.75rem">
         <RecurringEvents heading="Faste aktiviteter" />
       </DefaultContainer>
-
-      {/* Plass under siste seksjon før bunnteksten */}
-      <Box />
-    </Stack>
+    </>
   );
 }

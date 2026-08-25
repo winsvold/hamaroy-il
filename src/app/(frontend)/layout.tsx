@@ -5,7 +5,6 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { Footer } from "./layout/Footer";
 import { Header } from "./layout/Header";
-import { NewsBanner } from "./components/NewsBanner";
 
 const faviconQuery = defineQuery(`*[_type == "siteSettings"][0]{ logo }`);
 
@@ -39,16 +38,16 @@ export default function RootLayout({
     // også omslutter Sanity Studio på /cms
     <Grid
       minH="100vh"
-      gridTemplateRows="auto auto 1fr auto"
-      background="cream"
-      color="forest.700"
+      gridTemplateRows="auto 1fr auto"
+      // Uten `minmax(0, …)` sizes kolonnen etter det bredeste min-innholdet på siden,
+      // og ett langt ord i en overskrift dytter hele sidemalen bredere enn skjermen
+      gridTemplateColumns="minmax(0, 1fr)"
+      background="snow"
+      color="ink"
       fontFamily="body"
     >
       <Header />
-      <NewsBanner />
-      <Box as="main" paddingBottom="5rem">
-        {children}
-      </Box>
+      <Box as="main">{children}</Box>
       <Footer />
     </Grid>
   );

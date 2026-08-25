@@ -1,18 +1,11 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
-import { PageIntro } from "@/components/PageIntro";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import {
-  Box,
-  Grid,
-  Heading,
-  LinkBox,
-  LinkOverlay,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, Grid, Heading, LinkBox, LinkOverlay } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
+import { PageHeader } from "../layout/PageHeader";
 
 const locationsQuery = defineQuery(`*[_type == "location"] | order(name asc)`);
 
@@ -20,36 +13,35 @@ const Page = async () => {
   const data = await sanityFetch(locationsQuery);
 
   return (
-    <DefaultContainer paddingTop={{ base: "2rem", md: "3.5rem" }}>
-      <Stack gap="2.5rem">
-        <PageIntro
-          kicker="Lokaler"
-          title="Lokaler og steder"
-          text="Hallene, banene og husene idrettslaget bruker."
-        />
+    <>
+      <PageHeader
+        kicker="Lokaler"
+        title="Lokaler og steder"
+        text="Hallene, banene og husene idrettslaget bruker."
+      />
+      <DefaultContainer paddingTop="3.75rem" paddingBottom="4.75rem">
         <Grid
           gridTemplateColumns="repeat(auto-fill, minmax(min(18rem, 100%), 1fr))"
-          gap=".875rem"
+          gap="1rem"
         >
           {data.map((location) => (
             <LinkBox
               display="flex"
               alignItems="center"
               key={location._id}
-              background="surface"
-              border="1px solid"
-              borderColor="hairline"
-              borderRadius="2xl"
+              background="sage.base"
               padding="1rem"
               gap="1rem"
-              transition="border-color .2s"
-              _hover={{ borderColor: "hairlineStrong" }}
+              transition="background .2s"
+              _hover={{
+                background: "sage.hover",
+                "& h2": { color: "deep.base" },
+              }}
             >
               {location.images?.[0] && (
                 <Box
                   asChild
                   flexShrink={0}
-                  borderRadius="xl"
                   width="4.5rem"
                   height="4.5rem"
                   objectFit="cover"
@@ -62,14 +54,15 @@ const Page = async () => {
                   />
                 </Box>
               )}
-              <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
+              <LinkOverlay asChild>
                 <Link href={`/lokaler/${location.slug?.current}`}>
                   <Heading
                     as="h2"
                     fontFamily="body"
                     fontWeight={700}
                     fontSize="1rem"
-                    color="forest.700"
+                    color="ink"
+                    transition="color .2s"
                   >
                     {location.name}
                   </Heading>
@@ -78,8 +71,8 @@ const Page = async () => {
             </LinkBox>
           ))}
         </Grid>
-      </Stack>
-    </DefaultContainer>
+      </DefaultContainer>
+    </>
   );
 };
 

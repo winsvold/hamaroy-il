@@ -1,7 +1,7 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { Box, Button, Flex, HStack, Stack } from "@chakra-ui/react";
+import { Box, Flex, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,17 +41,15 @@ export const Header = async () => {
         label: page.title ?? "",
       }));
 
-  // Faste lenker først, så infosider redaktøren har plassert i hovedmenyen
-  const primaryLinks: NavLink[] = [
+  // Designet viser én flat rad. Rekkefølgen er faste lenker, så infosider redaktøren
+  // har lagt i hovedmenyen, så klubbene, så resten.
+  const links: NavLink[] = [
     { href: "/kalender", label: "Kalender" },
     { href: "/faste-aktiviteter", label: "Faste aktiviteter" },
     { href: "/lokaler", label: "Lokaler" },
     ...infoPagesIn("hovedmeny"),
-  ];
-
-  // Klubbene listes direkte så lenge det er en håndfull av dem. Blir det flere
-  // enn ~3 bør de få en egen /klubber-oversikt i stedet.
-  const secondaryLinks: NavLink[] = [
+    // Klubbene listes direkte så lenge det er en håndfull av dem. Blir det flere
+    // enn ~3 bør de få en egen /klubber-oversikt i stedet.
     ...data.clubs.map((club) => ({
       href: `/klubber/${club.slug?.current}`,
       label: club.name ?? "",
@@ -61,44 +59,53 @@ export const Header = async () => {
 
   const callToAction = infoPagesIn("toppknapp")[0];
 
+  /*
+    Designet dropper ordmerket i toppmenyen — hero-en bærer navnet. Navnet blir
+    liggende for skjermlesere, og trer fram som tekst dersom ingen logo er lastet opp:
+    uten det ville menyen stå helt uten avsender.
+  */
   const logo = (
-    <HStack gap=".6rem" asChild flexShrink={0}>
+    <Flex align="center" gap=".6rem" asChild flexShrink={0}>
       <Link href="/">
-        {logoUrl && (
-          <Box asChild width="2.125rem" height="2.125rem" objectFit="contain">
-            <Image alt="" src={logoUrl} width={100} height={100} />
+        {logoUrl ? (
+          <>
+            {/* Merket er kvadratisk og lavoppløst — det tåler verken beskjæring
+                eller å bli vist større enn dette */}
+            <Box asChild width="2.125rem" height="2.125rem" objectFit="contain">
+              <Image alt="" src={logoUrl} width={100} height={100} />
+            </Box>
+            <Box srOnly>Hamarøy IL</Box>
+          </>
+        ) : (
+          <Box
+            fontFamily="heading"
+            fontWeight={800}
+            fontSize="1.125rem"
+            color="onDark.base"
+            whiteSpace="nowrap"
+          >
+            Hamarøy IL
           </Box>
         )}
-        {/* Bevisst ikke en <h1> — hver side har sin egen overskrift */}
-        <Box
-          fontFamily="heading"
-          fontWeight={800}
-          fontSize={{ base: "1.05rem", md: "1.3rem" }}
-          letterSpacing=".01em"
-          textTransform="uppercase"
-          whiteSpace="nowrap"
-        >
-          Hamarøy IL
-        </Box>
       </Link>
-    </HStack>
+    </Flex>
   );
 
   const ctaButton = callToAction && (
-    <Button
+    <Box
       asChild
+      textStyle="kicker"
       flexShrink={0}
-      background="forest.700"
-      color="onDark"
-      _hover={{ background: "forest.800" }}
-      borderRadius="md"
-      fontWeight={700}
-      fontSize={{ base: "0.75rem", md: "0.85rem" }}
-      paddingX={{ base: ".8rem", md: "1.25rem" }}
-      size={{ base: "sm", md: "md" }}
+      background="aurora.green"
+      color="onAurora"
+      borderRadius="none"
+      padding=".625rem 1.125rem"
+      whiteSpace="nowrap"
+      transition="background .2s"
+      _hover={{ background: "aurora.teal" }}
     >
       <Link href={callToAction.href}>{callToAction.label}</Link>
-    </Button>
+    </Box>
   );
 
   return (
@@ -107,32 +114,22 @@ export const Header = async () => {
       position="sticky"
       top="0"
       zIndex={10}
-      background="surface"
-      borderBottom="1px solid"
-      borderColor="hairline"
-      paddingY=".85rem"
+      background="arctic.base"
+      paddingY="1.25rem"
     >
       <DefaultContainer>
-        <Flex align="center" gap={{ base: ".75rem", lg: "2.25rem" }}>
+        <Flex align="center" gap={{ base: ".75rem", lg: "2.5rem" }}>
           {logo}
 
           <Flex
             as="nav"
             display={{ base: "none", lg: "flex" }}
             align="center"
-            gap="1.6rem"
+            gap="1.5rem"
             marginRight="auto"
             flexWrap="wrap"
           >
-            {primaryLinks.map((link) => (
-              <HeaderLink key={link.href} href={link.href}>
-                {link.label}
-              </HeaderLink>
-            ))}
-            {!!secondaryLinks.length && (
-              <Box width="1px" height=".9rem" background="hairlineStrong" />
-            )}
-            {secondaryLinks.map((link) => (
+            {links.map((link) => (
               <HeaderLink key={link.href} href={link.href}>
                 {link.label}
               </HeaderLink>
@@ -144,15 +141,7 @@ export const Header = async () => {
             <Box display={{ base: "block", lg: "none" }}>
               <MobileMenu logo={logo}>
                 <Stack gap="1.25rem" fontSize="1.1rem">
-                  {primaryLinks.map((link) => (
-                    <HeaderLink key={link.href} href={link.href}>
-                      {link.label}
-                    </HeaderLink>
-                  ))}
-                  {!!secondaryLinks.length && (
-                    <Box height="1px" background="hairline" />
-                  )}
-                  {secondaryLinks.map((link) => (
+                  {links.map((link) => (
                     <HeaderLink key={link.href} href={link.href}>
                       {link.label}
                     </HeaderLink>

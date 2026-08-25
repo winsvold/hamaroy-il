@@ -1,5 +1,6 @@
-import { DefaultContainer } from "@/components/DefaultContainer";
+import { Kicker } from "@/components/Kicker";
 import { Box, Heading, Stack, Text } from "@chakra-ui/react";
+import { PageHero } from "../layout/PageHero";
 
 type Props = {
   title?: string | null;
@@ -7,57 +8,48 @@ type Props = {
 };
 
 export const Hero = (props: Props) => (
-  <Box
-    as="section"
-    position="relative"
-    overflow="hidden"
-    background="amber.500"
-  >
-    {/*
-      Den diagonale grønne flaten fra designet. Under `md` droppes skråstillingen og
-      flaten dekker alt: på smale skjermer krysser teksten ellers over på det oransje
-      feltet, og lys tekst på oransje er ikke lesbart.
-    */}
-    <Box
-      position="absolute"
-      inset="0"
-      background="forest.700"
-      clipPath={{
-        base: "none",
-        md: "polygon(0 0, 62% 0, 44% 100%, 0 100%)",
-      }}
-    />
-    <DefaultContainer position="relative">
-      <Stack
-        gap="1.1rem"
-        paddingY={{ base: "2.5rem", md: "3.5rem" }}
-        maxWidth={{ base: "100%", md: "34rem" }}
+  <PageHero variant="front">
+    <Stack gap="0" maxWidth="43.75rem">
+      <Box
+        fontSize={{ base: "1.125rem", md: "1.625rem" }}
+        color="onDark.soft"
+        marginBottom=".125rem"
       >
-        <Heading
-          as="h1"
-          fontFamily="heading"
-          fontWeight={800}
-          fontSize={{ base: "2.25rem", md: "2.75rem" }}
-          lineHeight={1.04}
-          color="onDark"
-          // Jevner ut linjelengdene, så tittelen ikke brekker med ett ord alene
-          textWrap="balance"
+        Velkommen til
+      </Box>
+      <Heading
+        as="h1"
+        fontFamily="heading"
+        fontWeight={800}
+        // Syne er en bred skrift: «Hamarøy» alene er ett ord som ikke kan brytes,
+        // og sprenger 390 px allerede ved 2.75rem
+        fontSize={{ base: "2.25rem", sm: "2.75rem", md: "4.125rem" }}
+        lineHeight={0.98}
+        letterSpacing="-.02em"
+        color="onDark.base"
+        css={{ hyphens: "auto", overflowWrap: "break-word" }}
+      >
+        {props.title || "Hamarøy IL"}
+      </Heading>
+      <Kicker color="aurora.green" marginTop="1.125rem">
+        68° nord · siden 1937
+      </Kicker>
+      {/*
+        Designet har ingen plass til ingressen, men feltet finnes og er redaktørens.
+        Den står derfor under merkelappen, og seksjonen faller tilbake til designets
+        oppsett når feltet er tomt.
+      */}
+      {props.text && (
+        <Text
+          fontSize={{ base: "0.9375rem", md: "1rem" }}
+          lineHeight={1.6}
+          color="onDark.soft"
+          maxWidth="30rem"
+          marginTop="1.125rem"
         >
-          {props.title || "Velkommen til Hamarøy IL"}
-        </Heading>
-        {props.text && (
-          <Text
-            fontSize={{ base: "0.9rem", md: "1rem" }}
-            fontWeight={500}
-            lineHeight={1.6}
-            color="onDark"
-            opacity={0.92}
-            maxWidth="30rem"
-          >
-            {props.text}
-          </Text>
-        )}
-      </Stack>
-    </DefaultContainer>
-  </Box>
+          {props.text}
+        </Text>
+      )}
+    </Stack>
+  </PageHero>
 );

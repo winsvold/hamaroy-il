@@ -1,74 +1,30 @@
 /**
- * Idrettene i Hamarøy IL. Definert i kode framfor som dokumenttype fordi lista er kort,
- * stabil og trenger både emoji og farge som uansett hører hjemme i designsystemet.
+ * Idrettene i Hamarøy IL. Definert i kode framfor som dokumenttype fordi lista er kort
+ * og stabil.
  *
  * Brukes tre steder:
  *  - `sport`-feltet på «sessionSeries» og «event» (options.list)
  *  - gruppering og ankere på /faste-aktiviteter
- *  - «Våre grupper»-flisene på forsiden
+ *  - kategorimerkelappen øverst på en aktivitetsside
+ *
+ * Emojien er bevisst bare et redaktørhjelpemiddel — den vises i nedtrekkslista og på
+ * forhåndsvisningene i Sanity, aldri på nettsidene. Nordlys-designet bruker ingen emoji.
  */
-
-/** Fargene flisene og kategorimerkene roterer gjennom. Peker på tokens i provider.tsx */
-export type SportAccent =
-  | "forest"
-  | "amber"
-  | "terracotta"
-  | "moss"
-  | "tint"
-  | "mist";
 
 export type Sport = {
   id: string;
   title: string;
+  /** Kun til Sanity Studio. Skal ikke rendres på nettsidene. */
   emoji: string;
-  accent: SportAccent;
-  /** Kort beskrivelse som vises på «Våre grupper»-flisene på forsiden */
-  description: string;
 };
 
 export const sports = [
-  {
-    id: "fotball",
-    title: "Fotball",
-    emoji: "⚽",
-    accent: "forest",
-    description: "Barne- og ungdomsfotball, herrer og damer senior.",
-  },
-  {
-    id: "klatring",
-    title: "Klatring",
-    emoji: "🧗",
-    accent: "amber",
-    description: "Klatrevegg i Hamarøyhallen, faste kvelder for alle nivåer.",
-  },
-  {
-    id: "handball",
-    title: "Håndball",
-    emoji: "🤾",
-    accent: "terracotta",
-    description: "Ungdoms- og voksentrening i Hamarøyhallen.",
-  },
-  {
-    id: "turn",
-    title: "Turn & gym",
-    emoji: "🤸",
-    accent: "moss",
-    description: "Turnglede for barn, gymgrupper for voksne.",
-  },
-  {
-    id: "innebandy",
-    title: "Innebandy",
-    emoji: "🏐",
-    accent: "tint",
-    description: "Sesongbasert trening og seriespill for ungdom.",
-  },
-  {
-    id: "allidrett",
-    title: "Allidrett barn",
-    emoji: "🧒",
-    accent: "mist",
-    description: "Variert idrettsglede for de yngste, 4–8 år.",
-  },
+  { id: "fotball", title: "Fotball", emoji: "⚽" },
+  { id: "klatring", title: "Klatring", emoji: "🧗" },
+  { id: "handball", title: "Håndball", emoji: "🤾" },
+  { id: "turn", title: "Turn & gym", emoji: "🤸" },
+  { id: "innebandy", title: "Innebandy", emoji: "🏐" },
+  { id: "allidrett", title: "Allidrett barn", emoji: "🧒" },
 ] as const satisfies readonly Sport[];
 
 export type SportId = (typeof sports)[number]["id"];

@@ -21,8 +21,8 @@ const customConfig = defineConfig({
   globalCss: {
     html: {
       fontSize: { base: "112.5%", md: "120%" },
-      // Sørger for at ankerlenker (feks «Våre grupper» → /faste-aktiviteter#klatring)
-      // ikke havner bak den klebrige toppmenyen
+      // Sørger for at ankerlenker (feks /faste-aktiviteter#klatring) ikke havner
+      // bak den klebrige toppmenyen
       scrollPaddingTop: "6rem",
     },
   },
@@ -33,83 +33,64 @@ const customConfig = defineConfig({
         body: { value: `var(--font-body), ${fallbackSans}` },
       },
       colors: {
-        // Skogsgrønn – hovedfargen. 700 er «forest», 600 er «moss» fra designet.
-        forest: {
-          50: { value: "#eef2ea" },
-          100: { value: "#dde7de" },
-          200: { value: "#cfe0d1" },
-          300: { value: "#a8c3ac" },
-          400: { value: "#8fae95" },
-          500: { value: "#3f7259" },
-          600: { value: "#2f5a45" },
-          700: { value: "#1f3d2e" },
-          800: { value: "#18301f" },
-          900: { value: "#112418" },
-          950: { value: "#0b1810" },
+        // Nattsvart grønn: toppmeny, bunntekst, hero og de mørke panelene
+        arctic: {
+          base: { value: "#0b1a17" },
+          hover: { value: "#12281f" },
+          ink: { value: "#111c19" },
         },
-        // Rav/terrakotta – aksentfargen. 500 er «amber», 700 er «terracotta».
-        amber: {
-          50: { value: "#fdf1e2" },
-          100: { value: "#f9e0c2" },
-          200: { value: "#f4cb9b" },
-          300: { value: "#edb471" },
-          400: { value: "#e6a253" },
-          500: { value: "#e0923f" },
-          600: { value: "#d17e33" },
-          700: { value: "#c1682e" },
-          800: { value: "#9c5326" },
-          900: { value: "#7c421f" },
-          950: { value: "#4d2813" },
+        // Nordlyset. Grønn er hovedaksenten, fiolett brukes sparsomt.
+        aurora: {
+          green: { value: "#4ade9f" },
+          teal: { value: "#7ce0d6" },
+          violet: { value: "#a48ee0" },
         },
-        // Flater og tekst som ikke hører hjemme i en skala
-        cream: { value: "#f7f2e6" },
-        surface: { value: "#fdfaf3" },
-        onDark: { value: "#f2ede2" },
-        muted: { value: "#5a6b58" },
-        hairline: { value: "rgba(31, 61, 46, 0.1)" },
-        hairlineStrong: { value: "rgba(31, 61, 46, 0.25)" },
-      },
-      radii: {
-        sm: { value: "0.375rem" },
-        md: { value: "0.5rem" },
-        lg: { value: "0.625rem" },
-        xl: { value: "0.75rem" },
-        "2xl": { value: "0.875rem" },
-        "3xl": { value: "1.25rem" },
-      },
-    },
-    semanticTokens: {
-      colors: {
-        forest: {
-          solid: { value: "{colors.forest.700}" },
-          contrast: { value: "{colors.onDark}" },
-          fg: { value: "{colors.forest.700}" },
-          subtle: { value: "{colors.forest.50}" },
-          muted: { value: "{colors.forest.100}" },
-          emphasized: { value: "{colors.forest.800}" },
-          focusRing: { value: "{colors.forest.600}" },
-          border: { value: "{colors.hairline}" },
+        // Lenker og etiketter på lys bakgrunn
+        deep: {
+          base: { value: "#0d5c4f" },
+          hover: { value: "#12806d" },
         },
-        amber: {
-          solid: { value: "{colors.amber.500}" },
-          contrast: { value: "{colors.forest.700}" },
-          fg: { value: "{colors.amber.700}" },
-          subtle: { value: "{colors.amber.50}" },
-          muted: { value: "{colors.amber.100}" },
-          emphasized: { value: "{colors.amber.600}" },
-          focusRing: { value: "{colors.amber.500}" },
-          border: { value: "{colors.amber.500}" },
+        // Sidebakgrunnen. Fjellsilhuetten fylles med akkurat denne, så den løser
+        // seg opp i seksjonen under.
+        snow: { value: "#f2f4f3" },
+        // Flater: kort og lyse paneler
+        sage: {
+          base: { value: "#e6ece9" },
+          hover: { value: "#dce5e0" },
+          deep: { value: "#c7d5d0" },
         },
+        // Tekst på lys bakgrunn
+        ink: { value: "#111c19" },
+        prose: { value: "#2b3a35" },
+        secondary: { value: "#3f4f4a" },
+        muted: { value: "#5d6d68" },
+        // Tekst på mørk bakgrunn, fra sterkest til svakest
+        onDark: {
+          base: { value: "#f4faf8" },
+          warm: { value: "#d3e4df" },
+          secondary: { value: "#c3d6d0" },
+          soft: { value: "#b8ccc6" },
+          tertiary: { value: "#9fb8b2" },
+          faint: { value: "#6b8079" },
+        },
+        // Tekst oppå den grønne knappen
+        onAurora: { value: "#062018" },
+        hairline: { value: "rgba(17, 28, 25, 0.14)" },
+        hairlineDark: { value: "rgba(195, 214, 208, 0.28)" },
+        hairlineDarkFaint: { value: "rgba(195, 214, 208, 0.22)" },
       },
     },
     textStyles: {
-      // Den lille versale etiketten over hver seksjon
+      /**
+       * Den lille versale etiketten. Rendyrket merkelapp — seksjonsoverskrifter er
+       * `SectionHeading` og settes i Syne.
+       */
       kicker: {
         value: {
-          fontFamily: "mono",
-          fontWeight: "800",
-          fontSize: "0.75rem",
-          letterSpacing: "0.08em",
+          fontFamily: "body",
+          fontWeight: "700",
+          fontSize: "0.65625rem",
+          letterSpacing: "0.15em",
           textTransform: "uppercase",
         },
       },

@@ -1,5 +1,4 @@
 import { urlFor } from "@/sanity/lib/image";
-import { resolveSport } from "@/sanity/sports";
 import { formatNorwegianDate } from "@/utils/date";
 import {
   Box,
@@ -7,114 +6,132 @@ import {
   Heading,
   LinkBox,
   LinkOverlay,
-  Stack,
   Text,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin } from "react-feather";
 import { FrontPageQueryResult } from "../../../../sanity.types";
-import { TextWithIcon } from "./CalendarCard";
-import { DatoBadge } from "./calendar";
+
+/** Datobrikka øverst til høyre på kortet: ukedag over dag over måned. */
+const DateChip = ({ date }: { date: string }) => (
+  <Flex
+    flexDirection="column"
+    align="center"
+    justify="center"
+    flexShrink={0}
+    width="2.875rem"
+    height="2.875rem"
+    background="arctic.base"
+    color="aurora.green"
+    lineHeight={1.05}
+    title={formatNorwegianDate(date, "PPP")}
+  >
+    <Box
+      as="span"
+      fontSize="0.59375rem"
+      fontWeight={600}
+      letterSpacing=".1em"
+      textTransform="uppercase"
+    >
+      {formatNorwegianDate(date, "E").replace(".", "")}
+    </Box>
+    <Box
+      as="span"
+      fontFamily="heading"
+      fontWeight={800}
+      fontSize="1.25rem"
+      color="onDark.base"
+    >
+      {formatNorwegianDate(date, "d")}
+    </Box>
+    <Box
+      as="span"
+      fontSize="0.59375rem"
+      fontWeight={600}
+      letterSpacing=".1em"
+      textTransform="uppercase"
+    >
+      {formatNorwegianDate(date, "MMM").replace(".", "")}
+    </Box>
+  </Flex>
+);
 
 /**
- * Det store kortet i «Gå ikke glipp av». Arrangementer skjer sjelden sammenlignet med
- * de faste treningene, så de får bilde og mer plass enn en rad i tidslinja.
+ * Kortet i «Gå ikke glipp av». Arrangementer skjer sjelden sammenlignet med de faste
+ * treningene, så de får bilde og mer plass enn en rad i tidslinja.
  */
 export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
   const { startsAt, endsAt, title, location } = props;
   const image = props.images?.[0];
-  const sport = resolveSport(props);
 
   return (
     <LinkBox
       display="flex"
       flexDirection="column"
-      background="surface"
-      border="1px solid"
-      borderColor="hairline"
-      borderRadius="2xl"
-      overflow="hidden"
-      transition="border-color .2s, transform .2s"
-      _hover={{
-        borderColor: "hairlineStrong",
-        transform: "translateY(-0.125rem)",
-      }}
+      background="sage.base"
+      transition="background .2s"
+      _hover={{ background: "sage.hover", "& h3": { color: "deep.base" } }}
     >
-      {/*
-        Bildefeltet står alltid, også uten bilde — ellers får kort uten bilde innholdet
-        klistret til toppen mens naboene i rutenettet er strukket like høye, og raden
-        ser ødelagt ut. Uten bilde fylles feltet med idrettsikonet.
-      */}
-      <Box width="100%" aspectRatio={2} background="forest.50" flexShrink={0}>
-        {image ? (
+      {image && (
+        <Box width="100%" height="8.25rem" flexShrink={0} overflow="hidden">
           <Box asChild width="100%" height="100%" objectFit="cover">
             <Image
               alt=""
-              src={urlFor(image).width(600).height(300).url()}
-              width={600}
+              src={urlFor(image).width(800).height(300).url()}
+              width={800}
               height={300}
             />
           </Box>
-        ) : (
-          <Flex
-            height="100%"
-            align="center"
-            justify="center"
-            fontSize="3rem"
-            opacity={0.55}
-            aria-hidden="true"
+        </Box>
+      )}
+      {/*
+        Uten bilde skyves innholdet ned til bunnen av kortet. Rutenettet strekker alle
+        kortene like høye, og da ville et bildeløst kort ellers stått med teksten på
+        toppen mens naboene har sin nederst — hele raden ser da ujevn ut.
+      */}
+      <Flex
+        gap=".75rem"
+        padding=".875rem .9375rem 1rem"
+        marginTop={image ? undefined : "auto"}
+        alignItems={image ? undefined : "flex-end"}
+      >
+        <Box flex="1" minWidth="0">
+          <LinkOverlay asChild>
+            <Link href={`/aktiviteter/${props._id}`}>
+              <Heading
+                as="h3"
+                fontFamily="body"
+                fontWeight={700}
+                fontSize="0.9375rem"
+                lineHeight={1.28}
+                color="ink"
+                transition="color .2s"
+              >
+                {title}
+              </Heading>
+            </Link>
+          </LinkOverlay>
+          <Text
+            fontSize="0.78125rem"
+            fontWeight={600}
+            color="secondary"
+            marginTop=".375rem"
           >
-            {sport?.emoji ?? "📅"}
-          </Flex>
-        )}
-      </Box>
-      <Flex gap="1rem" padding="1.1rem" alignItems="flex-start" flex="1">
-        {startsAt && <DatoBadge date={startsAt} flexShrink={0} />}
-        <Stack gap=".35rem" flex="1" minWidth="0">
-          <Flex gap=".5rem" align="center">
-            {sport && (
-              <Box fontSize="1rem" aria-hidden="true">
-                {sport.emoji}
-              </Box>
-            )}
-            <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
-              <Link href={`/aktiviteter/${props._id}`}>
-                <Heading
-                  as="h3"
-                  fontFamily="heading"
-                  fontWeight={800}
-                  fontSize="1.15rem"
-                  lineHeight={1.2}
-                  color="forest.700"
-                >
-                  {title}
-                </Heading>
-              </Link>
-            </LinkOverlay>
-          </Flex>
-          <Text fontSize="0.85rem" fontWeight={600} color="muted">
-            {formatNorwegianDate(startsAt, "p")}–
+            {formatNorwegianDate(startsAt, "p")} –{" "}
             {formatNorwegianDate(endsAt, "p")}
           </Text>
-          {location && (
-            <TextWithIcon
-              fontSize="0.8rem"
+          {location?.name && (
+            <Text
+              fontSize="0.78125rem"
+              fontWeight={500}
               color="muted"
-              icon={<MapPin size="1em" />}
+              marginTop=".1875rem"
             >
-              {location?.name}
-            </TextWithIcon>
+              {location.name}
+            </Text>
           )}
-          <Box
-            marginTop=".35rem"
-            fontSize="0.78rem"
-            fontWeight={700}
-            color="amber.700"
-          >
-            Les mer →
-          </Box>
-        </Stack>
+        </Box>
+        {startsAt && <DateChip date={startsAt} />}
       </Flex>
     </LinkBox>
   );

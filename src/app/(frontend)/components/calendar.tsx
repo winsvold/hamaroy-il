@@ -1,8 +1,7 @@
-import { Kicker } from "@/components/Kicker";
+import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
-import { resolveSport } from "@/sanity/sports";
 import { formatNorwegianDate } from "@/utils/date";
-import { Box, Flex, FlexProps, Grid, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import { startOfDay } from "date-fns";
 import { defineQuery } from "next-sanity";
 import Link from "next/link";
@@ -26,10 +25,8 @@ const activitiesQuery = defineQuery(`{
     _id,
     _type,
     title,
-    sport,
     startsAt,
     endsAt,
-    "image": images[0],
     location->{ _id, name },
   },
   "sessionSeries": *[
@@ -41,7 +38,6 @@ const activitiesQuery = defineQuery(`{
     _id,
     title,
     slug,
-    sport,
     location->{ _id, name },
     "sessions": sessions[] {
       _key,
@@ -61,6 +57,14 @@ const activitiesQuery = defineQuery(`{
  */
 const NO_SESSION_LIMIT = 1000;
 
+/**
+ * Prikkene roterer med posisjonen i lista, ikke med idretten. Slik gjør prototypen
+ * det også — samme aktivitet får ulik farge på forsiden og på en aktivitetsside.
+ * Å binde fargene til idrett ville antydet et system paletten ikke kan bære: den har
+ * tre farger og klubben seks idretter.
+ */
+const dotColors = ["aurora.green", "aurora.teal", "aurora.violet"];
+
 type Props = {
   limit?: number;
   seriesId?: string;
@@ -69,10 +73,17 @@ type Props = {
   clubId?: string;
   /** Aktiviteter som allerede vises et annet sted på siden og ikke skal gjentas her */
   excludeIds?: string[];
-  /** «timeline» har datoskinne til venstre, «grid» er kompakte rader i to kolonner */
-  variant?: "timeline" | "grid";
   /** Av på en aktivitets egen side, der hver rad ellers gjentar samme tittel */
   showTitles?: boolean;
+  /**
+   * Hva lista gjør når den er tom:
+   *  - «card» (standard): tomkortet med lenke videre til alle faste tilbud
+   *  - «note»: bare en linje tekst. Til lister som står på en aktivitets egen side,
+   *    der lenka ville pekt tilbake dit du allerede er
+   *  - «hide»: seksjonen droppes helt. Til lister som bare utfyller hovedinnholdet,
+   *    så en side ikke ender opp med det samme tomkortet to ganger
+   */
+  whenEmpty?: "card" | "note" | "hide";
   childrenAfter?: React.ReactNode;
 };
 
@@ -87,7 +98,6 @@ export type SessionOccurrence = NonNullable<
 };
 
 export const Calendar = async (props: Props) => {
-  const variant = props.variant ?? "timeline";
   const { events, sessionSeries } = await sanityFetch(activitiesQuery, {
     seriesId: props.seriesId ?? null,
     locationId: props.locationId ?? null,
@@ -128,115 +138,128 @@ export const Calendar = async (props: Props) => {
 
   const entries = Object.entries(groupedByDate);
 
-  const heading = props.heading && <Kicker as="h2">{props.heading}</Kicker>;
+  const heading = props.heading && (
+    <SectionHeading marginBottom="1.5rem">{props.heading}</SectionHeading>
+  );
 
-  if (entries.length === 0)
+  if (entries.length === 0) {
+    const whenEmpty = props.whenEmpty ?? "card";
+    if (whenEmpty === "hide") return null;
     return (
-      <Stack gap="1rem" alignItems="stretch">
+      <Box>
         {heading}
-        <EmptyState />
-      </Stack>
+        {whenEmpty === "note" ? (
+          <Text fontSize="0.9375rem" color="muted">
+            Treningstidene legges ut så snart sesongen er satt.
+          </Text>
+        ) : (
+          <EmptyState />
+        )}
+      </Box>
     );
+  }
 
-  const cardFor = (
-    item: (typeof sortedEventsAndSessions)[number],
-    key: string,
-  ) =>
-    item._type === "event" ? (
-      <CalendarCard
-        key={key}
-        startsAt={item.startsAt}
-        endsAt={item.endsAt}
-        title={item.title}
-        location={item.location}
-        slug={item._id}
-        image={item.image}
-        sport={resolveSport(item)}
-        type="event"
-      />
-    ) : (
-      <CalendarCard
-        key={key}
-        startsAt={item.startsAt}
-        endsAt={item.endsAt}
-        title={item.series.title}
-        location={item.series.location}
-        slug={item.series.slug?.current}
-        cancelled={item.cancelled}
-        note={item.note}
-        sport={resolveSport(item.series)}
-        hideTitle={props.showTitles === false}
-        type="session"
-      />
-    );
-
-  // Kompakt variant: ingen datoskinne, datoen får en egen brikke foran hvert kort
-  if (variant === "grid")
-    return (
-      <Stack gap="1.25rem">
-        {heading}
-        <Grid
-          gridTemplateColumns={{ base: "1fr", md: "1fr 1fr" }}
-          gap=".875rem"
-          alignItems="start"
-        >
-          {sortedEventsAndSessions.map((item) => {
-            const key = item._type === "event" ? item._id : item._key;
-            return (
-              <Flex key={key} gap=".875rem" alignItems="center">
-                <DatoBadge date={item.startsAt!} flexShrink={0} />
-                {cardFor(item, key)}
-              </Flex>
-            );
-          })}
-        </Grid>
-        {props.childrenAfter}
-      </Stack>
-    );
+  // Teller på tvers av datogruppene, slik at fargene roterer nedover hele lista
+  let rowIndex = 0;
 
   return (
-    <Stack gap="1.25rem">
+    // Samme bredde som kolonnen lista står i på forsiden. Uten taket strekker radene
+    // seg over hele sidebredden på /kalender, med en tom halvdel til høyre.
+    <Box maxWidth="40rem">
       {heading}
-      <Stack gap="0">
-        {entries.map(([date, activities], index) => {
-          const isLast = index === entries.length - 1;
-          return (
-            <Flex key={date} gap=".875rem" align="stretch">
-              {/* Datoskinne: brikke øverst, tynn strek ned til neste dato */}
-              <Flex
-                direction="column"
-                align="center"
-                width={{ base: "2.75rem", sm: "3.5rem" }}
-                flexShrink={0}
-              >
-                <DatoBadge date={date} position="sticky" top="5.5rem" />
-                {!isLast && (
-                  <Box
-                    width="0.125rem"
-                    flex="1"
-                    background="hairline"
-                    marginTop=".25rem"
-                  />
-                )}
-              </Flex>
-              <Stack
-                gap=".5rem"
-                flex="1"
-                minWidth="0"
-                paddingBottom={isLast ? "0" : ".875rem"}
-              >
-                {activities?.map((item) =>
-                  cardFor(item, item._type === "event" ? item._id : item._key),
-                )}
-              </Stack>
-            </Flex>
-          );
-        })}
-      </Stack>
+      {entries.map(([date, activities], index) => (
+        <Flex
+          key={date}
+          gap="1.375rem"
+          paddingTop="1rem"
+          marginTop={index === 0 ? "0" : "1.375rem"}
+          // Første gruppe får den tunge streken, resten en hårstrek — som i designet
+          borderTop={index === 0 ? "2px solid" : "1px solid"}
+          borderColor={index === 0 ? "arctic.ink" : "hairline"}
+        >
+          <Box width="3.875rem" flexShrink={0}>
+            <Box
+              fontFamily="heading"
+              fontWeight={800}
+              fontSize="1.875rem"
+              lineHeight={1}
+              color="ink"
+              title={formatNorwegianDate(date, "PPP")}
+            >
+              {formatNorwegianDate(date, "d")}
+            </Box>
+            {/* Forkortet: «november» og «september» brekker over to linjer i en
+                kolonne på 3.875rem. Designet traff bare korte måneder. */}
+            <Box
+              textStyle="kicker"
+              color="muted"
+              marginTop=".1875rem"
+              whiteSpace="nowrap"
+            >
+              {formatNorwegianDate(date, "MMM").replace(".", "")}
+            </Box>
+          </Box>
+          <Stack gap=".875rem" flex="1" minWidth="0">
+            {activities?.map((item) => {
+              const dotColor = dotColors[rowIndex++ % dotColors.length];
+              return item._type === "event" ? (
+                <CalendarCard
+                  key={item._id}
+                  startsAt={item.startsAt}
+                  endsAt={item.endsAt}
+                  title={item.title}
+                  location={item.location}
+                  slug={item._id}
+                  dotColor={dotColor}
+                />
+              ) : (
+                <CalendarCard
+                  key={item._key}
+                  startsAt={item.startsAt}
+                  endsAt={item.endsAt}
+                  title={item.series.title}
+                  location={item.series.location}
+                  slug={item.series.slug?.current}
+                  cancelled={item.cancelled}
+                  note={item.note}
+                  dotColor={dotColor}
+                  hideTitle={props.showTitles === false}
+                />
+              );
+            })}
+          </Stack>
+        </Flex>
+      ))}
       {props.childrenAfter}
-    </Stack>
+    </Box>
   );
 };
+
+/** Den mørke handlingsstripa under en liste. */
+export const CalendarActionBar = ({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) => (
+  <Box
+    asChild
+    textStyle="kicker"
+    display="flex"
+    alignItems="center"
+    justifyContent="center"
+    gap=".5rem"
+    marginTop="1.625rem"
+    padding=".9375rem"
+    background="arctic.base"
+    color="aurora.green"
+    transition="background .2s, color .2s"
+    _hover={{ background: "arctic.hover", color: "aurora.teal" }}
+  >
+    <Link href={href}>{children}</Link>
+  </Box>
+);
 
 /**
  * Klubben har lange perioder mellom sesongene der ingenting er planlagt, så dette
@@ -244,76 +267,25 @@ export const Calendar = async (props: Props) => {
  */
 const EmptyState = () => (
   <Stack
-    background="surface"
-    border="1px solid"
-    borderColor="hairline"
-    borderRadius="xl"
-    padding="1.5rem"
+    background="sage.base"
+    padding="1.625rem"
     gap=".5rem"
-    alignItems="flex-start"
+    align="flex-start"
   >
-    <Text fontWeight={700} color="forest.700">
+    <Text fontWeight={700} fontSize="1.0625rem" color="ink">
       Ingen planlagte aktiviteter akkurat nå
     </Text>
-    <Text fontSize="0.85rem" color="muted">
+    <Text fontSize="0.8125rem" color="muted">
       Treningstidene legges ut så snart sesongen er satt.
     </Text>
     <Box
       asChild
-      fontSize="0.8rem"
-      fontWeight={700}
-      color="amber.700"
-      _hover={{ textDecoration: "underline" }}
+      textStyle="kicker"
+      color="deep.base"
+      marginTop=".375rem"
+      _hover={{ color: "deep.hover" }}
     >
       <Link href="/faste-aktiviteter">Se alle faste tilbud →</Link>
     </Box>
   </Stack>
-);
-
-export const DatoBadge = ({
-  date,
-  ...chakraProps
-}: { date: string } & FlexProps) => (
-  <Flex
-    flexDirection="column"
-    as="p"
-    padding=".45rem .6rem"
-    minWidth={{ base: "2.75rem", sm: "3.5rem" }}
-    textAlign="center"
-    alignItems="center"
-    borderRadius="lg"
-    background="forest.700"
-    color="onDark"
-    lineHeight={1}
-    title={formatNorwegianDate(date, "PPP")}
-    {...chakraProps}
-  >
-    <Box
-      as="span"
-      fontSize="0.6rem"
-      fontWeight={700}
-      opacity={0.75}
-      textTransform="uppercase"
-    >
-      {formatNorwegianDate(date, "E")}
-    </Box>
-    <Box
-      as="span"
-      fontFamily="heading"
-      fontWeight={800}
-      fontSize="1.25rem"
-      marginY=".1rem"
-    >
-      {formatNorwegianDate(date, "d")}
-    </Box>
-    <Box
-      as="span"
-      fontSize="0.62rem"
-      fontWeight={700}
-      opacity={0.85}
-      textTransform="uppercase"
-    >
-      {formatNorwegianDate(date, "MMM").replace(".", "")}
-    </Box>
-  </Flex>
 );

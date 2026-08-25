@@ -22,23 +22,27 @@ export const MobileMenu = (props: Props) => {
   return (
     <Drawer.Root open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
       <Drawer.Trigger asChild>
-        <IconButton variant="ghost" aria-label="Meny" color="forest.700">
+        <IconButton variant="ghost" aria-label="Meny" color="onDark.base">
           <Menu />
         </IconButton>
       </Drawer.Trigger>
-      <Drawer.Backdrop background="rgba(31, 61, 46, 0.4)" />
+      <Drawer.Backdrop background="rgba(11, 26, 23, 0.55)" />
       <Drawer.Positioner>
         {/* Drawer bruker Chakras egne bg/fg-tokens, som vi med vilje ikke overstyrer
             globalt (provideren omslutter også Sanity Studio) — derfor settes de her */}
-        <Drawer.Content background="surface" color="forest.700">
-          <Drawer.Header borderBottom="1px solid" borderColor="hairline">
+        <Drawer.Content
+          background="arctic.base"
+          color="onDark.base"
+          borderRadius="none"
+        >
+          <Drawer.Header borderBottom="1px solid" borderColor="hairlineDark">
             <Drawer.Title asChild>
               <Flex justify="space-between" align="center" gap="1rem">
                 {props.logo}
                 <IconButton
                   variant="ghost"
                   aria-label="Lukk meny"
-                  color="forest.700"
+                  color="onDark.base"
                   onClick={() => setIsOpen(false)}
                 >
                   <X />

@@ -2,13 +2,13 @@ import { Avatar } from "@/components/Avatar";
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { ImageGallery } from "@/components/ImageGallery";
 import { Kicker } from "@/components/Kicker";
-import { PageIntro } from "@/components/PageIntro";
 import { RichText } from "@/components/RichText";
 import { sanityFetch } from "@/sanity/lib/client";
 import { Box, Grid, Stack, Text } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import { notFound } from "next/navigation";
 import { Calendar } from "../../components/calendar";
+import { PageHeader } from "../../layout/PageHeader";
 
 const clubPageQuery = defineQuery(`
   *[_type == "club" && slug.current == $slug][0] {
@@ -31,48 +31,51 @@ const Page = async (props: Props) => {
   if (!data) return notFound();
 
   return (
-    <DefaultContainer paddingTop={{ base: "2rem", md: "3.5rem" }}>
-      <Stack gap="2.5rem">
-        <PageIntro kicker="Klubb" title={data.name ?? ""} />
-        <ImageGallery images={data.images} aspectRatio={2 / 1} />
+    <>
+      <PageHeader variant="detail" kicker="Klubb" title={data.name ?? ""} />
+      <DefaultContainer paddingTop="3.5rem" paddingBottom="4.75rem">
+        <Stack gap="3.5rem">
+          <ImageGallery images={data.images} aspectRatio={2 / 1} />
 
-        <Grid
-          gridTemplateColumns={{ base: "1fr", lg: "1.7fr 1fr" }}
-          gap={{ base: "2rem", lg: "3rem" }}
-          alignItems="start"
-        >
-          <RichText blockContent={data.body} fontSize="1rem" />
+          <Grid
+            gridTemplateColumns={{ base: "1fr", lg: "1.65fr 1fr" }}
+            gap={{ base: "2rem", lg: "3.5rem" }}
+            alignItems="start"
+          >
+            <RichText
+              blockContent={data.body}
+              fontSize="1rem"
+              lineHeight={1.72}
+            />
 
-          {!!data.managers?.length && (
-            <Box
-              background="surface"
-              border="1px solid"
-              borderColor="hairline"
-              borderRadius="2xl"
-              padding="1.375rem"
-            >
-              <Kicker as="h2" fontSize="0.68rem" marginBottom=".9rem">
-                Ledere
-              </Kicker>
-              <Stack gap="1.25rem">
-                {data.managers.map((manager) => (
-                  <Stack gap=".35rem" key={manager.person?._id ?? manager._key}>
-                    {manager.person && <Avatar entity={manager.person} />}
-                    {manager.role && (
-                      <Text fontSize="0.8rem" color="muted">
-                        {manager.role}
-                      </Text>
-                    )}
-                  </Stack>
-                ))}
-              </Stack>
-            </Box>
-          )}
-        </Grid>
+            {!!data.managers?.length && (
+              <Box background="sage.base" padding="1.5rem">
+                <Kicker as="h2" marginBottom=".875rem">
+                  Ledere
+                </Kicker>
+                <Stack gap="1.25rem">
+                  {data.managers.map((manager) => (
+                    <Stack
+                      gap=".35rem"
+                      key={manager.person?._id ?? manager._key}
+                    >
+                      {manager.person && <Avatar entity={manager.person} />}
+                      {manager.role && (
+                        <Text fontSize="0.8125rem" color="muted">
+                          {manager.role}
+                        </Text>
+                      )}
+                    </Stack>
+                  ))}
+                </Stack>
+              </Box>
+            )}
+          </Grid>
 
-        <Calendar heading="Aktiviteter" clubId={data._id} />
-      </Stack>
-    </DefaultContainer>
+          <Calendar heading="Aktiviteter" clubId={data._id} whenEmpty="hide" />
+        </Stack>
+      </DefaultContainer>
+    </>
   );
 };
 

@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Libre_Franklin } from "next/font/google";
+import { Figtree, Syne } from "next/font/google";
 import { Provider } from "./provider";
 
-const display = Bricolage_Grotesque({
+const display = Syne({
   weight: ["600", "700", "800"],
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
 });
 
-const body = Libre_Franklin({
-  weight: ["400", "500", "600", "700"],
+const body = Figtree({
+  weight: ["400", "500", "600", "700", "800"],
   style: ["normal", "italic"],
   subsets: ["latin"],
   variable: "--font-body",

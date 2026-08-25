@@ -4,6 +4,7 @@ import { VippsIkon } from "@/components/ikoner/vipps";
 import { ImageGallery } from "@/components/ImageGallery";
 import { Kicker } from "@/components/Kicker";
 import { RichText } from "@/components/RichText";
+import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
 import { resolveSport } from "@/sanity/sports";
 import {
@@ -11,22 +12,14 @@ import {
   formatNorwegianDateCapitalized,
 } from "@/utils/date";
 import { getSessionEndsAt } from "@/utils/session";
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  Heading,
-  Icon,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Flex, Grid, Heading, Icon, Stack, Text } from "@chakra-ui/react";
 import { isAfter } from "date-fns";
 import { defineQuery } from "next-sanity";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AktivitetQueryResult } from "../../../../../sanity.types";
-import { Calendar } from "../../components/calendar";
+import { Calendar, CalendarActionBar } from "../../components/calendar";
+import { PageHero } from "../../layout/PageHero";
 
 const aktivitetQuery =
   defineQuery(`*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{
@@ -57,7 +50,7 @@ const getFacts = (data: Aktivitet) => {
       },
       {
         label: "Tid",
-        value: `${formatNorwegianDate(data.startsAt, "p")}–${formatNorwegianDate(data.endsAt, "p")}`,
+        value: `${formatNorwegianDate(data.startsAt, "p")} – ${formatNorwegianDate(data.endsAt, "p")}`,
       },
       place && { label: "Sted", value: place },
     ];
@@ -83,7 +76,7 @@ const getFacts = (data: Aktivitet) => {
     },
     next && {
       label: "Tid",
-      value: `${formatNorwegianDate(next.startsAt, "p")}–${formatNorwegianDate(getSessionEndsAt(next), "p")}`,
+      value: `${formatNorwegianDate(next.startsAt, "p")} – ${formatNorwegianDate(getSessionEndsAt(next), "p")}`,
     },
     place && { label: "Sted", value: place },
   ];
@@ -100,103 +93,77 @@ const Page = async (props: Props) => {
   const facts = getFacts(data).filter((fact) => !!fact);
 
   return (
-    <Stack gap={{ base: "2.5rem", md: "3.5rem" }}>
-      <DefaultContainer paddingTop={{ base: "1.25rem", md: "1.75rem" }}>
-        <Stack gap="1.5rem">
-          {/* Hero-kortet */}
-          <Box
-            position="relative"
-            overflow="hidden"
-            background="forest.600"
-            borderRadius="3xl"
+    <>
+      <PageHero variant="detail">
+        <Stack gap="0" maxWidth="47.5rem">
+          {sport && (
+            <Kicker color="aurora.green" marginBottom=".875rem">
+              {sport.title}
+            </Kicker>
+          )}
+          <Heading
+            as="h1"
+            fontFamily="heading"
+            fontWeight={800}
+            fontSize={{ base: "1.875rem", sm: "2.125rem", md: "3.25rem" }}
+            lineHeight={1}
+            letterSpacing="-.02em"
+            color="onDark.base"
+            css={{ hyphens: "auto", overflowWrap: "break-word" }}
           >
-            <Box
-              position="absolute"
-              inset="0"
-              background="amber.500"
-              opacity={0.14}
-            />
-            <Stack
-              position="relative"
-              gap="1.1rem"
-              padding={{ base: "1.75rem 1.5rem", md: "3rem" }}
+            {data.title}
+          </Heading>
+          {!!facts.length && (
+            <Flex
+              gap={{ base: "1.5rem", md: "2.75rem" }}
+              flexWrap="wrap"
+              marginTop="1.875rem"
             >
-              {sport && (
-                <Flex align="center" gap=".65rem">
-                  <Box fontSize="1.625rem" aria-hidden="true">
-                    {sport.emoji}
-                  </Box>
+              {facts.map((fact) => (
+                <Box key={fact.label}>
+                  <Kicker color="aurora.teal" marginBottom=".375rem">
+                    {fact.label}
+                  </Kicker>
                   <Box
-                    background="rgba(242, 237, 226, 0.16)"
-                    color="onDark"
-                    fontSize="0.75rem"
                     fontWeight={700}
-                    letterSpacing=".04em"
-                    textTransform="uppercase"
-                    borderRadius="full"
-                    padding=".35rem .75rem"
+                    fontSize="1.0625rem"
+                    color="onDark.base"
                   >
-                    {sport.title}
+                    {fact.value}
                   </Box>
-                </Flex>
-              )}
-              <Heading
-                as="h1"
-                fontFamily="heading"
-                fontWeight={800}
-                fontSize={{ base: "1.875rem", md: "2.625rem" }}
-                lineHeight={1.08}
-                color="onDark"
-                maxWidth="40rem"
-              >
-                {data.title}
-              </Heading>
-              {!!facts.length && (
-                <Flex
-                  gap={{ base: "1.25rem", md: "2rem" }}
-                  flexWrap="wrap"
-                  marginTop=".25rem"
-                >
-                  {facts.map((fact) => (
-                    <Box key={fact.label}>
-                      <Box
-                        textStyle="kicker"
-                        fontSize="0.66rem"
-                        letterSpacing=".06em"
-                        color="forest.400"
-                      >
-                        {fact.label}
-                      </Box>
-                      <Box fontWeight={700} fontSize="0.9rem" color="onDark">
-                        {fact.value}
-                      </Box>
-                    </Box>
-                  ))}
-                </Flex>
-              )}
-            </Stack>
-          </Box>
+                </Box>
+              ))}
+            </Flex>
+          )}
+        </Stack>
+      </PageHero>
 
+      <DefaultContainer paddingTop="3.5rem">
+        <Stack gap="3.5rem">
           <Grid
-            gridTemplateColumns={{ base: "1fr", lg: "1.7fr 1fr" }}
-            gap={{ base: "2rem", lg: "3rem" }}
+            gridTemplateColumns={{ base: "1fr", lg: "1.65fr 1fr" }}
+            gap={{ base: "2rem", lg: "3.5rem" }}
             alignItems="start"
           >
-            <Stack gap="1.5rem" minWidth="0">
+            <Stack gap="2rem" minWidth="0">
               <ImageGallery images={data.images} aspectRatio={2 / 1} />
               {data.body && (
-                <Stack gap="1rem">
-                  <Kicker as="h2">
+                <Box>
+                  <SectionHeading marginBottom="1.25rem">
                     {isEvent ? "Om arrangementet" : "Om aktiviteten"}
-                  </Kicker>
-                  <RichText blockContent={data.body} fontSize="1rem" />
-                </Stack>
+                  </SectionHeading>
+                  <RichText
+                    blockContent={data.body}
+                    fontSize="1rem"
+                    lineHeight={1.72}
+                  />
+                </Box>
               )}
             </Stack>
 
             <Stack gap="1rem">
               {!!data.organizers?.length && (
-                <SideCard title="Arrangør">
+                <SideCard title="Arrangør" dark>
                   <Stack gap="1rem">
                     {data.organizers.map((organizer) => (
                       <Avatar key={organizer._id} entity={organizer} />
@@ -205,21 +172,21 @@ const Page = async (props: Props) => {
                 </SideCard>
               )}
               {data.location && (
-                <SideCard title="Sted" dark>
-                  <Stack gap=".15rem" alignItems="flex-start">
+                <SideCard title="Sted">
+                  <Stack gap=".3125rem" alignItems="flex-start">
                     <Box
                       asChild
                       fontWeight={700}
-                      fontSize="0.9rem"
-                      color="onDark"
-                      _hover={{ textDecoration: "underline" }}
+                      fontSize="1rem"
+                      color="ink"
+                      _hover={{ color: "deep.base" }}
                     >
                       <Link href={`/lokaler/${data.location.slug?.current}`}>
                         {data.location.name}
                       </Link>
                     </Box>
                     {data.location.address && (
-                      <Text fontSize="0.8rem" color="forest.200">
+                      <Text fontSize="0.8125rem" fontWeight={500} color="muted">
                         {[data.location.address, data.location.city]
                           .filter(Boolean)
                           .join(", ")}
@@ -230,16 +197,16 @@ const Page = async (props: Props) => {
               )}
               {data.paymentInfo && (
                 <SideCard title="Betaling">
-                  <Stack gap=".65rem" alignItems="flex-start">
+                  <Stack gap=".75rem" alignItems="flex-start">
                     {data.paymentInfo.body && (
                       <RichText
                         blockContent={data.paymentInfo.body}
-                        fontSize="0.85rem"
+                        fontSize="0.875rem"
                         maxWidth="none"
                       />
                     )}
                     {data.paymentInfo.vippsNumber && (
-                      <Text fontWeight={700} fontSize="0.9rem">
+                      <Text fontWeight={700} fontSize="0.9375rem">
                         <Icon asChild height="1.5rem">
                           <VippsIkon />
                         </Icon>
@@ -247,16 +214,17 @@ const Page = async (props: Props) => {
                       </Text>
                     )}
                     {data.paymentInfo.url && (
-                      <Button
+                      <Box
                         asChild
-                        size="sm"
-                        background="forest.700"
-                        color="onDark"
-                        borderRadius="md"
-                        _hover={{ background: "forest.800" }}
+                        textStyle="kicker"
+                        background="arctic.base"
+                        color="aurora.green"
+                        padding=".625rem 1.125rem"
+                        transition="background .2s"
+                        _hover={{ background: "arctic.hover" }}
                       >
                         <a href={data.paymentInfo.url}>Betal på nett</a>
-                      </Button>
+                      </Box>
                     )}
                   </Stack>
                 </SideCard>
@@ -269,22 +237,26 @@ const Page = async (props: Props) => {
               heading="Treningstider"
               seriesId={data._id}
               showTitles={false}
+              whenEmpty="note"
             />
           )}
         </Stack>
       </DefaultContainer>
 
-      <Box background="surface" paddingY={{ base: "2.5rem", md: "3.5rem" }}>
-        <DefaultContainer>
-          <Calendar
-            heading="Andre kommende aktiviteter"
-            variant="grid"
-            limit={4}
-            excludeIds={[data._id]}
-          />
-        </DefaultContainer>
-      </Box>
-    </Stack>
+      <DefaultContainer paddingTop="3.75rem" paddingBottom="4.75rem">
+        <Calendar
+          heading="Andre kommende aktiviteter"
+          limit={6}
+          excludeIds={[data._id]}
+          whenEmpty="hide"
+          childrenAfter={
+            <CalendarActionBar href="/kalender">
+              Se hele kalenderen →
+            </CalendarActionBar>
+          }
+        />
+      </DefaultContainer>
+    </>
   );
 };
 
@@ -298,18 +270,14 @@ const SideCard = ({
   children: React.ReactNode;
 }) => (
   <Box
-    background={dark ? "forest.700" : "surface"}
-    border={dark ? undefined : "1px solid"}
-    borderColor="hairline"
-    borderRadius="2xl"
-    padding="1.375rem"
-    color={dark ? "onDark" : "forest.700"}
+    background={dark ? "arctic.base" : "sage.base"}
+    padding="1.5rem"
+    color={dark ? "onDark.base" : "ink"}
   >
     <Kicker
       as="h2"
-      fontSize="0.68rem"
-      marginBottom=".7rem"
-      color={dark ? "forest.200" : "forest.700"}
+      marginBottom=".75rem"
+      color={dark ? "aurora.green" : "deep.base"}
     >
       {title}
     </Kicker>

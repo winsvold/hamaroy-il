@@ -1,5 +1,3 @@
-import { urlFor } from "@/sanity/lib/image";
-import { Sport } from "@/sanity/sports";
 import { formatNorwegianDate } from "@/utils/date";
 import {
   Box,
@@ -12,10 +10,8 @@ import {
   Text,
   TextProps,
 } from "@chakra-ui/react";
-import Image from "next/image";
 import Link from "next/link";
 import { AlertCircle } from "react-feather";
-import { Event } from "../../../../sanity.types";
 
 type Props = {
   startsAt?: string | null;
@@ -24,16 +20,15 @@ type Props = {
   /** Bare navnet brukes — spørringen henter derfor ikke hele lokasjonen */
   location?: { name?: string | null } | null;
   slug?: string;
-  image?: NonNullable<Event["images"]>[0] | null;
   cancelled?: boolean | null;
   note?: string | null;
-  sport?: Sport;
+  /** Nordlysfargen på prikken. Roterer med posisjonen i lista, som i designet. */
+  dotColor: string;
   /**
    * På en aktivitets egen side er tittelen den samme for hver sesjon, og lenka peker
    * til siden du allerede står på. Da vises tid og sted alene, uten lenke.
    */
   hideTitle?: boolean;
-  type: "event" | "session";
 };
 
 /** «18:00–19:30 · Klatrevegg, Hamarøyhallen» */
@@ -48,114 +43,93 @@ const meta = (props: Props) => {
   return [time, props.location?.name].filter(Boolean).join(" · ");
 };
 
+/**
+ * Én rad i tidslinja. Designet droppet kortet rundt hver aktivitet — skillet mellom
+ * radene bæres nå av prikken og datokolonnen til venstre.
+ */
 export const CalendarCard = (props: Props) => {
-  const { startsAt, title, slug, image, cancelled } = props;
+  const { startsAt, title, slug, cancelled } = props;
   if (!startsAt) return null;
 
-  // Bilde bare på arrangementer — faste treninger gjentar seg og får idrettsikonet i stedet
-  const thumbnail = props.type === "event" && image;
+  const dot = (
+    <Box
+      flexShrink={0}
+      width=".4375rem"
+      height=".4375rem"
+      borderRadius="full"
+      marginTop=".45rem"
+      background={cancelled ? "muted" : props.dotColor}
+    />
+  );
+
+  const body = (
+    <Stack gap=".1875rem" minWidth="0">
+      {cancelled && (
+        <TextWithIcon
+          textStyle="kicker"
+          color="deep.base"
+          icon={<AlertCircle size="1em" />}
+        >
+          Avlyst
+        </TextWithIcon>
+      )}
+      {props.hideTitle ? (
+        <Text
+          fontWeight={700}
+          fontSize="1.0625rem"
+          color="ink"
+          textDecoration={cancelled ? "line-through" : undefined}
+        >
+          {meta(props)}
+        </Text>
+      ) : (
+        <>
+          <LinkOverlay asChild>
+            <Link href={`/aktiviteter/${slug}`}>
+              <Heading
+                as="h3"
+                fontFamily="body"
+                fontWeight={700}
+                fontSize="1.125rem"
+                lineHeight={1.28}
+                color="ink"
+                transition="color .2s"
+                textDecoration={cancelled ? "line-through" : undefined}
+              >
+                {title}
+              </Heading>
+            </Link>
+          </LinkOverlay>
+          <Text fontSize="0.8125rem" fontWeight={500} color="muted">
+            {meta(props)}
+          </Text>
+        </>
+      )}
+      {props.note && (
+        <Text fontSize="0.8125rem" color="muted" maxWidth="30rem">
+          {props.note}
+        </Text>
+      )}
+    </Stack>
+  );
+
+  if (props.hideTitle)
+    return (
+      <Flex gap=".75rem" alignItems="flex-start">
+        {dot}
+        {body}
+      </Flex>
+    );
 
   return (
     <LinkBox
       display="flex"
-      alignItems="center"
-      gap=".9rem"
-      width="100%"
-      background={cancelled ? "amber.50" : "surface"}
-      border="1px solid"
-      borderColor={cancelled ? "amber.300" : "hairline"}
-      borderRadius="xl"
-      padding=".85rem 1rem"
-      transition="border-color .2s, background .2s"
-      _hover={{ borderColor: cancelled ? "amber.500" : "hairlineStrong" }}
+      gap=".75rem"
+      alignItems="flex-start"
+      _hover={{ "& h3": { color: "deep.base" } }}
     >
-      <Stack gap=".15rem" flex="1" minWidth="0">
-        {cancelled && (
-          <TextWithIcon
-            fontSize="0.75rem"
-            fontWeight={700}
-            color="amber.800"
-            textTransform="uppercase"
-            letterSpacing=".04em"
-            icon={<AlertCircle size="1em" />}
-          >
-            Avlyst
-          </TextWithIcon>
-        )}
-        {props.hideTitle ? (
-          <Text
-            fontWeight={700}
-            fontSize="0.95rem"
-            color="forest.700"
-            textDecoration={cancelled ? "line-through" : undefined}
-          >
-            {meta(props)}
-          </Text>
-        ) : (
-          <>
-            <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
-              <Link href={`/aktiviteter/${slug}`}>
-                <Heading
-                  as="h3"
-                  fontFamily="body"
-                  fontWeight={700}
-                  fontSize="1rem"
-                  lineHeight={1.3}
-                  color="forest.700"
-                  textDecoration={cancelled ? "line-through" : undefined}
-                >
-                  {title}
-                </Heading>
-              </Link>
-            </LinkOverlay>
-            <Text fontSize="0.8rem" fontWeight={500} color="muted">
-              {meta(props)}
-            </Text>
-          </>
-        )}
-        {props.note && (
-          <Text
-            fontSize="0.8rem"
-            color="muted"
-            maxWidth="30rem"
-            marginTop=".2rem"
-          >
-            {props.note}
-          </Text>
-        )}
-      </Stack>
-
-      {thumbnail ? (
-        <Box
-          asChild
-          flexShrink={0}
-          borderRadius="sm"
-          width="4rem"
-          height="4rem"
-          objectFit="cover"
-        >
-          <Image
-            alt=""
-            src={urlFor(image).width(160).height(160).url()}
-            width={160}
-            height={160}
-          />
-        </Box>
-      ) : (
-        // Ikonet skiller idretter fra hverandre i en blandet liste. På en aktivitets
-        // egen side er alle radene samme idrett, så da er det bare støy.
-        props.sport &&
-        !props.hideTitle && (
-          <Flex
-            flexShrink={0}
-            fontSize="1.375rem"
-            lineHeight={1}
-            aria-hidden="true"
-          >
-            {props.sport.emoji}
-          </Flex>
-        )
-      )}
+      {dot}
+      {body}
     </LinkBox>
   );
 };

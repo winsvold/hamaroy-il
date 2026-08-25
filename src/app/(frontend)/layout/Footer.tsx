@@ -14,12 +14,7 @@ const footerQuery = defineQuery(`{
 }`);
 
 const FootHeading = ({ children }: { children: React.ReactNode }) => (
-  <Box
-    textStyle="kicker"
-    color="forest.400"
-    fontSize="0.7rem"
-    marginBottom=".75rem"
-  >
+  <Box textStyle="kicker" color="aurora.green" marginBottom=".875rem">
     {children}
   </Box>
 );
@@ -33,12 +28,11 @@ const FootLink = ({
 }) => (
   <Box
     asChild
-    fontSize="0.85rem"
+    fontSize="0.875rem"
     fontWeight={600}
-    color="forest.200"
-    opacity={0.85}
-    transition="opacity .2s"
-    _hover={{ opacity: 1, textDecoration: "underline" }}
+    color="onDark.secondary"
+    transition="color .2s"
+    _hover={{ color: "aurora.green" }}
   >
     <Link href={href}>{children}</Link>
   </Box>
@@ -65,34 +59,40 @@ export const Footer = async () => {
   const email = data.siteSettings?.contactEmail;
 
   return (
-    <Box as="footer" background="forest.700" color="onDark" paddingTop="3.5rem">
+    <Box
+      as="footer"
+      background="arctic.base"
+      color="onDark.base"
+      paddingTop="2.75rem"
+    >
       <DefaultContainer>
         <Grid
           gridTemplateColumns={{
             base: "1fr",
             sm: "1fr 1fr",
-            md: "1.4fr 1fr 1fr",
+            md: "1.6fr 1fr 1fr",
           }}
-          gap="2.5rem"
-          paddingBottom="2.25rem"
+          gap="3rem"
+          paddingBottom="1.625rem"
           borderBottom="1px solid"
-          borderColor="rgba(242, 237, 226, 0.15)"
+          borderColor="hairlineDarkFaint"
         >
           <Box>
             <Box
               fontFamily="heading"
               fontWeight={800}
               fontSize="1.25rem"
-              marginBottom=".6rem"
+              letterSpacing="-.01em"
+              marginBottom=".625rem"
             >
               Hamarøy IL
             </Box>
             {data.siteSettings?.footerText && (
               <Box
-                fontSize="0.85rem"
+                fontSize="0.9375rem"
                 lineHeight={1.6}
-                color="forest.200"
-                maxWidth="20rem"
+                color="onDark.tertiary"
+                maxWidth="18.75rem"
               >
                 {data.siteSettings.footerText}
               </Box>
@@ -101,7 +101,7 @@ export const Footer = async () => {
 
           <Box>
             <FootHeading>Snarveier</FootHeading>
-            <Stack gap=".55rem" alignItems="flex-start">
+            <Stack gap=".625rem" alignItems="flex-start">
               {shortcuts.map((link) => (
                 <FootLink key={link.href} href={link.href}>
                   {link.label}
@@ -113,7 +113,7 @@ export const Footer = async () => {
           {(!!contactLinks.length || email) && (
             <Box>
               <FootHeading>Kontakt</FootHeading>
-              <Stack gap=".55rem" alignItems="flex-start">
+              <Stack gap=".625rem" alignItems="flex-start">
                 {contactLinks.map((link) => (
                   <FootLink key={link.href} href={link.href}>
                     {link.label}
@@ -126,13 +126,14 @@ export const Footer = async () => {
         </Grid>
 
         <Flex
-          paddingY="1.35rem"
+          paddingTop="1.125rem"
+          paddingBottom="1.375rem"
           justify="space-between"
           align="center"
           gap="1rem"
-          fontSize="0.75rem"
+          fontSize="0.78125rem"
           fontWeight={500}
-          color="forest.400"
+          color="onDark.faint"
         >
           <Box>© {new Date().getFullYear()} Hamarøy IL</Box>
           <Box asChild _hover={{ textDecoration: "underline" }}>

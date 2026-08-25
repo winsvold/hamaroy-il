@@ -55,7 +55,10 @@ export const ImageGallery = (props: {
         onOpenChange={() => setFullScreen((s) => !s)}
       >
         <Dialog.Positioner>
-          <Dialog.Content background="blackAlpha.900" color="white">
+          <Dialog.Content
+            background="rgba(11, 26, 23, 0.96)"
+            color="onDark.base"
+          >
             <Dialog.CloseTrigger asChild>
               <IconButton aria-label={"Lukk fullskjerm"}>
                 <X />
@@ -104,7 +107,7 @@ const FullScreenImageView = (props: { image: Images[number] }) => {
     <Grid
       height="75vmin"
       width="100vw"
-      background="gray.800"
+      background="arctic.hover"
       placeItems="center"
       css={{
         "& img": {
@@ -299,9 +302,9 @@ const StyledIconButton = (
 ) => (
   <IconButton
     size={{ base: "xs", sm: "sm" }}
-    background="blackAlpha.600"
-    _hover={{ background: "blackAlpha.800" }}
-    color="white"
+    background="rgba(11, 26, 23, 0.6)"
+    _hover={{ background: "rgba(11, 26, 23, 0.85)" }}
+    color="onDark.base"
     position="absolute"
     {...props}
   />

@@ -28,8 +28,9 @@ const components: ComponentProps<typeof PortableText>["components"] = {
       return (
         <Link
           variant="underline"
-          textDecorationColor="blue.400"
-          _hover={{ color: "blue.400" }}
+          color="deep.base"
+          textDecorationColor="deep.base"
+          _hover={{ color: "deep.hover" }}
           href={value?.href}
           target={target}
           rel={target === "_blank" ? "noindex nofollow" : undefined}
@@ -75,7 +76,13 @@ export const RichText = ({ blockContent, ...chakraProps }: Props) => {
   if (!blockContent) return null;
 
   return (
-    <Box fontSize="lg" css={css} maxWidth="35rem" {...chakraProps}>
+    <Box
+      fontSize="lg"
+      color="prose"
+      css={css}
+      maxWidth="35rem"
+      {...chakraProps}
+    >
       <PortableText value={blockContent} components={components} />
     </Box>
   );

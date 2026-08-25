@@ -1222,20 +1222,6 @@
           "type": "string"
         },
         "optional": true
-      },
-      "showInBanner": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "boolean"
-        },
-        "optional": true
-      },
-      "bannerText": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
       }
     }
   },
