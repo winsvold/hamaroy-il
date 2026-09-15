@@ -9,11 +9,6 @@ import { group } from "radash";
 import { ActivitiesQueryResult } from "../../../../sanity.types";
 import { CalendarCard } from "./CalendarCard";
 
-/**
- * Både filtrering på tid og valg av felter skjer i GROQ. Et `...`-spread hentet
- * tidligere hver eneste sesjon på hver eneste serie (~500 objekter, 150 kB) og
- * all fritekst, for så å kaste nesten alt i JavaScript.
- */
 const activitiesQuery = defineQuery(`{
   "events": *[
     _type == "event" &&
@@ -49,12 +44,7 @@ const activitiesQuery = defineQuery(`{
   },
 }`);
 
-/**
- * Når komponenten viser `limit` rader kan ingen enkelt serie bidra med mer enn
- * `limit` av dem, så det er trygt å kutte per serie allerede i spørringen.
- * Uten limit (feks /kalender) trengs alle — taket er da satt langt over det en
- * sesong noen gang inneholder.
- */
+// Ingen serie trenger flere sesjoner enn `limit`. Uten limit hentes i praksis alle.
 const NO_SESSION_LIMIT = 1000;
 
 type Props = {
@@ -63,34 +53,21 @@ type Props = {
   locationId?: string;
   heading?: string;
   clubId?: string;
-  /** Aktiviteter som allerede vises et annet sted på siden og ikke skal gjentas her */
   excludeIds?: string[];
-  /** Av på en aktivitets egen side, der hver rad ellers gjentar samme tittel */
-  showTitles?: boolean;
-  /**
-   * Hva lista gjør når den er tom:
-   *  - «card» (standard): tomkortet med lenke videre til alle faste tilbud
-   *  - «note»: bare en linje tekst. Til lister som står på en aktivitets egen side,
-   *    der lenka ville pekt tilbake dit du allerede er
-   *  - «hide»: seksjonen droppes helt. Til lister som bare utfyller hovedinnholdet,
-   *    så en side ikke ender opp med det samme tomkortet to ganger
-   */
+  hideTitles?: boolean;
+  /** Tom liste: tomkort (standard), en linje tekst eller ingenting */
   whenEmpty?: "card" | "note" | "hide";
   childrenAfter?: React.ReactNode;
 };
 
 type SessionSeries = ActivitiesQueryResult["sessionSeries"][number];
 
-/** Én forekomst av en fast aktivitet, med serien den hører til. */
 export type SessionOccurrence = NonNullable<
   SessionSeries["sessions"]
 >[number] & {
   _type: "session";
   series: SessionSeries;
 };
-
-/** Datobrikka er smalere på mobil, så radene ved siden av får plass til navnene */
-const pillWidth = { base: "4rem", md: "5.5rem" };
 
 export const Calendar = async (props: Props) => {
   const { events, sessionSeries } = await sanityFetch(activitiesQuery, {
@@ -102,8 +79,6 @@ export const Calendar = async (props: Props) => {
 
   const excluded = new Set(props.excludeIds ?? []);
 
-  // Tidsfiltrering er allerede gjort i GROQ; her flates seriene ut til
-  // enkeltforekomster. `_type` settes for å skille dem fra arrangementer.
   const sessions: SessionOccurrence[] = sessionSeries
     .filter((series) => !excluded.has(series._id))
     .flatMap((series) =>
@@ -158,7 +133,7 @@ export const Calendar = async (props: Props) => {
     <Box>
       {heading}
       <Box position="relative">
-        {/* Streken tidslinja henger på, midt gjennom datobrikkene */}
+        {/* Tidslinja, midt gjennom datobrikkene */}
         <Box
           position="absolute"
           top="1rem"
@@ -176,7 +151,6 @@ export const Calendar = async (props: Props) => {
               align="flex-start"
               gap={{ base: ".875rem", md: "1.625rem" }}
             >
-              {/* Under en seksjonsoverskrift er datoen et nivå ned; på /kalender står den alene */}
               <DatePill date={date} as={props.heading ? "h3" : "h2"} />
               <Stack gap=".625rem" align="flex-start" flex="1" minWidth="0">
                 {activities?.map((item) =>
@@ -199,7 +173,7 @@ export const Calendar = async (props: Props) => {
                       slug={item.series.slug?.current}
                       cancelled={item.cancelled}
                       note={item.note}
-                      hideTitle={props.showTitles === false}
+                      hideTitle={props.hideTitles}
                     />
                   ),
                 )}
@@ -213,10 +187,6 @@ export const Calendar = async (props: Props) => {
   );
 };
 
-/**
- * Datoen i tidslinja: ukedag, dag og måned i en mørk brikke på streken. Skjermlesere
- * får datoen skrevet ut i stedet for forkortelsene.
- */
 const DatePill = ({ date, as }: { date: string; as: "h2" | "h3" }) => (
   <Heading
     as={as}
@@ -224,7 +194,7 @@ const DatePill = ({ date, as }: { date: string; as: "h2" | "h3" }) => (
     flexDirection="column"
     alignItems="center"
     flexShrink={0}
-    width={pillWidth}
+    width={{ base: "4rem", md: "5.5rem" }}
     padding=".6875rem 0 .8125rem"
     background="arctic.base"
     fontFamily="body"
@@ -265,10 +235,6 @@ const DatePill = ({ date, as }: { date: string; as: "h2" | "h3" }) => (
   </Heading>
 );
 
-/**
- * Klubben har lange perioder mellom sesongene der ingenting er planlagt, så dette
- * er en tilstand forsiden faktisk står i — ikke en kant-case.
- */
 const EmptyState = () => (
   <Stack
     background="card.base"

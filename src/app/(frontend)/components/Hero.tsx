@@ -21,8 +21,7 @@ export const Hero = (props: Props) => (
         as="h1"
         fontFamily="heading"
         fontWeight={800}
-        // Syne er en bred skrift: «Hamarøy» alene er ett ord som ikke kan brytes,
-        // og sprenger 390 px allerede ved 2.75rem
+        // «Hamarøy» kan ikke brytes, og må få plass på smale skjermer
         fontSize={{ base: "2.25rem", sm: "2.75rem", md: "4.125rem" }}
         lineHeight={0.98}
         letterSpacing="-.02em"
@@ -34,11 +33,6 @@ export const Hero = (props: Props) => (
       <Kicker color="aurora.green" marginTop="1.125rem">
         68° nord · siden 1937
       </Kicker>
-      {/*
-        Designet har ingen plass til ingressen, men feltet finnes og er redaktørens.
-        Den står derfor under merkelappen, og seksjonen faller tilbake til designets
-        oppsett når feltet er tomt.
-      */}
       {props.text && (
         <Text
           fontSize={{ base: "0.9375rem", md: "1rem" }}

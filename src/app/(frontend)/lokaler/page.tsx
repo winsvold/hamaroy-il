@@ -1,7 +1,8 @@
+import { CardGrid } from "@/components/CardGrid";
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { Box, Grid, Heading, LinkBox, LinkOverlay } from "@chakra-ui/react";
+import { Box, Heading, LinkBox, LinkOverlay } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,16 +15,9 @@ const Page = async () => {
 
   return (
     <>
-      <PageHeader
-        kicker="Lokaler"
-        title="Lokaler og steder"
-        text="Hallene, banene og husene idrettslaget bruker."
-      />
+      <PageHeader kicker="Lokaler" title="Lokaler og steder" />
       <DefaultContainer paddingTop="3.75rem" paddingBottom="4.75rem">
-        <Grid
-          gridTemplateColumns="repeat(auto-fill, minmax(min(18rem, 100%), 1fr))"
-          gap="1rem"
-        >
+        <CardGrid>
           {data.map((location) => (
             <LinkBox
               display="flex"
@@ -70,7 +64,7 @@ const Page = async () => {
               </LinkOverlay>
             </LinkBox>
           ))}
-        </Grid>
+        </CardGrid>
       </DefaultContainer>
     </>
   );

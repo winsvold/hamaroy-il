@@ -7,10 +7,6 @@ type Props = {
   intro: FrontPageQueryResult["intro"];
 };
 
-/**
- * Det hvite feltet rett under hero-en, med klubbens egen velkomsttekst
- * (`siteSettings.intro`). Ett redigerbart tekstfelt, ikke en strøm av beskjeder.
- */
 export const Welcome = ({ intro }: Props) => {
   if (!intro?.length) return null;
 
@@ -21,7 +17,7 @@ export const Welcome = ({ intro }: Props) => {
         background="card.base"
         padding={{ base: "1.5rem 1.25rem", md: "2.25rem 2.5rem 2.375rem" }}
         css={{
-          // Overskriften redaktøren setter øverst i teksten er feltets tittel
+          // Første overskrift i teksten er feltets tittel
           "& h2": {
             columnSpan: "all",
             maxWidth: "48.75rem",
@@ -35,11 +31,6 @@ export const Welcome = ({ intro }: Props) => {
           "& p": { breakInside: "avoid" },
         }}
       >
-        {/*
-          Spalter framfor designets 2×2-rutenett: det forutsatte fire omtrent like lange
-          avsnitt, mens den faktiske teksten har seks av svært ulik lengde. Spaltene
-          balanserer dem uansett hvor mange redaktøren skriver.
-        */}
         <RichText
           blockContent={intro}
           maxWidth="none"

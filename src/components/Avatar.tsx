@@ -12,10 +12,7 @@ import Image from "next/image";
 import { Mail, Phone } from "react-feather";
 import { Club, Person } from "../../sanity.types";
 
-/**
- * Står både på lyse og mørke kort, så alt arver farge fra kortet framfor å sette sin
- * egen. Kontaktlinjene dempes med gjennomsiktighet, som virker mot begge bakgrunner.
- */
+/** Arver farge, siden den står både på lyse og mørke kort */
 export const Avatar = ({
   entity,
   ...chakraProps
@@ -46,7 +43,6 @@ export const Avatar = ({
         </Box>
       )}
       <Stack gap=".375rem" minWidth="0">
-        {/* Kortets egen tittel er overskriften her — navnet er innhold, ikke nivå */}
         <Box fontWeight={700} fontSize="1rem" color="inherit">
           {url ? (
             <LinkOverlay

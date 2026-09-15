@@ -1,4 +1,5 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
+import { Kicker } from "@/components/Kicker";
 import { sanityFetch } from "@/sanity/lib/client";
 import { Box, Flex, Grid, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
@@ -12,12 +13,6 @@ const footerQuery = defineQuery(`{
     menuPlacement,
   }
 }`);
-
-const FootHeading = ({ children }: { children: React.ReactNode }) => (
-  <Box textStyle="kicker" color="aurora.green" marginBottom=".875rem">
-    {children}
-  </Box>
-);
 
 const FootLink = ({
   href,
@@ -100,7 +95,9 @@ export const Footer = async () => {
           </Box>
 
           <Box>
-            <FootHeading>Snarveier</FootHeading>
+            <Kicker color="aurora.green" marginBottom=".875rem">
+              Snarveier
+            </Kicker>
             <Stack gap=".625rem" alignItems="flex-start">
               {shortcuts.map((link) => (
                 <FootLink key={link.href} href={link.href}>
@@ -112,7 +109,9 @@ export const Footer = async () => {
 
           {(!!contactLinks.length || email) && (
             <Box>
-              <FootHeading>Kontakt</FootHeading>
+              <Kicker color="aurora.green" marginBottom=".875rem">
+                Kontakt
+              </Kicker>
               <Stack gap=".625rem" alignItems="flex-start">
                 {contactLinks.map((link) => (
                   <FootLink key={link.href} href={link.href}>

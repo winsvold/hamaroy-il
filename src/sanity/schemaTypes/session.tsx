@@ -93,7 +93,7 @@ export const sessionSeries = defineType({
       name: "sport",
       title: "Idrett",
       description:
-        "Bestemmer ikon, farge og gruppering på «Faste aktiviteter». Gjettes ut fra navnet hvis den står tom.",
+        "Grupperer aktiviteten på «Faste aktiviteter» og vises som kategori på aktivitetssiden. Gjettes ut fra navnet hvis den står tom.",
       type: "string",
       options: { list: sportOptions },
     }),

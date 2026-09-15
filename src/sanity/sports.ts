@@ -1,20 +1,8 @@
-/**
- * Idrettene i Hamarøy IL. Definert i kode framfor som dokumenttype fordi lista er kort
- * og stabil.
- *
- * Brukes tre steder:
- *  - `sport`-feltet på «sessionSeries» og «event» (options.list)
- *  - gruppering og ankere på /faste-aktiviteter
- *  - kategorimerkelappen øverst på en aktivitetsside
- *
- * Emojien er bevisst bare et redaktørhjelpemiddel — den vises i nedtrekkslista og på
- * forhåndsvisningene i Sanity, aldri på nettsidene. Nordlys-designet bruker ingen emoji.
- */
+/** Idrettene i laget. Emojien vises bare i Sanity Studio, ikke på nettsidene. */
 
 export type Sport = {
   id: string;
   title: string;
-  /** Kun til Sanity Studio. Skal ikke rendres på nettsidene. */
   emoji: string;
 };
 
@@ -29,7 +17,6 @@ export const sports = [
 
 export type SportId = (typeof sports)[number]["id"];
 
-/** Til `options.list` i Sanity-skjemaene */
 export const sportOptions = sports.map((sport) => ({
   title: `${sport.emoji} ${sport.title}`,
   value: sport.id,
@@ -38,11 +25,7 @@ export const sportOptions = sports.map((sport) => ({
 export const getSport = (id?: string | null): Sport | undefined =>
   sports.find((sport) => sport.id === id);
 
-/**
- * Nøkkelord som gjetter idrett ut fra tittelen. Dette er kun en fallback for innhold som
- * ble laget før `sport`-feltet fantes — settes feltet eksplisitt, vinner det alltid.
- * Kan fjernes når alt innhold er merket.
- */
+/** Gjetter idrett ut fra tittelen, for innhold uten `sport`-felt */
 const titleKeywords: [RegExp, SportId][] = [
   [/fotball/i, "fotball"],
   [/klatr/i, "klatring"],
@@ -60,7 +43,6 @@ export const inferSportFromTitle = (
   return match && getSport(match[1]);
 };
 
-/** Eksplisitt `sport`-felt hvis satt, ellers gjett ut fra tittelen. */
 export const resolveSport = (item?: {
   sport?: string | null;
   title?: string | null;

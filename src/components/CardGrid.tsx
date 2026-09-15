@@ -1,11 +1,6 @@
 import { Grid, GridProps } from "@chakra-ui/react";
 
-/**
- * Rutenettet alle kortlistene står i: arrangementer, datobolker og faste aktiviteter.
- *
- * `auto-fill` framfor `auto-fit`: en bolk med to kort beholder kolonnebredden og lar
- * den tredje stå tom, som i designet, i stedet for å strekke de to over hele bredden.
- */
+// `auto-fill`, ikke `auto-fit`: få kort beholder kolonnebredden i stedet for å strekkes
 export const CardGrid = (props: GridProps) => (
   <Grid
     gridTemplateColumns="repeat(auto-fill, minmax(min(18rem, 100%), 1fr))"

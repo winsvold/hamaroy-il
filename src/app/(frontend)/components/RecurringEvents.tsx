@@ -77,8 +77,7 @@ const SportSection = ({
   series: Series[];
   headingAs: "h2" | "h3";
 }) => (
-  <Box as="section" id={sport?.id} scrollMarginTop="6rem">
-    {/* Ingen strek etter navnet: kortblokkene under skiller kategoriene */}
+  <Box as="section" id={sport?.id}>
     <Heading
       as={headingAs}
       fontFamily="heading"
@@ -100,18 +99,13 @@ const SportSection = ({
 );
 
 type Props = {
-  /**
-   * Settes når lista står som en seksjon inne i en annen side (forsiden). Da får
-   * seksjonen sin egen overskrift, og idrettene skyves ett nivå ned.
-   */
+  /** Egen overskrift når lista står inne i en annen side */
   heading?: string;
 };
 
 export const RecurringEvents = async (props: Props) => {
   const { sessionSeries } = await sanityFetch(reoccurringEventsQuery);
 
-  // Grupperer på idrett, i rekkefølgen sports.ts definerer. Serier uten treff
-  // havner i en «Andre aktiviteter»-bolk til slutt.
   const bySport = sports
     .map((sport) => ({
       sport,
@@ -128,7 +122,7 @@ export const RecurringEvents = async (props: Props) => {
   const headingAs = props.heading ? "h3" : "h2";
 
   return (
-    <Box id="faste-aktiviteter" scrollMarginTop="6rem">
+    <Box id="faste-aktiviteter">
       {props.heading && (
         <SectionHeading marginBottom="1.5rem">{props.heading}</SectionHeading>
       )}

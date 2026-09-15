@@ -22,7 +22,6 @@ const Page = async (props: Props) => {
   return (
     <>
       <PageHeader variant="detail" title={data.title ?? ""} />
-      {/* Rene tekstsider får lesebredde framfor den brede sidemalen */}
       <DefaultContainer
         maxW="42rem"
         paddingTop="3.5rem"

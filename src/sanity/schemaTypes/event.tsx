@@ -18,7 +18,7 @@ export const event = defineType({
       name: "sport",
       title: "Idrett",
       description:
-        "Bestemmer ikon og farge i aktivitetslista. Gjettes ut fra navnet hvis den står tom.",
+        "Vises som kategori øverst på arrangementssiden. Gjettes ut fra navnet hvis den står tom.",
       type: "string",
       options: { list: sportOptions },
     }),

@@ -20,22 +20,15 @@ type Props = {
   startsAt?: string | null;
   endsAt?: string | null;
   title?: string | null;
-  /** Bare navnet brukes — spørringen henter derfor ikke hele lokasjonen */
   location?: { name?: string | null } | null;
   slug?: string;
   cancelled?: boolean | null;
   note?: string | null;
-  /**
-   * På en aktivitets egen side er tittelen den samme for hver sesjon, og lenka peker
-   * til siden du allerede står på. Da vises bare tid og sted, uten lenke.
-   */
+  /** Viser bare tid og sted, uten lenke */
   hideTitle?: boolean;
 };
 
-/**
- * «1t 30m» under starttiden. Varer aktiviteten over midnatt, feks et todagerskurs, står
- * sluttidspunktet der i stedet — designet traff bare aktiviteter innenfor én dag.
- */
+/** «1t 30m», eller sluttiden når aktiviteten varer over midnatt */
 const durationLabel = (startsAt: string, endsAt?: string | null) => {
   if (!endsAt) return null;
   return isSameNorwegianDay(startsAt, endsAt)
@@ -43,26 +36,6 @@ const durationLabel = (startsAt: string, endsAt?: string | null) => {
     : `til ${formatNorwegianDate(endsAt, "EEE p")}`;
 };
 
-/**
- * Designet er tegnet for desktop. På mobil ble det bare ~150 px igjen til navnet ved
- * siden av datobrikka og tidsblokken, og ord som «Hamarøyhallen» brakk midt i. Der
- * legger tidsblokken seg i stedet som en stripe over navnet.
- */
-const rowStyles = {
-  display: "flex",
-  flexDirection: { base: "column", sm: "row" },
-  alignItems: "stretch",
-  maxWidth: "100%",
-  background: "card.base",
-} as const;
-
-/**
- * Én rad i tidslinja: klokkeslettet i en dypgrønn blokk, navn og sted ved siden av.
- * Raden er bare så bred som innholdet, så en kort tittel gir en kort rad.
- *
- * Tallene står i Figtree med tabellsifre. Syne kostet lesbarhet, og tidspunktet er
- * det én ting en klubbkalender må kunne leses på et øyeblikk.
- */
 export const CalendarCard = (props: Props) => {
   const { startsAt, cancelled } = props;
   if (!startsAt) return null;
@@ -70,8 +43,23 @@ export const CalendarCard = (props: Props) => {
   const place = props.location?.name;
   const strike = cancelled ? "line-through" : undefined;
 
-  const content = (
-    <>
+  return (
+    <LinkBox
+      display="flex"
+      flexDirection={{ base: "column", sm: "row" }}
+      maxWidth="100%"
+      background="card.base"
+      transition="background .2s"
+      // Uten tittel er det ingen lenke
+      _hover={
+        props.hideTitle
+          ? undefined
+          : {
+              background: "card.hover",
+              "& [data-name]": { color: "deep.base" },
+            }
+      }
+    >
       <Flex
         direction={{ base: "row", sm: "column" }}
         align={{ base: "baseline", sm: "center" }}
@@ -155,21 +143,6 @@ export const CalendarCard = (props: Props) => {
           </Text>
         )}
       </Stack>
-    </>
-  );
-
-  if (props.hideTitle) return <Flex {...rowStyles}>{content}</Flex>;
-
-  return (
-    <LinkBox
-      {...rowStyles}
-      transition="background .2s"
-      _hover={{
-        background: "card.hover",
-        "& [data-name]": { color: "deep.base" },
-      }}
-    >
-      {content}
     </LinkBox>
   );
 };

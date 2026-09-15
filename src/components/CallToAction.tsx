@@ -6,10 +6,6 @@ type Props = {
   children: React.ReactNode;
 } & BoxProps;
 
-/**
- * Den ene knappen designet bruker: grønn, versal og bare så bred som teksten. En mørk
- * stripe over hele bredden ble prøvd og forsvant i rytmen mellom seksjonene.
- */
 export const CallToAction = ({ href, children, ...chakraProps }: Props) => (
   <Box
     asChild

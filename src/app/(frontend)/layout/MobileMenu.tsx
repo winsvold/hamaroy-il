@@ -28,8 +28,7 @@ export const MobileMenu = (props: Props) => {
       </Drawer.Trigger>
       <Drawer.Backdrop background="rgba(11, 26, 23, 0.55)" />
       <Drawer.Positioner>
-        {/* Drawer bruker Chakras egne bg/fg-tokens, som vi med vilje ikke overstyrer
-            globalt (provideren omslutter også Sanity Studio) — derfor settes de her */}
+        {/* Settes her og ikke globalt, siden provideren også omslutter Sanity Studio */}
         <Drawer.Content
           background="arctic.base"
           color="onDark.base"

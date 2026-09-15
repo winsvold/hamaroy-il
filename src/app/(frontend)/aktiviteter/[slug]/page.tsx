@@ -4,6 +4,7 @@ import { DefaultContainer } from "@/components/DefaultContainer";
 import { VippsIkon } from "@/components/ikoner/vipps";
 import { ImageGallery } from "@/components/ImageGallery";
 import { Kicker } from "@/components/Kicker";
+import { LocationCard } from "@/components/Location";
 import { RichText } from "@/components/RichText";
 import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
@@ -16,7 +17,6 @@ import { getSessionEndsAt } from "@/utils/session";
 import { Box, Flex, Grid, Heading, Icon, Stack, Text } from "@chakra-ui/react";
 import { isAfter } from "date-fns";
 import { defineQuery } from "next-sanity";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AktivitetQueryResult } from "../../../../../sanity.types";
 import { Calendar } from "../../components/calendar";
@@ -35,11 +35,6 @@ type Props = {
 
 type Aktivitet = NonNullable<AktivitetQueryResult>;
 
-/**
- * Designet dekket bare enkeltarrangementer, men to av tre aktiviteter er faste serier
- * uten én bestemt dato. Serier viser derfor «Neste gang» — eller «Ikke planlagt» når
- * sesongen ikke er lagt ut ennå.
- */
 const getFacts = (data: Aktivitet) => {
   const place = data.location?.name;
 
@@ -164,40 +159,21 @@ const Page = async (props: Props) => {
 
             <Stack gap="1rem">
               {!!data.organizers?.length && (
-                <SideCard title="Arrangør" dark>
+                <Section title="Arrangør" dark>
                   <Stack gap="1rem">
                     {data.organizers.map((organizer) => (
                       <Avatar key={organizer._id} entity={organizer} />
                     ))}
                   </Stack>
-                </SideCard>
+                </Section>
               )}
               {data.location && (
-                <SideCard title="Sted">
-                  <Stack gap=".3125rem" alignItems="flex-start">
-                    <Box
-                      asChild
-                      fontWeight={700}
-                      fontSize="1rem"
-                      color="ink"
-                      _hover={{ color: "deep.base" }}
-                    >
-                      <Link href={`/lokaler/${data.location.slug?.current}`}>
-                        {data.location.name}
-                      </Link>
-                    </Box>
-                    {data.location.address && (
-                      <Text fontSize="0.8125rem" fontWeight={500} color="muted">
-                        {[data.location.address, data.location.city]
-                          .filter(Boolean)
-                          .join(", ")}
-                      </Text>
-                    )}
-                  </Stack>
-                </SideCard>
+                <Section title="Sted">
+                  <LocationCard {...data.location} />
+                </Section>
               )}
               {data.paymentInfo && (
-                <SideCard title="Betaling">
+                <Section title="Betaling">
                   <Stack gap=".75rem" alignItems="flex-start">
                     {data.paymentInfo.body && (
                       <RichText
@@ -220,7 +196,7 @@ const Page = async (props: Props) => {
                       </CallToAction>
                     )}
                   </Stack>
-                </SideCard>
+                </Section>
               )}
             </Stack>
           </Grid>
@@ -229,7 +205,7 @@ const Page = async (props: Props) => {
             <Calendar
               heading="Treningstider"
               seriesId={data._id}
-              showTitles={false}
+              hideTitles
               whenEmpty="note"
             />
           )}
@@ -253,28 +229,24 @@ const Page = async (props: Props) => {
   );
 };
 
-const SideCard = ({
-  title,
-  dark,
-  children,
-}: {
+const Section = (props: {
   title: string;
   dark?: boolean;
   children: React.ReactNode;
 }) => (
   <Box
-    background={dark ? "arctic.base" : "card.base"}
+    background={props.dark ? "arctic.base" : "card.base"}
+    color={props.dark ? "onDark.base" : "ink"}
     padding="1.5rem"
-    color={dark ? "onDark.base" : "ink"}
   >
     <Kicker
       as="h2"
       marginBottom=".75rem"
-      color={dark ? "aurora.green" : "deep.base"}
+      color={props.dark ? "aurora.green" : "deep.base"}
     >
-      {title}
+      {props.title}
     </Kicker>
-    {children}
+    {props.children}
   </Box>
 );
 

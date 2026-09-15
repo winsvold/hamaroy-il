@@ -13,10 +13,6 @@ import Link from "next/link";
 import { FrontPageQueryResult } from "../../../../sanity.types";
 import { MountainRange } from "../layout/MountainRange";
 
-/**
- * Datobrikka øverst til høyre på kortet: ukedag over dag over måned. Den grønne
- * brikka er det som får kortene til å skille seg ut; kortet selv holder seg lyst.
- */
 const DateChip = ({ date }: { date: string }) => (
   <Flex
     flexDirection="column"
@@ -54,21 +50,12 @@ const DateChip = ({ date }: { date: string }) => (
   </Flex>
 );
 
-/**
- * Arrangementer uten bilde får nordlys bak fjellrekka i stedet: den samme silhuetten
- * som i toppfeltet, mørk mot en opplyst himmel. Samme høyde som et bilde, så kortene
- * i en rad står likt.
- *
- * Designet tegnet en forenklet kopi av rekka her. Den ekte banene i liten skala gir
- * nesten samme form, og holder silhuetten ett sted.
- */
 const ImagePlaceholder = () => (
   <Box
     position="relative"
     height="8.75rem"
     flexShrink={0}
     overflow="hidden"
-    // Himmelen er egne mørkegrønne toner som bare brukes her
     backgroundImage="linear-gradient(#0a1f1a, #123a32)"
     aria-hidden="true"
   >
@@ -81,10 +68,6 @@ const ImagePlaceholder = () => (
   </Box>
 );
 
-/**
- * Kortet i «Gå ikke glipp av». Arrangementer skjer sjelden sammenlignet med de faste
- * treningene, så de får bilde og mer plass enn en rad i kalenderen.
- */
 export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
   const { startsAt, endsAt, title, location } = props;
   const image = props.images?.[0];

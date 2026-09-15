@@ -1,12 +1,5 @@
 import { Box } from "@chakra-ui/react";
 
-/**
- * Himmel c, «Skimmer»: to radielle gradienter som stiger fra bunnen av toppfeltet —
- * en bred grønn bue forskjøvet mot høyre og en smalere fiolett mot venstre.
- *
- * Fargene er aurora.green, .teal og .violet, skrevet ut fordi gradientene trenger dem
- * med gjennomsiktighet.
- */
 export const AuroraGlow = () => (
   <>
     <Box

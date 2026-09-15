@@ -20,7 +20,6 @@ const frontPageQuery = defineQuery(`{
   }
 }`);
 
-/** Antall arrangementer som løftes fram i «Gå ikke glipp av» */
 const highlightedEventCount = 3;
 
 export default async function Home() {
@@ -50,10 +49,6 @@ export default async function Home() {
       )}
 
       <DefaultContainer paddingTop="3.25rem">
-        {/*
-          Arrangementene over gjentas med vilje her: båndet framhever, mens kalenderen
-          er den fullstendige oversikten over hva som skjer framover.
-        */}
         <Calendar
           heading="Kommende aktiviteter"
           limit={6}

@@ -31,9 +31,7 @@ export const Header = async () => {
       .filter((page) =>
         page.menuPlacement?.length
           ? page.menuPlacement.includes(placement)
-          : // Sider fra før `menuPlacement` fantes har ingen plassering. De havner i
-            // sekundærmenyen, slik de lå før — ellers ville de forsvinne ut av menyen
-            // helt til noen rekker å redigere hver enkelt side.
+          : // Sider uten plassering havner i sekundærmenyen
             placement === "sekundaermeny",
       )
       .map((page) => ({
@@ -41,15 +39,11 @@ export const Header = async () => {
         label: page.title ?? "",
       }));
 
-  // Designet viser én flat rad. Rekkefølgen er faste lenker, så infosider redaktøren
-  // har lagt i hovedmenyen, så klubbene, så resten.
   const links: NavLink[] = [
     { href: "/kalender", label: "Kalender" },
     { href: "/faste-aktiviteter", label: "Faste aktiviteter" },
     { href: "/lokaler", label: "Lokaler" },
     ...infoPagesIn("hovedmeny"),
-    // Klubbene listes direkte så lenge det er en håndfull av dem. Blir det flere
-    // enn ~3 bør de få en egen /klubber-oversikt i stedet.
     ...data.clubs.map((club) => ({
       href: `/klubber/${club.slug?.current}`,
       label: club.name ?? "",
@@ -59,18 +53,11 @@ export const Header = async () => {
 
   const callToAction = infoPagesIn("toppknapp")[0];
 
-  /*
-    Designet dropper ordmerket i toppmenyen — hero-en bærer navnet. Navnet blir
-    liggende for skjermlesere, og trer fram som tekst dersom ingen logo er lastet opp:
-    uten det ville menyen stå helt uten avsender.
-  */
   const logo = (
     <Flex align="center" gap=".6rem" asChild flexShrink={0}>
       <Link href="/">
         {logoUrl ? (
           <>
-            {/* Merket er kvadratisk og lavoppløst — det tåler verken beskjæring
-                eller å bli vist større enn dette */}
             <Box asChild width="2.125rem" height="2.125rem" objectFit="contain">
               <Image alt="" src={logoUrl} width={100} height={100} />
             </Box>

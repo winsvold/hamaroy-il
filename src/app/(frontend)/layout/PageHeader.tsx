@@ -6,19 +6,15 @@ type Props = {
   kicker?: string;
   title: string;
   text?: string | null;
-  /** «detail» er den lavere varianten til enkeltsider for aktivitet, lokale og klubb */
   variant?: "page" | "detail";
 };
 
-/** Merkelapp + overskrift + ingress i det mørke toppfeltet — mønsteret hver side åpner med. */
 export const PageHeader = (props: Props) => (
   <PageHero variant={props.variant ?? "page"}>
     <Stack
       gap="0"
       maxWidth="44rem"
-      // Luften under teksten er avpasset en liten ingress, som er smal og går klar av
-      // fjelltoppene. Står overskriften alene, ville den store skriften ellers
-      // legge seg rett oppå spiret.
+      // Uten ingress havner overskriften ellers oppå fjelltoppene
       paddingBottom={
         props.text ? undefined : { base: "1.75rem", md: "2.75rem" }
       }

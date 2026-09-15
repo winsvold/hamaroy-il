@@ -13,10 +13,7 @@ export const formatNorwegianDate = (
   });
 };
 
-/**
- * Stor forbokstav på første ord — resten står som date-fns gir det. Norske måneds- og
- * ukedagsnavn skrives med liten bokstav, så CSS `capitalize` ville gitt «22. Januar».
- */
+/** Stor forbokstav bare på første ord, som i «Mandag 22. januar» */
 export const formatNorwegianDateCapitalized = (
   date?: string | Date | null,
   format?: string,
@@ -25,14 +22,11 @@ export const formatNorwegianDateCapitalized = (
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 };
 
-/** Samme kalenderdag i norsk tid, ikke i UTC — der havner en aktivitet 00:30 på dagen før. */
+/** Samme kalenderdag i norsk tid */
 export const isSameNorwegianDay = (a: string | Date, b: string | Date) =>
   formatNorwegianDate(a, "yyyy-MM-dd") === formatNorwegianDate(b, "yyyy-MM-dd");
 
-/**
- * «09:00 – 15:00». Slutter aktiviteten en annen dag, får sluttiden ukedagen foran seg:
- * «09:00 – søn 15:00». Uten den leses et todagerskurs som et kurs på seks timer.
- */
+/** «09:00 – 15:00», eller «09:00 – søn 15:00» når den slutter en annen dag */
 export const formatNorwegianTimeRange = (
   from?: string | Date | null,
   to?: string | Date | null,

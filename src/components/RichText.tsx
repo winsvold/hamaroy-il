@@ -58,7 +58,6 @@ const components: ComponentProps<typeof PortableText>["components"] = {
 };
 
 type Props = {
-  // `null` fordi GROQ-projeksjoner gir null for felt som ikke er fylt ut
   blockContent?: SessionSeries["body"] | null;
 } & BoxProps;
 
