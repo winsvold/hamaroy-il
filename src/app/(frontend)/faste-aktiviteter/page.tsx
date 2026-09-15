@@ -8,11 +8,7 @@ import { PageHeader } from "../layout/PageHeader";
  */
 const Page = () => (
   <>
-    <PageHeader
-      kicker="Hele året, alle aldre"
-      title="Faste aktiviteter"
-      text="Faste grupper og aldersinndelte tilbud på tvers av klubbene. Trykk på en aktivitet for treningstider og sted."
-    />
+    <PageHeader kicker="Hele året, alle aldre" title="Faste aktiviteter" />
     <DefaultContainer paddingTop="3.75rem" paddingBottom="4.75rem">
       <RecurringEvents />
     </DefaultContainer>

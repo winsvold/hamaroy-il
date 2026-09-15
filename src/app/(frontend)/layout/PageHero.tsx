@@ -2,15 +2,12 @@ import { DefaultContainer } from "@/components/DefaultContainer";
 import { Box, SystemStyleObject } from "@chakra-ui/react";
 import { getDayOfYear } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
-import { mountainRange } from "./mountainRange";
+import { AuroraCurtain } from "./AuroraCurtain";
+import { AuroraGlow } from "./AuroraGlow";
+import { AuroraRibbons } from "./AuroraRibbons";
+import { MountainRange } from "./MountainRange";
 
-/**
- * Det mørke toppfeltet: nordlyset bak horisonten, og fjellsilhuetten langs bunnen.
- *
- * Fjellrekka er kopiert ordrett fra designet. Den er tegnet av etter et bilde av
- * horisonten i Hamarøy — inkludert Stetind-spiret — så banene skal ikke forenkles.
- * Begge må dessuten ende på `H1440` for å nå helt ut til høyre kant.
- */
+/** Det mørke toppfeltet: nordlyset bak horisonten, og fjellsilhuetten langs bunnen. */
 
 type Variant = "front" | "page" | "detail";
 
@@ -67,6 +64,8 @@ const skyLayer = (sky: Sky): SystemStyleObject => {
   return {
     position: "absolute",
     inset: "0",
+    // Lagene dekker hele feltet; teksten skal kunne markeres gjennom dem
+    pointerEvents: "none",
     transition: "opacity .4s ease, visibility .4s",
     ...(sky === "c"
       ? {
@@ -78,27 +77,14 @@ const skyLayer = (sky: Sky): SystemStyleObject => {
   };
 };
 
-/** Lyset dempes litt på undersidene. Tallene er gradientstoppene fra designfilene. */
-const intensity = {
-  front: {
-    ribbon: { green: 0.5, teal: 0.12, teal2: 0.42, violet: 0.1 },
-    curtain: { green: 0.6, green2: 0.15, violet: 0.48, teal: 0.12 },
-    curtainHeight: "62%",
-  },
-  sub: {
-    ribbon: { green: 0.42, teal: 0.1, teal2: 0.35, violet: 0.08 },
-    curtain: { green: 0.55, green2: 0.14, violet: 0.44, teal: 0.1 },
-    curtainHeight: "58%",
-  },
-};
-
 type Props = {
   variant?: Variant;
   children: React.ReactNode;
 };
 
 export const PageHero = ({ variant = "page", children }: Props) => {
-  const light = intensity[variant === "front" ? "front" : "sub"];
+  // Lyset dempes litt på undersidene
+  const dimmed = variant !== "front";
 
   return (
     <Box
@@ -108,164 +94,14 @@ export const PageHero = ({ variant = "page", children }: Props) => {
       background="arctic.hero"
       paddingTop={variants[variant].paddingTop}
     >
-      {/*
-        Gradient-id-ene er faste: det står aldri mer enn ett toppfelt på en side.
-
-        Uskarpheten bærer uttrykket. Uten den leses båndene og strålene som flate,
-        malte striper med harde kanter i stedet for lys.
-      */}
       <Box css={skyLayer("a")} aria-hidden="true">
-        <Box
-          position="absolute"
-          top="0"
-          right="-1.25rem"
-          width={{ base: "26rem", md: "41.25rem" }}
-          height="100%"
-          filter="blur(1.0625rem)"
-        >
-          {/* `meet` holder båndene hele i de lavere toppfeltene på undersidene */}
-          <svg
-            viewBox="0 0 640 400"
-            preserveAspectRatio="xMaxYMid meet"
-            width="100%"
-            height="100%"
-          >
-            <defs>
-              <linearGradient id="sky-a-1" x1="0" y1="1" x2="1" y2="0">
-                <stop offset="0" stopColor="#4ade9f" stopOpacity="0" />
-                <stop
-                  offset=".45"
-                  stopColor="#4ade9f"
-                  stopOpacity={light.ribbon.green}
-                />
-                <stop
-                  offset="1"
-                  stopColor="#7ce0d6"
-                  stopOpacity={light.ribbon.teal}
-                />
-              </linearGradient>
-              <linearGradient id="sky-a-2" x1="0" y1="1" x2="1" y2="0">
-                <stop offset="0" stopColor="#7ce0d6" stopOpacity="0" />
-                <stop
-                  offset=".5"
-                  stopColor="#7ce0d6"
-                  stopOpacity={light.ribbon.teal2}
-                />
-                <stop
-                  offset="1"
-                  stopColor="#a48ee0"
-                  stopOpacity={light.ribbon.violet}
-                />
-              </linearGradient>
-            </defs>
-            <path
-              d="M20 300C150 190 300 250 380 96 430 6 540 46 640 6"
-              stroke="url(#sky-a-1)"
-              strokeWidth="58"
-              fill="none"
-              strokeLinecap="round"
-            />
-            <path
-              d="M40 356C170 250 310 306 386 156 442 62 540 100 634 62"
-              stroke="url(#sky-a-2)"
-              strokeWidth="26"
-              fill="none"
-              strokeLinecap="round"
-            />
-          </svg>
-        </Box>
+        <AuroraRibbons dimmed={dimmed} />
       </Box>
-
       <Box css={skyLayer("b")} aria-hidden="true">
-        {/*
-          Den ujevne skaleringen (`none`) vrir strålene litt ut av loddlinja, noe som
-          leser riktig som et gardin. Høyden i prosent av feltet sørger for at de
-          stopper godt over fjellrekka.
-        */}
-        <Box
-          position="absolute"
-          top="0"
-          left="0"
-          width="100%"
-          height={light.curtainHeight}
-          filter="blur(.5625rem)"
-        >
-          <svg
-            viewBox="0 0 1440 300"
-            preserveAspectRatio="none"
-            width="100%"
-            height="100%"
-          >
-            <defs>
-              <linearGradient id="sky-b-1" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="0"
-                  stopColor="#4ade9f"
-                  stopOpacity={light.curtain.green}
-                />
-                <stop
-                  offset=".55"
-                  stopColor="#4ade9f"
-                  stopOpacity={light.curtain.green2}
-                />
-                <stop offset="1" stopColor="#4ade9f" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient id="sky-b-2" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="0"
-                  stopColor="#a48ee0"
-                  stopOpacity={light.curtain.violet}
-                />
-                <stop
-                  offset=".6"
-                  stopColor="#7ce0d6"
-                  stopOpacity={light.curtain.teal}
-                />
-                <stop offset="1" stopColor="#7ce0d6" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <g fill="url(#sky-b-1)">
-              <path d="M700 14l26 216-14 0-30-206z" />
-              <path d="M760 4l30 248-16 0-32-236z" />
-              <path d="M826 18l24 204-14 0-26-194z" />
-              <path d="M888 0l32 260-18 0-32-248z" />
-              <path d="M952 22l22 192-14 0-24-182z" />
-              <path d="M1016 8l30 232-16 0-30-220z" />
-              <path d="M1084 26l22 180-14 0-24-170z" />
-              <path d="M1148 6l30 240-16 0-30-228z" />
-              <path d="M1216 28l22 174-14 0-24-164z" />
-            </g>
-            <g fill="url(#sky-b-2)">
-              <path d="M646 30l22 162-12 0-24-152z" />
-              <path d="M1282 34l22 156-12 0-24-146z" />
-              <path d="M1340 16l26 186-14 0-26-176z" />
-            </g>
-          </svg>
-        </Box>
+        <AuroraCurtain dimmed={dimmed} />
       </Box>
-
-      {/*
-        To radielle gradienter som stiger fra bunnen: en bred grønn bue forskjøvet mot
-        høyre og en smalere fiolett mot venstre. Fargene er aurora.green, .teal og
-        .violet, skrevet ut fordi gradientene trenger dem med gjennomsiktighet.
-      */}
       <Box css={skyLayer("c")} aria-hidden="true">
-        <Box
-          position="absolute"
-          left="0"
-          right="0"
-          bottom="0"
-          height="25rem"
-          backgroundImage="radial-gradient(120% 78% at 62% 100%, rgba(74, 222, 159, 0.42) 0%, rgba(74, 222, 159, 0.14) 32%, rgba(124, 224, 214, 0.05) 52%, transparent 66%)"
-        />
-        <Box
-          position="absolute"
-          left="0"
-          right="0"
-          bottom="0"
-          height="21.875rem"
-          backgroundImage="radial-gradient(70% 66% at 22% 100%, rgba(164, 142, 224, 0.3) 0%, rgba(164, 142, 224, 0.06) 45%, transparent 62%)"
-        />
+        <AuroraGlow />
       </Box>
 
       <DefaultContainer
@@ -275,33 +111,15 @@ export const PageHero = ({ variant = "page", children }: Props) => {
         {children}
       </DefaultContainer>
 
-      <Box
-        position="absolute"
-        left="0"
-        bottom="0"
-        width="100%"
+      {/*
+        Fylles med sidebakgrunnen, ikke en egen fjellfarge: rekka skal lese som
+        horisonten og gli rett over i seksjonen under uten en synlig skjøt.
+      */}
+      <MountainRange
+        back="sage.deep"
+        front="ground"
         height={variants[variant].rangeHeight}
-        aria-hidden="true"
-      >
-        <svg
-          viewBox="0 0 1440 220"
-          preserveAspectRatio="none"
-          width="100%"
-          height="100%"
-          style={{ display: "block" }}
-        >
-          <path
-            d={mountainRange.back}
-            fill="var(--chakra-colors-sage-deep)"
-            opacity=".55"
-          />
-          {/*
-            Fylles med sidebakgrunnen, ikke en egen fjellfarge: rekka skal lese som
-            horisonten og gli rett over i seksjonen under uten en synlig skjøt.
-          */}
-          <path d={mountainRange.front} fill="var(--chakra-colors-ground)" />
-        </svg>
-      </Box>
+      />
     </Box>
   );
 };

@@ -13,7 +13,16 @@ type Props = {
 /** Merkelapp + overskrift + ingress i det mørke toppfeltet — mønsteret hver side åpner med. */
 export const PageHeader = (props: Props) => (
   <PageHero variant={props.variant ?? "page"}>
-    <Stack gap="0" maxWidth="44rem">
+    <Stack
+      gap="0"
+      maxWidth="44rem"
+      // Luften under teksten er avpasset en liten ingress, som er smal og går klar av
+      // fjelltoppene. Står overskriften alene, ville den store skriften ellers
+      // legge seg rett oppå spiret.
+      paddingBottom={
+        props.text ? undefined : { base: "1.75rem", md: "2.75rem" }
+      }
+    >
       {props.kicker && (
         <Kicker color="aurora.green" marginBottom="1rem">
           {props.kicker}

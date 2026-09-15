@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { FrontPageQueryResult } from "../../../../sanity.types";
-import { mountainRange } from "../layout/mountainRange";
+import { MountainRange } from "../layout/MountainRange";
 
 /**
  * Datobrikka øverst til høyre på kortet: ukedag over dag over måned. Den grønne
@@ -77,22 +77,7 @@ const ImagePlaceholder = () => (
       inset="0"
       backgroundImage="radial-gradient(90% 70% at 60% 100%, rgba(74, 222, 159, 0.4) 0%, rgba(74, 222, 159, 0.1) 42%, transparent 66%)"
     />
-    <Box position="absolute" left="0" bottom="0" width="100%" height="2.625rem">
-      <svg
-        viewBox="0 0 1440 220"
-        preserveAspectRatio="none"
-        width="100%"
-        height="100%"
-        style={{ display: "block" }}
-      >
-        <path
-          d={mountainRange.back}
-          fill="var(--chakra-colors-arctic-base)"
-          opacity=".55"
-        />
-        <path d={mountainRange.front} fill="var(--chakra-colors-arctic-base)" />
-      </svg>
-    </Box>
+    <MountainRange back="arctic.base" front="arctic.base" height="2.625rem" />
   </Box>
 );
 
