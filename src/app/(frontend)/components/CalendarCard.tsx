@@ -1,6 +1,5 @@
 import {
   formatNorwegianDate,
-  formatNorwegianDateCapitalized,
   formatNorwegianDuration,
   isSameNorwegianDay,
 } from "@/utils/date";
@@ -15,7 +14,7 @@ import {
   TextProps,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { AlertCircle } from "react-feather";
+import { AlertCircle, MapPin } from "react-feather";
 
 type Props = {
   startsAt?: string | null;
@@ -28,7 +27,7 @@ type Props = {
   note?: string | null;
   /**
    * På en aktivitets egen side er tittelen den samme for hver sesjon, og lenka peker
-   * til siden du allerede står på. Da står datoen der navnet ellers står, uten lenke.
+   * til siden du allerede står på. Da vises bare tid og sted, uten lenke.
    */
   hideTitle?: boolean;
 };
@@ -44,57 +43,76 @@ const durationLabel = (startsAt: string, endsAt?: string | null) => {
     : `til ${formatNorwegianDate(endsAt, "EEE p")}`;
 };
 
-const cardStyles = {
+/**
+ * Designet er tegnet for desktop. På mobil ble det bare ~150 px igjen til navnet ved
+ * siden av datobrikka og tidsblokken, og ord som «Hamarøyhallen» brakk midt i. Der
+ * legger tidsblokken seg i stedet som en stripe over navnet.
+ */
+const rowStyles = {
   display: "flex",
-  gap: "1.125rem",
+  flexDirection: { base: "column", sm: "row" },
+  alignItems: "stretch",
+  maxWidth: "100%",
   background: "card.base",
-  padding: { base: "1rem 1.125rem", md: "1.25rem 1.375rem" },
 } as const;
 
 /**
- * Ett kort i en datobolk: starttid og varighet i en kolonne med fast bredde, så tidene
- * står på linje på tvers av kortene, og navn og sted til høyre for streken.
+ * Én rad i tidslinja: klokkeslettet i en dypgrønn blokk, navn og sted ved siden av.
+ * Raden er bare så bred som innholdet, så en kort tittel gir en kort rad.
+ *
+ * Tallene står i Figtree med tabellsifre. Syne kostet lesbarhet, og tidspunktet er
+ * det én ting en klubbkalender må kunne leses på et øyeblikk.
  */
 export const CalendarCard = (props: Props) => {
   const { startsAt, cancelled } = props;
   if (!startsAt) return null;
 
-  const name = props.hideTitle
-    ? formatNorwegianDateCapitalized(startsAt, "EEEE d. MMMM")
-    : props.title;
   const place = props.location?.name;
   const strike = cancelled ? "line-through" : undefined;
 
   const content = (
     <>
-      {/*
-        Syne har brede sifre: «09:00» er 4,7 em, og brakk over to linjer i designets
-        66 px-kolonne. Bredden her rommer det bredeste klokkeslettet med litt luft.
-      */}
-      <Stack
-        gap=".1875rem"
+      <Flex
+        direction={{ base: "row", sm: "column" }}
+        align={{ base: "baseline", sm: "center" }}
+        justify={{ base: "flex-start", sm: "center" }}
+        gap={{ base: ".625rem", sm: "0" }}
         flexShrink={0}
-        width="7.125rem"
-        paddingRight="1.125rem"
-        borderRight="2px solid"
-        borderColor="aurora.tint"
+        width={{ base: "auto", sm: "5rem", md: "6.5rem" }}
+        paddingY={{ base: ".5rem", sm: "1rem" }}
+        paddingX={{ base: "1rem", sm: ".5rem" }}
+        background="deep.base"
+        textAlign="center"
       >
         <Box
-          fontFamily="heading"
-          fontWeight={800}
-          fontSize="1.25rem"
+          fontWeight={700}
+          fontSize={{ base: "1.0625rem", sm: "1.25rem" }}
           lineHeight={1.1}
+          fontVariantNumeric="tabular-nums"
           whiteSpace="nowrap"
-          color="ink"
+          color="onDark.base"
           textDecoration={strike}
         >
           {formatNorwegianDate(startsAt, "p")}
         </Box>
-        <Text fontSize="0.78125rem" fontWeight={500} color="muted">
+        <Text
+          fontSize="0.8125rem"
+          fontWeight={600}
+          color="deep.light"
+          marginTop={{ base: "0", sm: ".1875rem" }}
+        >
           {durationLabel(startsAt, props.endsAt)}
         </Text>
-      </Stack>
-      <Stack gap=".375rem" minWidth="0">
+      </Flex>
+      <Stack
+        gap=".375rem"
+        justify="center"
+        minWidth="0"
+        padding={{
+          base: ".75rem 1rem .875rem",
+          md: ".9375rem 1.375rem .9375rem 1.25rem",
+        }}
+      >
         {cancelled && (
           <TextWithIcon
             textStyle="kicker"
@@ -104,7 +122,7 @@ export const CalendarCard = (props: Props) => {
             Avlyst
           </TextWithIcon>
         )}
-        {name && (
+        {!props.hideTitle && props.title && (
           <Text
             data-name
             fontWeight={700}
@@ -114,19 +132,22 @@ export const CalendarCard = (props: Props) => {
             transition="color .2s"
             textDecoration={strike}
           >
-            {props.hideTitle ? (
-              name
-            ) : (
-              <LinkOverlay asChild>
-                <Link href={`/aktiviteter/${props.slug}`}>{name}</Link>
-              </LinkOverlay>
-            )}
+            <LinkOverlay asChild>
+              <Link href={`/aktiviteter/${props.slug}`}>{props.title}</Link>
+            </LinkOverlay>
           </Text>
         )}
         {place && (
-          <Text fontSize="0.875rem" fontWeight={500} color="muted">
+          <TextWithIcon
+            icon={<MapPin size="1.07em" />}
+            gap=".4375rem"
+            fontSize="0.875rem"
+            fontWeight={500}
+            color="secondary"
+            css={{ "& svg": { color: "muted" } }}
+          >
             {place}
-          </Text>
+          </TextWithIcon>
         )}
         {props.note && (
           <Text fontSize="0.8125rem" color="muted">
@@ -137,11 +158,11 @@ export const CalendarCard = (props: Props) => {
     </>
   );
 
-  if (props.hideTitle) return <Flex {...cardStyles}>{content}</Flex>;
+  if (props.hideTitle) return <Flex {...rowStyles}>{content}</Flex>;
 
   return (
     <LinkBox
-      {...cardStyles}
+      {...rowStyles}
       transition="background .2s"
       _hover={{
         background: "card.hover",

@@ -49,7 +49,7 @@ const Page = async (props: Props) => {
             />
 
             {!!data.managers?.length && (
-              <Box background="sage.base" padding="1.5rem">
+              <Box background="card.base" padding="1.5rem">
                 <Kicker as="h2" marginBottom=".875rem">
                   Ledere
                 </Kicker>

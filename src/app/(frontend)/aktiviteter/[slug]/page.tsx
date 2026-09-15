@@ -263,7 +263,7 @@ const SideCard = ({
   children: React.ReactNode;
 }) => (
   <Box
-    background={dark ? "arctic.base" : "sage.base"}
+    background={dark ? "arctic.base" : "card.base"}
     padding="1.5rem"
     color={dark ? "onDark.base" : "ink"}
   >

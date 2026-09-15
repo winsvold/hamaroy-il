@@ -1,9 +1,7 @@
-import { CardGrid } from "@/components/CardGrid";
-import { RuledHeading } from "@/components/RuledHeading";
 import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
-import { formatNorwegianDateCapitalized } from "@/utils/date";
-import { Box, Stack, Text } from "@chakra-ui/react";
+import { formatNorwegianDate } from "@/utils/date";
+import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import { startOfDay } from "date-fns";
 import { defineQuery } from "next-sanity";
 import Link from "next/link";
@@ -91,6 +89,9 @@ export type SessionOccurrence = NonNullable<
   series: SessionSeries;
 };
 
+/** Datobrikka er smalere på mobil, så radene ved siden av får plass til navnene */
+const pillWidth = { base: "4rem", md: "5.5rem" };
+
 export const Calendar = async (props: Props) => {
   const { events, sessionSeries } = await sanityFetch(activitiesQuery, {
     seriesId: props.seriesId ?? null,
@@ -153,61 +154,116 @@ export const Calendar = async (props: Props) => {
     );
   }
 
-  const cards = (items: typeof sortedEventsAndSessions) =>
-    items.map((item) =>
-      item._type === "event" ? (
-        <CalendarCard
-          key={item._id}
-          startsAt={item.startsAt}
-          endsAt={item.endsAt}
-          title={item.title}
-          location={item.location}
-          slug={item._id}
-        />
-      ) : (
-        <CalendarCard
-          key={item._key}
-          startsAt={item.startsAt}
-          endsAt={item.endsAt}
-          title={item.series.title}
-          location={item.series.location}
-          slug={item.series.slug?.current}
-          cancelled={item.cancelled}
-          note={item.note}
-          hideTitle={props.showTitles === false}
-        />
-      ),
-    );
-
-  // På en aktivitets egen side er det én sesjon per dag, og datobolkene ville blitt en
-  // stabel med ett kort under hver strek. Datoen står da på kortet i stedet.
-  if (props.showTitles === false)
-    return (
-      <Box>
-        {heading}
-        <CardGrid>{cards(sortedEventsAndSessions)}</CardGrid>
-        {props.childrenAfter}
-      </Box>
-    );
-
   return (
     <Box>
       {heading}
-      <Stack gap="1.75rem">
-        {entries.map(([date, activities]) => (
-          <Box key={date}>
-            {/* Under en seksjonsoverskrift er datoen et nivå ned; på /kalender står den alene */}
-            <RuledHeading as={props.heading ? "h3" : "h2"}>
-              {formatNorwegianDateCapitalized(date, "EEEE d. MMMM")}
-            </RuledHeading>
-            <CardGrid>{cards(activities ?? [])}</CardGrid>
-          </Box>
-        ))}
-      </Stack>
+      <Box position="relative">
+        {/* Streken tidslinja henger på, midt gjennom datobrikkene */}
+        <Box
+          position="absolute"
+          top="1rem"
+          bottom="1rem"
+          left={{ base: "calc(2rem - 1px)", md: "calc(2.75rem - 1px)" }}
+          width="2px"
+          background="hairline"
+          aria-hidden="true"
+        />
+        <Stack gap=".875rem">
+          {entries.map(([date, activities]) => (
+            <Flex
+              key={date}
+              position="relative"
+              align="flex-start"
+              gap={{ base: ".875rem", md: "1.625rem" }}
+            >
+              {/* Under en seksjonsoverskrift er datoen et nivå ned; på /kalender står den alene */}
+              <DatePill date={date} as={props.heading ? "h3" : "h2"} />
+              <Stack gap=".625rem" align="flex-start" flex="1" minWidth="0">
+                {activities?.map((item) =>
+                  item._type === "event" ? (
+                    <CalendarCard
+                      key={item._id}
+                      startsAt={item.startsAt}
+                      endsAt={item.endsAt}
+                      title={item.title}
+                      location={item.location}
+                      slug={item._id}
+                    />
+                  ) : (
+                    <CalendarCard
+                      key={item._key}
+                      startsAt={item.startsAt}
+                      endsAt={item.endsAt}
+                      title={item.series.title}
+                      location={item.series.location}
+                      slug={item.series.slug?.current}
+                      cancelled={item.cancelled}
+                      note={item.note}
+                      hideTitle={props.showTitles === false}
+                    />
+                  ),
+                )}
+              </Stack>
+            </Flex>
+          ))}
+        </Stack>
+      </Box>
       {props.childrenAfter}
     </Box>
   );
 };
+
+/**
+ * Datoen i tidslinja: ukedag, dag og måned i en mørk brikke på streken. Skjermlesere
+ * får datoen skrevet ut i stedet for forkortelsene.
+ */
+const DatePill = ({ date, as }: { date: string; as: "h2" | "h3" }) => (
+  <Heading
+    as={as}
+    display="flex"
+    flexDirection="column"
+    alignItems="center"
+    flexShrink={0}
+    width={pillWidth}
+    padding=".6875rem 0 .8125rem"
+    background="arctic.base"
+    fontFamily="body"
+    lineHeight={1.15}
+  >
+    <Box srOnly>{formatNorwegianDate(date, "EEEE d. MMMM")}</Box>
+    <Box
+      as="span"
+      aria-hidden="true"
+      fontSize="0.8125rem"
+      fontWeight={700}
+      letterSpacing=".04em"
+      color="aurora.green"
+    >
+      {formatNorwegianDate(date, "EEE").replace(".", "")}
+    </Box>
+    <Box
+      as="span"
+      aria-hidden="true"
+      fontSize="1.875rem"
+      fontWeight={800}
+      lineHeight={1}
+      margin=".0625rem 0 .125rem"
+      color="onDark.base"
+    >
+      {formatNorwegianDate(date, "d")}
+    </Box>
+    <Box
+      as="span"
+      aria-hidden="true"
+      fontSize="0.8125rem"
+      fontWeight={700}
+      letterSpacing=".04em"
+      color="aurora.green"
+    >
+      {formatNorwegianDate(date, "MMM").replace(".", "")}
+    </Box>
+  </Heading>
+);
 
 /**
  * Klubben har lange perioder mellom sesongene der ingenting er planlagt, så dette
@@ -215,7 +271,7 @@ export const Calendar = async (props: Props) => {
  */
 const EmptyState = () => (
   <Stack
-    background="sage.base"
+    background="card.base"
     padding="1.625rem"
     gap=".5rem"
     align="flex-start"

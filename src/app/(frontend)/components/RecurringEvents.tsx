@@ -1,10 +1,9 @@
 import { CardGrid } from "@/components/CardGrid";
-import { RuledHeading } from "@/components/RuledHeading";
 import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
 import { resolveSport, Sport, sports } from "@/sanity/sports";
 import { formatNorwegianDate } from "@/utils/date";
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, Heading, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Link from "next/link";
 import { ReoccurringEventsQueryResult } from "../../../../sanity.types";
@@ -79,9 +78,19 @@ const SportSection = ({
   headingAs: "h2" | "h3";
 }) => (
   <Box as="section" id={sport?.id} scrollMarginTop="6rem">
-    <RuledHeading as={headingAs} rule="light" color="deep.base">
+    {/* Ingen strek etter navnet: kortblokkene under skiller kategoriene */}
+    <Heading
+      as={headingAs}
+      fontFamily="heading"
+      fontWeight={700}
+      fontSize="1.1875rem"
+      lineHeight={1.2}
+      letterSpacing="-.01em"
+      color="deep.base"
+      marginBottom=".875rem"
+    >
       {sport?.title ?? "Andre aktiviteter"}
-    </RuledHeading>
+    </Heading>
     <CardGrid>
       {series.map((item) => (
         <ActivityCard key={item._id} series={item} />

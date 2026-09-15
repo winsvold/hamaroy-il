@@ -11,8 +11,12 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { FrontPageQueryResult } from "../../../../sanity.types";
+import { mountainRange } from "../layout/mountainRange";
 
-/** Datobrikka øverst til høyre på kortet: ukedag over dag over måned. */
+/**
+ * Datobrikka øverst til høyre på kortet: ukedag over dag over måned. Den grønne
+ * brikka er det som får kortene til å skille seg ut; kortet selv holder seg lyst.
+ */
 const DateChip = ({ date }: { date: string }) => (
   <Flex
     flexDirection="column"
@@ -21,8 +25,8 @@ const DateChip = ({ date }: { date: string }) => (
     flexShrink={0}
     width="3.25rem"
     height="3.25rem"
-    background="aurora.tint"
-    color="deep.base"
+    background="aurora.green"
+    color="onAuroraSoft"
     lineHeight={1.1}
     title={formatNorwegianDate(date, "PPP")}
   >
@@ -35,13 +39,7 @@ const DateChip = ({ date }: { date: string }) => (
     >
       {formatNorwegianDate(date, "E").replace(".", "")}
     </Box>
-    <Box
-      as="span"
-      fontFamily="heading"
-      fontWeight={800}
-      fontSize="1.3125rem"
-      color="arctic.base"
-    >
+    <Box as="span" fontWeight={800} fontSize="1.3125rem" color="onAurora">
       {formatNorwegianDate(date, "d")}
     </Box>
     <Box
@@ -57,8 +55,50 @@ const DateChip = ({ date }: { date: string }) => (
 );
 
 /**
+ * Arrangementer uten bilde får nordlys bak fjellrekka i stedet: den samme silhuetten
+ * som i toppfeltet, mørk mot en opplyst himmel. Samme høyde som et bilde, så kortene
+ * i en rad står likt.
+ *
+ * Designet tegnet en forenklet kopi av rekka her. Den ekte banene i liten skala gir
+ * nesten samme form, og holder silhuetten ett sted.
+ */
+const ImagePlaceholder = () => (
+  <Box
+    position="relative"
+    height="8.75rem"
+    flexShrink={0}
+    overflow="hidden"
+    // Himmelen er egne mørkegrønne toner som bare brukes her
+    backgroundImage="linear-gradient(#0a1f1a, #123a32)"
+    aria-hidden="true"
+  >
+    <Box
+      position="absolute"
+      inset="0"
+      backgroundImage="radial-gradient(90% 70% at 60% 100%, rgba(74, 222, 159, 0.4) 0%, rgba(74, 222, 159, 0.1) 42%, transparent 66%)"
+    />
+    <Box position="absolute" left="0" bottom="0" width="100%" height="2.625rem">
+      <svg
+        viewBox="0 0 1440 220"
+        preserveAspectRatio="none"
+        width="100%"
+        height="100%"
+        style={{ display: "block" }}
+      >
+        <path
+          d={mountainRange.back}
+          fill="var(--chakra-colors-arctic-base)"
+          opacity=".55"
+        />
+        <path d={mountainRange.front} fill="var(--chakra-colors-arctic-base)" />
+      </svg>
+    </Box>
+  </Box>
+);
+
+/**
  * Kortet i «Gå ikke glipp av». Arrangementer skjer sjelden sammenlignet med de faste
- * treningene, så de får bilde og mer plass enn et kort i kalenderen.
+ * treningene, så de får bilde og mer plass enn en rad i kalenderen.
  */
 export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
   const { startsAt, endsAt, title, location } = props;
@@ -72,7 +112,7 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
       transition="background .2s"
       _hover={{ background: "card.hover", "& h3": { color: "deep.base" } }}
     >
-      {image && (
+      {image ? (
         <Box width="100%" height="8.75rem" flexShrink={0} overflow="hidden">
           <Box asChild width="100%" height="100%" objectFit="cover">
             <Image
@@ -83,18 +123,10 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
             />
           </Box>
         </Box>
+      ) : (
+        <ImagePlaceholder />
       )}
-      {/*
-        Uten bilde skyves innholdet ned til bunnen av kortet. Rutenettet strekker alle
-        kortene like høye, og da ville et bildeløst kort ellers stått med teksten på
-        toppen mens naboene har sin nederst — hele raden ser da ujevn ut.
-      */}
-      <Flex
-        gap=".875rem"
-        padding="1rem 1.125rem 1.125rem"
-        marginTop={image ? undefined : "auto"}
-        alignItems={image ? undefined : "flex-end"}
-      >
+      <Flex gap=".875rem" padding="1rem 1.125rem 1.125rem">
         <Box flex="1" minWidth="0">
           <LinkOverlay asChild>
             <Link href={`/aktiviteter/${props._id}`}>
@@ -112,18 +144,18 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
             </Link>
           </LinkOverlay>
           <Text
-            fontSize="0.78125rem"
-            fontWeight={600}
-            color="secondary"
+            fontSize="0.8125rem"
+            fontWeight={700}
+            color="deep.base"
             marginTop=".5rem"
           >
             {formatNorwegianTimeRange(startsAt, endsAt)}
           </Text>
           {location?.name && (
             <Text
-              fontSize="0.78125rem"
+              fontSize="0.8125rem"
               fontWeight={500}
-              color="muted"
+              color="secondary"
               marginTop=".1875rem"
             >
               {location.name}

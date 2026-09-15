@@ -46,7 +46,7 @@ export default function RootLayout({
       // Uten `minmax(0, …)` sizes kolonnen etter det bredeste min-innholdet på siden,
       // og ett langt ord i en overskrift dytter hele sidemalen bredere enn skjermen
       gridTemplateColumns="minmax(0, 1fr)"
-      background="snow"
+      background="ground"
       color="ink"
       fontFamily="body"
     >

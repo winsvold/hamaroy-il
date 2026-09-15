@@ -2,6 +2,7 @@ import { DefaultContainer } from "@/components/DefaultContainer";
 import { Box, SystemStyleObject } from "@chakra-ui/react";
 import { getDayOfYear } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
+import { mountainRange } from "./mountainRange";
 
 /**
  * Det mørke toppfeltet: nordlyset bak horisonten, og fjellsilhuetten langs bunnen.
@@ -290,7 +291,7 @@ export const PageHero = ({ variant = "page", children }: Props) => {
           style={{ display: "block" }}
         >
           <path
-            d="M0 220V196l90-26 96 22 84-34 120 26 96-18 130 30 110-22 128 26 96-16 130 24 110-18 150 22H1440v200z"
+            d={mountainRange.back}
             fill="var(--chakra-colors-sage-deep)"
             opacity=".55"
           />
@@ -298,10 +299,7 @@ export const PageHero = ({ variant = "page", children }: Props) => {
             Fylles med sidebakgrunnen, ikke en egen fjellfarge: rekka skal lese som
             horisonten og gli rett over i seksjonen under uten en synlig skjøt.
           */}
-          <path
-            d="M0 220V184l72-32 52 20 66-10 74-58 68-22 92 8 62 38 40-14 44 24 26 4 10-72 12 72 46 10 52-24 42-24 34 14 26-22 30 26 70 22 100 20 100-8 150 20 100-10H1440v76z"
-            fill="var(--chakra-colors-snow)"
-          />
+          <path d={mountainRange.front} fill="var(--chakra-colors-ground)" />
         </svg>
       </Box>
     </Box>

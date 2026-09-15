@@ -46,26 +46,26 @@ const customConfig = defineConfig({
           green: { value: "#4ade9f" },
           teal: { value: "#7ce0d6" },
           violet: { value: "#a48ee0" },
-          // Blek grønn: datobrikka og streken ved siden av klokkeslettene
-          tint: { value: "#d6f5e6" },
         },
-        // Lenker og etiketter på lys bakgrunn
+        // Tidsblokkene i kalenderen, lenker og kategorioverskrifter på lys bakgrunn
         deep: {
           base: { value: "#0d5c4f" },
           hover: { value: "#12806d" },
+          // Lys grønn tekst oppå deep.base
+          light: { value: "#9fe8cd" },
         },
-        // Sidebakgrunnen. Fjellsilhuetten fylles med akkurat denne, så den løser
-        // seg opp i seksjonen under.
-        snow: { value: "#f2f4f3" },
-        // Alle kort: arrangementer, kalenderen, faste aktiviteter og lokaler.
-        // Hvitt mot den kjølige sidebakgrunnen skiller dem — ingen kant, ingen skygge.
+        // Sidebakgrunnen, en kjølig salvie. Fjellsilhuetten fylles med akkurat denne,
+        // så den løser seg opp i seksjonen under.
+        ground: { value: "#e9edeb" },
+        // Alle kort og lyse paneler. Hvitt mot salviegrunnen skiller dem — ingen kant,
+        // ingen skygge. Designets grå panelfarge (#e6ece9) er utelatt: mot den nye
+        // grunnen var den så godt som usynlig.
         card: {
           base: { value: "#ffffff" },
           hover: { value: "#f7fbf9" },
         },
-        // Sekundære paneler (sted, betaling, ledere, tomtilstand) og bakre fjellrygg
+        // Den bakre fjellryggen
         sage: {
-          base: { value: "#e6ece9" },
           deep: { value: "#c7d5d0" },
         },
         // Tekst på lys bakgrunn
@@ -85,6 +85,8 @@ const customConfig = defineConfig({
         },
         // Tekst oppå den grønne knappen
         onAurora: { value: "#062018" },
+        // Mindre tekst på grønt: ukedag og måned i datobrikka
+        onAuroraSoft: { value: "#0b4a3a" },
         hairline: { value: "rgba(17, 28, 25, 0.14)" },
         hairlineDark: { value: "rgba(195, 214, 208, 0.28)" },
         hairlineDarkFaint: { value: "rgba(195, 214, 208, 0.22)" },
