@@ -1,7 +1,9 @@
+import { CardGrid } from "@/components/CardGrid";
+import { RuledHeading } from "@/components/RuledHeading";
 import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
-import { formatNorwegianDate } from "@/utils/date";
-import { Box, Flex, Stack, Text } from "@chakra-ui/react";
+import { formatNorwegianDateCapitalized } from "@/utils/date";
+import { Box, Stack, Text } from "@chakra-ui/react";
 import { startOfDay } from "date-fns";
 import { defineQuery } from "next-sanity";
 import Link from "next/link";
@@ -56,14 +58,6 @@ const activitiesQuery = defineQuery(`{
  * sesong noen gang inneholder.
  */
 const NO_SESSION_LIMIT = 1000;
-
-/**
- * Prikkene roterer med posisjonen i lista, ikke med idretten. Slik gjør prototypen
- * det også — samme aktivitet får ulik farge på forsiden og på en aktivitetsside.
- * Å binde fargene til idrett ville antydet et system paletten ikke kan bære: den har
- * tre farger og klubben seks idretter.
- */
-const dotColors = ["aurora.green", "aurora.teal", "aurora.violet"];
 
 type Props = {
   limit?: number;
@@ -159,107 +153,61 @@ export const Calendar = async (props: Props) => {
     );
   }
 
-  // Teller på tvers av datogruppene, slik at fargene roterer nedover hele lista
-  let rowIndex = 0;
+  const cards = (items: typeof sortedEventsAndSessions) =>
+    items.map((item) =>
+      item._type === "event" ? (
+        <CalendarCard
+          key={item._id}
+          startsAt={item.startsAt}
+          endsAt={item.endsAt}
+          title={item.title}
+          location={item.location}
+          slug={item._id}
+        />
+      ) : (
+        <CalendarCard
+          key={item._key}
+          startsAt={item.startsAt}
+          endsAt={item.endsAt}
+          title={item.series.title}
+          location={item.series.location}
+          slug={item.series.slug?.current}
+          cancelled={item.cancelled}
+          note={item.note}
+          hideTitle={props.showTitles === false}
+        />
+      ),
+    );
+
+  // På en aktivitets egen side er det én sesjon per dag, og datobolkene ville blitt en
+  // stabel med ett kort under hver strek. Datoen står da på kortet i stedet.
+  if (props.showTitles === false)
+    return (
+      <Box>
+        {heading}
+        <CardGrid>{cards(sortedEventsAndSessions)}</CardGrid>
+        {props.childrenAfter}
+      </Box>
+    );
 
   return (
-    // Samme bredde som kolonnen lista står i på forsiden. Uten taket strekker radene
-    // seg over hele sidebredden på /kalender, med en tom halvdel til høyre.
-    <Box maxWidth="40rem">
+    <Box>
       {heading}
-      {entries.map(([date, activities], index) => (
-        <Flex
-          key={date}
-          gap="1.375rem"
-          paddingTop="1rem"
-          marginTop={index === 0 ? "0" : "1.375rem"}
-          // Første gruppe får den tunge streken, resten en hårstrek — som i designet
-          borderTop={index === 0 ? "2px solid" : "1px solid"}
-          borderColor={index === 0 ? "arctic.ink" : "hairline"}
-        >
-          <Box width="3.875rem" flexShrink={0}>
-            <Box
-              fontFamily="heading"
-              fontWeight={800}
-              fontSize="1.875rem"
-              lineHeight={1}
-              color="ink"
-              title={formatNorwegianDate(date, "PPP")}
-            >
-              {formatNorwegianDate(date, "d")}
-            </Box>
-            {/* Forkortet: «november» og «september» brekker over to linjer i en
-                kolonne på 3.875rem. Designet traff bare korte måneder. */}
-            <Box
-              textStyle="kicker"
-              color="muted"
-              marginTop=".1875rem"
-              whiteSpace="nowrap"
-            >
-              {formatNorwegianDate(date, "MMM").replace(".", "")}
-            </Box>
+      <Stack gap="1.75rem">
+        {entries.map(([date, activities]) => (
+          <Box key={date}>
+            {/* Under en seksjonsoverskrift er datoen et nivå ned; på /kalender står den alene */}
+            <RuledHeading as={props.heading ? "h3" : "h2"}>
+              {formatNorwegianDateCapitalized(date, "EEEE d. MMMM")}
+            </RuledHeading>
+            <CardGrid>{cards(activities ?? [])}</CardGrid>
           </Box>
-          <Stack gap=".875rem" flex="1" minWidth="0">
-            {activities?.map((item) => {
-              const dotColor = dotColors[rowIndex++ % dotColors.length];
-              return item._type === "event" ? (
-                <CalendarCard
-                  key={item._id}
-                  startsAt={item.startsAt}
-                  endsAt={item.endsAt}
-                  title={item.title}
-                  location={item.location}
-                  slug={item._id}
-                  dotColor={dotColor}
-                />
-              ) : (
-                <CalendarCard
-                  key={item._key}
-                  startsAt={item.startsAt}
-                  endsAt={item.endsAt}
-                  title={item.series.title}
-                  location={item.series.location}
-                  slug={item.series.slug?.current}
-                  cancelled={item.cancelled}
-                  note={item.note}
-                  dotColor={dotColor}
-                  hideTitle={props.showTitles === false}
-                />
-              );
-            })}
-          </Stack>
-        </Flex>
-      ))}
+        ))}
+      </Stack>
       {props.childrenAfter}
     </Box>
   );
 };
-
-/** Den mørke handlingsstripa under en liste. */
-export const CalendarActionBar = ({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) => (
-  <Box
-    asChild
-    textStyle="kicker"
-    display="flex"
-    alignItems="center"
-    justifyContent="center"
-    gap=".5rem"
-    marginTop="1.625rem"
-    padding=".9375rem"
-    background="arctic.base"
-    color="aurora.green"
-    transition="background .2s, color .2s"
-    _hover={{ background: "arctic.hover", color: "aurora.teal" }}
-  >
-    <Link href={href}>{children}</Link>
-  </Box>
-);
 
 /**
  * Klubben har lange perioder mellom sesongene der ingenting er planlagt, så dette

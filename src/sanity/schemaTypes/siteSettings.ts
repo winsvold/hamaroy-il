@@ -45,9 +45,9 @@ export const siteSettings = defineType({
     {
       ...getBlockContentType({ headings: ["h2"] }),
       name: "intro",
-      title: "Introduksjon (utgår)",
+      title: "Introduksjon",
       description:
-        "Erstattet av «Beskjed»-dokumenter. Teksten vises fortsatt på forsiden så lenge det ikke finnes noen beskjeder — flytt den over til en beskjed og tøm så dette feltet.",
+        "Velkomstteksten i det hvite feltet øverst på forsiden. Start med en overskrift — den blir feltets tittel.",
     },
   ],
   preview: {

@@ -1,5 +1,5 @@
 import { urlFor } from "@/sanity/lib/image";
-import { formatNorwegianDate } from "@/utils/date";
+import { formatNorwegianDate, formatNorwegianTimeRange } from "@/utils/date";
 import {
   Box,
   Flex,
@@ -19,18 +19,18 @@ const DateChip = ({ date }: { date: string }) => (
     align="center"
     justify="center"
     flexShrink={0}
-    width="2.875rem"
-    height="2.875rem"
-    background="arctic.base"
-    color="aurora.green"
-    lineHeight={1.05}
+    width="3.25rem"
+    height="3.25rem"
+    background="aurora.tint"
+    color="deep.base"
+    lineHeight={1.1}
     title={formatNorwegianDate(date, "PPP")}
   >
     <Box
       as="span"
-      fontSize="0.59375rem"
-      fontWeight={600}
-      letterSpacing=".1em"
+      fontSize="0.5625rem"
+      fontWeight={700}
+      letterSpacing=".12em"
       textTransform="uppercase"
     >
       {formatNorwegianDate(date, "E").replace(".", "")}
@@ -39,16 +39,16 @@ const DateChip = ({ date }: { date: string }) => (
       as="span"
       fontFamily="heading"
       fontWeight={800}
-      fontSize="1.25rem"
-      color="onDark.base"
+      fontSize="1.3125rem"
+      color="arctic.base"
     >
       {formatNorwegianDate(date, "d")}
     </Box>
     <Box
       as="span"
-      fontSize="0.59375rem"
-      fontWeight={600}
-      letterSpacing=".1em"
+      fontSize="0.5625rem"
+      fontWeight={700}
+      letterSpacing=".12em"
       textTransform="uppercase"
     >
       {formatNorwegianDate(date, "MMM").replace(".", "")}
@@ -58,7 +58,7 @@ const DateChip = ({ date }: { date: string }) => (
 
 /**
  * Kortet i «Gå ikke glipp av». Arrangementer skjer sjelden sammenlignet med de faste
- * treningene, så de får bilde og mer plass enn en rad i tidslinja.
+ * treningene, så de får bilde og mer plass enn et kort i kalenderen.
  */
 export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
   const { startsAt, endsAt, title, location } = props;
@@ -68,12 +68,12 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
     <LinkBox
       display="flex"
       flexDirection="column"
-      background="sage.base"
+      background="card.base"
       transition="background .2s"
-      _hover={{ background: "sage.hover", "& h3": { color: "deep.base" } }}
+      _hover={{ background: "card.hover", "& h3": { color: "deep.base" } }}
     >
       {image && (
-        <Box width="100%" height="8.25rem" flexShrink={0} overflow="hidden">
+        <Box width="100%" height="8.75rem" flexShrink={0} overflow="hidden">
           <Box asChild width="100%" height="100%" objectFit="cover">
             <Image
               alt=""
@@ -90,8 +90,8 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
         toppen mens naboene har sin nederst — hele raden ser da ujevn ut.
       */}
       <Flex
-        gap=".75rem"
-        padding=".875rem .9375rem 1rem"
+        gap=".875rem"
+        padding="1rem 1.125rem 1.125rem"
         marginTop={image ? undefined : "auto"}
         alignItems={image ? undefined : "flex-end"}
       >
@@ -102,8 +102,8 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
                 as="h3"
                 fontFamily="body"
                 fontWeight={700}
-                fontSize="0.9375rem"
-                lineHeight={1.28}
+                fontSize="0.96875rem"
+                lineHeight={1.3}
                 color="ink"
                 transition="color .2s"
               >
@@ -115,10 +115,9 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
             fontSize="0.78125rem"
             fontWeight={600}
             color="secondary"
-            marginTop=".375rem"
+            marginTop=".5rem"
           >
-            {formatNorwegianDate(startsAt, "p")} –{" "}
-            {formatNorwegianDate(endsAt, "p")}
+            {formatNorwegianTimeRange(startsAt, endsAt)}
           </Text>
           {location?.name && (
             <Text

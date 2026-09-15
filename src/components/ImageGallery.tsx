@@ -94,7 +94,7 @@ const DefaultImageView = (props: {
   return (
     <Image
       width="100%"
-      borderRadius="sm"
+      borderRadius="none"
       alt=""
       src={urlFor(props.image).width(width).height(height).url()}
     />
@@ -117,7 +117,7 @@ const FullScreenImageView = (props: { image: Images[number] }) => {
       }}
     >
       <Image
-        borderRadius="sm"
+        borderRadius="none"
         alt=""
         src={urlFor(props.image).width(resolution).url()}
       />
@@ -246,7 +246,7 @@ const SelectImage = ({
             key={image._key}
             value={index.toString()}
             flexShrink="0"
-            borderRadius="sm"
+            borderRadius="none"
             overflow="hidden"
             cursor="pointer"
             filter="brightness(65%)"

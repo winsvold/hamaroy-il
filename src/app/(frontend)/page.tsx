@@ -1,13 +1,15 @@
+import { CallToAction } from "@/components/CallToAction";
+import { CardGrid } from "@/components/CardGrid";
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
-import { Box, Grid } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
-import { Calendar, CalendarActionBar } from "./components/calendar";
+import { Calendar } from "./components/calendar";
 import { EventCard } from "./components/EventCard";
 import { Hero } from "./components/Hero";
-import { Messages } from "./components/Messages";
 import { RecurringEvents } from "./components/RecurringEvents";
+import { Welcome } from "./components/Welcome";
 
 const frontPageQuery = defineQuery(`{
   "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },
@@ -37,49 +39,40 @@ export default async function Home() {
     <>
       <Hero title={data.settings?.heroTitle} text={data.settings?.heroText} />
 
+      <Welcome intro={data.intro} messages={data.messages} />
+
       {!!highlightedEvents.length && (
-        <DefaultContainer paddingTop="3.75rem">
+        <DefaultContainer paddingTop="3.25rem">
           <Box as="section">
             <SectionHeading marginBottom="1.5rem">
               Gå ikke glipp av
             </SectionHeading>
-            <Grid
-              gridTemplateColumns="repeat(auto-fit, minmax(min(20rem, 100%), 1fr))"
-              gap="1rem"
-              alignItems="stretch"
-            >
+            <CardGrid>
               {highlightedEvents.map((event) => (
                 <EventCard key={event._id} {...event} />
               ))}
-            </Grid>
+            </CardGrid>
           </Box>
         </DefaultContainer>
       )}
 
-      <DefaultContainer paddingTop="3.75rem">
-        <Grid
-          gridTemplateColumns={{ base: "1fr", lg: "1.5fr 1fr" }}
-          gap={{ base: "3rem", lg: "4rem" }}
-          alignItems="start"
-        >
-          {/*
-            Arrangementene over gjentas med vilje her: båndet framhever, mens tidslinja
-            er den fullstendige oversikten over hva som skjer framover.
-          */}
-          <Calendar
-            heading="Kommende aktiviteter"
-            limit={6}
-            childrenAfter={
-              <CalendarActionBar href="/kalender">
-                Se hele kalenderen →
-              </CalendarActionBar>
-            }
-          />
-          <Messages messages={data.messages} intro={data.intro} />
-        </Grid>
+      <DefaultContainer paddingTop="3.25rem">
+        {/*
+          Arrangementene over gjentas med vilje her: båndet framhever, mens kalenderen
+          er den fullstendige oversikten over hva som skjer framover.
+        */}
+        <Calendar
+          heading="Kommende aktiviteter"
+          limit={6}
+          childrenAfter={
+            <CallToAction href="/kalender" marginTop="1.875rem">
+              Se hele kalenderen →
+            </CallToAction>
+          }
+        />
       </DefaultContainer>
 
-      <DefaultContainer paddingTop="3.75rem" paddingBottom="4.75rem">
+      <DefaultContainer paddingTop="3.25rem" paddingBottom="4.75rem">
         <RecurringEvents heading="Faste aktiviteter" />
       </DefaultContainer>
     </>

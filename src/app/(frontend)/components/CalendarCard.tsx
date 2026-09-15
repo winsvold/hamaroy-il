@@ -1,8 +1,12 @@
-import { formatNorwegianDate } from "@/utils/date";
+import {
+  formatNorwegianDate,
+  formatNorwegianDateCapitalized,
+  formatNorwegianDuration,
+  isSameNorwegianDay,
+} from "@/utils/date";
 import {
   Box,
   Flex,
-  Heading,
   Icon,
   LinkBox,
   LinkOverlay,
@@ -22,114 +26,129 @@ type Props = {
   slug?: string;
   cancelled?: boolean | null;
   note?: string | null;
-  /** Nordlysfargen på prikken. Roterer med posisjonen i lista, som i designet. */
-  dotColor: string;
   /**
    * På en aktivitets egen side er tittelen den samme for hver sesjon, og lenka peker
-   * til siden du allerede står på. Da vises tid og sted alene, uten lenke.
+   * til siden du allerede står på. Da står datoen der navnet ellers står, uten lenke.
    */
   hideTitle?: boolean;
 };
 
-/** «18:00–19:30 · Klatrevegg, Hamarøyhallen» */
-const meta = (props: Props) => {
-  const time = [
-    formatNorwegianDate(props.startsAt, "p"),
-    props.endsAt && formatNorwegianDate(props.endsAt, "p"),
-  ]
-    .filter(Boolean)
-    .join("–");
-
-  return [time, props.location?.name].filter(Boolean).join(" · ");
+/**
+ * «1t 30m» under starttiden. Varer aktiviteten over midnatt, feks et todagerskurs, står
+ * sluttidspunktet der i stedet — designet traff bare aktiviteter innenfor én dag.
+ */
+const durationLabel = (startsAt: string, endsAt?: string | null) => {
+  if (!endsAt) return null;
+  return isSameNorwegianDay(startsAt, endsAt)
+    ? formatNorwegianDuration(startsAt, endsAt)
+    : `til ${formatNorwegianDate(endsAt, "EEE p")}`;
 };
 
+const cardStyles = {
+  display: "flex",
+  gap: "1.125rem",
+  background: "card.base",
+  padding: { base: "1rem 1.125rem", md: "1.25rem 1.375rem" },
+} as const;
+
 /**
- * Én rad i tidslinja. Designet droppet kortet rundt hver aktivitet — skillet mellom
- * radene bæres nå av prikken og datokolonnen til venstre.
+ * Ett kort i en datobolk: starttid og varighet i en kolonne med fast bredde, så tidene
+ * står på linje på tvers av kortene, og navn og sted til høyre for streken.
  */
 export const CalendarCard = (props: Props) => {
-  const { startsAt, title, slug, cancelled } = props;
+  const { startsAt, cancelled } = props;
   if (!startsAt) return null;
 
-  const dot = (
-    <Box
-      flexShrink={0}
-      width=".4375rem"
-      height=".4375rem"
-      borderRadius="full"
-      marginTop=".45rem"
-      background={cancelled ? "muted" : props.dotColor}
-    />
-  );
+  const name = props.hideTitle
+    ? formatNorwegianDateCapitalized(startsAt, "EEEE d. MMMM")
+    : props.title;
+  const place = props.location?.name;
+  const strike = cancelled ? "line-through" : undefined;
 
-  const body = (
-    <Stack gap=".1875rem" minWidth="0">
-      {cancelled && (
-        <TextWithIcon
-          textStyle="kicker"
-          color="deep.base"
-          icon={<AlertCircle size="1em" />}
-        >
-          Avlyst
-        </TextWithIcon>
-      )}
-      {props.hideTitle ? (
-        <Text
-          fontWeight={700}
-          fontSize="1.0625rem"
+  const content = (
+    <>
+      {/*
+        Syne har brede sifre: «09:00» er 4,7 em, og brakk over to linjer i designets
+        66 px-kolonne. Bredden her rommer det bredeste klokkeslettet med litt luft.
+      */}
+      <Stack
+        gap=".1875rem"
+        flexShrink={0}
+        width="7.125rem"
+        paddingRight="1.125rem"
+        borderRight="2px solid"
+        borderColor="aurora.tint"
+      >
+        <Box
+          fontFamily="heading"
+          fontWeight={800}
+          fontSize="1.25rem"
+          lineHeight={1.1}
+          whiteSpace="nowrap"
           color="ink"
-          textDecoration={cancelled ? "line-through" : undefined}
+          textDecoration={strike}
         >
-          {meta(props)}
+          {formatNorwegianDate(startsAt, "p")}
+        </Box>
+        <Text fontSize="0.78125rem" fontWeight={500} color="muted">
+          {durationLabel(startsAt, props.endsAt)}
         </Text>
-      ) : (
-        <>
-          <LinkOverlay asChild>
-            <Link href={`/aktiviteter/${slug}`}>
-              <Heading
-                as="h3"
-                fontFamily="body"
-                fontWeight={700}
-                fontSize="1.125rem"
-                lineHeight={1.28}
-                color="ink"
-                transition="color .2s"
-                textDecoration={cancelled ? "line-through" : undefined}
-              >
-                {title}
-              </Heading>
-            </Link>
-          </LinkOverlay>
-          <Text fontSize="0.8125rem" fontWeight={500} color="muted">
-            {meta(props)}
+      </Stack>
+      <Stack gap=".375rem" minWidth="0">
+        {cancelled && (
+          <TextWithIcon
+            textStyle="kicker"
+            color="deep.base"
+            icon={<AlertCircle size="1em" />}
+          >
+            Avlyst
+          </TextWithIcon>
+        )}
+        {name && (
+          <Text
+            data-name
+            fontWeight={700}
+            fontSize="1.0625rem"
+            lineHeight={1.32}
+            color="ink"
+            transition="color .2s"
+            textDecoration={strike}
+          >
+            {props.hideTitle ? (
+              name
+            ) : (
+              <LinkOverlay asChild>
+                <Link href={`/aktiviteter/${props.slug}`}>{name}</Link>
+              </LinkOverlay>
+            )}
           </Text>
-        </>
-      )}
-      {props.note && (
-        <Text fontSize="0.8125rem" color="muted" maxWidth="30rem">
-          {props.note}
-        </Text>
-      )}
-    </Stack>
+        )}
+        {place && (
+          <Text fontSize="0.875rem" fontWeight={500} color="muted">
+            {place}
+          </Text>
+        )}
+        {props.note && (
+          <Text fontSize="0.8125rem" color="muted">
+            {props.note}
+          </Text>
+        )}
+      </Stack>
+    </>
   );
 
-  if (props.hideTitle)
-    return (
-      <Flex gap=".75rem" alignItems="flex-start">
-        {dot}
-        {body}
-      </Flex>
-    );
+  if (props.hideTitle) return <Flex {...cardStyles}>{content}</Flex>;
 
   return (
     <LinkBox
-      display="flex"
-      gap=".75rem"
-      alignItems="flex-start"
-      _hover={{ "& h3": { color: "deep.base" } }}
+      {...cardStyles}
+      transition="background .2s"
+      _hover={{
+        background: "card.hover",
+        "& [data-name]": { color: "deep.base" },
+      }}
     >
-      {dot}
-      {body}
+      {content}
     </LinkBox>
   );
 };

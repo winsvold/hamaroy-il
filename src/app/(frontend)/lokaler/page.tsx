@@ -29,12 +29,12 @@ const Page = async () => {
               display="flex"
               alignItems="center"
               key={location._id}
-              background="sage.base"
+              background="card.base"
               padding="1rem"
               gap="1rem"
               transition="background .2s"
               _hover={{
-                background: "sage.hover",
+                background: "card.hover",
                 "& h2": { color: "deep.base" },
               }}
             >

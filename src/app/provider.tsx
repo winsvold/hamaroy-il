@@ -38,12 +38,16 @@ const customConfig = defineConfig({
           base: { value: "#0b1a17" },
           hover: { value: "#12281f" },
           ink: { value: "#111c19" },
+          // Litt dypere enn toppmenyen, så nordlysgløden har noe å dø ut mot
+          hero: { value: "#0a1712" },
         },
         // Nordlyset. Grønn er hovedaksenten, fiolett brukes sparsomt.
         aurora: {
           green: { value: "#4ade9f" },
           teal: { value: "#7ce0d6" },
           violet: { value: "#a48ee0" },
+          // Blek grønn: datobrikka og streken ved siden av klokkeslettene
+          tint: { value: "#d6f5e6" },
         },
         // Lenker og etiketter på lys bakgrunn
         deep: {
@@ -53,10 +57,15 @@ const customConfig = defineConfig({
         // Sidebakgrunnen. Fjellsilhuetten fylles med akkurat denne, så den løser
         // seg opp i seksjonen under.
         snow: { value: "#f2f4f3" },
-        // Flater: kort og lyse paneler
+        // Alle kort: arrangementer, kalenderen, faste aktiviteter og lokaler.
+        // Hvitt mot den kjølige sidebakgrunnen skiller dem — ingen kant, ingen skygge.
+        card: {
+          base: { value: "#ffffff" },
+          hover: { value: "#f7fbf9" },
+        },
+        // Sekundære paneler (sted, betaling, ledere, tomtilstand) og bakre fjellrygg
         sage: {
           base: { value: "#e6ece9" },
-          hover: { value: "#dce5e0" },
           deep: { value: "#c7d5d0" },
         },
         // Tekst på lys bakgrunn
@@ -67,11 +76,12 @@ const customConfig = defineConfig({
         // Tekst på mørk bakgrunn, fra sterkest til svakest
         onDark: {
           base: { value: "#f4faf8" },
-          warm: { value: "#d3e4df" },
           secondary: { value: "#c3d6d0" },
           soft: { value: "#b8ccc6" },
           tertiary: { value: "#9fb8b2" },
-          faint: { value: "#6b8079" },
+          // Lysere enn designets første forslag (#6b8079), som ikke nådde 4.5:1 på
+          // den lille teksten nederst i bunnteksten
+          faint: { value: "#8aa39d" },
         },
         // Tekst oppå den grønne knappen
         onAurora: { value: "#062018" },

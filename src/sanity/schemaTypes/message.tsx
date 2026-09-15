@@ -26,7 +26,8 @@ export const message = defineType({
     defineField({
       name: "publishedAt",
       title: "Publisert",
-      description: "Nyeste beskjed vises øverst og framhevet på forsiden.",
+      description:
+        "Beskjeder vises under velkomstteksten på forsiden, nyeste først.",
       type: "datetime",
       initialValue: () => new Date().toISOString(),
       validation: (Rule) => Rule.required(),

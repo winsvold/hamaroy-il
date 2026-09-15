@@ -1,8 +1,10 @@
+import { CardGrid } from "@/components/CardGrid";
+import { RuledHeading } from "@/components/RuledHeading";
 import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
 import { resolveSport, Sport, sports } from "@/sanity/sports";
 import { formatNorwegianDate } from "@/utils/date";
-import { Box, Flex, Grid, Heading, Stack } from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Link from "next/link";
 import { ReoccurringEventsQueryResult } from "../../../../sanity.types";
@@ -25,54 +27,45 @@ const reoccurringEventsQuery = defineQuery(`{
 
 type Series = ReoccurringEventsQueryResult["sessionSeries"][number];
 
-const ActivityRow = ({
-  series,
-  fontSize,
-}: {
-  series: Series;
-  fontSize: string;
-}) => {
+const ActivityCard = ({ series }: { series: Series }) => {
   const nextOccurrence = series.sessions?.[0]?.startsAt;
 
   return (
-    <Flex
+    <Stack
       asChild
-      align="baseline"
-      justify="space-between"
-      gap=".875rem"
-      paddingY=".8125rem"
-      borderBottom="1px solid"
-      borderColor="hairline"
-      _hover={{ "& > span:first-of-type": { color: "deep.base" } }}
+      gap=".4375rem"
+      background="card.base"
+      padding={{ base: "1rem 1.125rem", md: "1.25rem 1.375rem" }}
+      transition="background .2s"
+      _hover={{
+        background: "card.hover",
+        "& > span:first-of-type": { color: "deep.base" },
+      }}
     >
       <Link href={`/aktiviteter/${series.slug?.current ?? series._id}`}>
         <Box
           as="span"
-          fontWeight={600}
-          fontSize={fontSize}
+          fontWeight={700}
+          fontSize="1.0625rem"
+          lineHeight={1.32}
           color="ink"
           transition="color .2s"
         >
           {series.title}
         </Box>
-        {/*
-          Designet viste «Ikke planlagt» på alle rader fordi prototypen ikke hadde data.
-          Her står den faktiske neste treningen når det finnes en — forkortet, siden
-          merkelappen deler linje med et aktivitetsnavn som kan bli langt.
-        */}
         <Box
           as="span"
-          textStyle="kicker"
-          letterSpacing=".13em"
-          flexShrink={0}
-          color={nextOccurrence ? "deep.base" : "muted"}
+          fontSize="0.875rem"
+          fontWeight={500}
+          color="muted"
+          fontStyle={nextOccurrence ? undefined : "italic"}
         >
           {nextOccurrence
-            ? `Neste: ${formatNorwegianDate(nextOccurrence, "d. MMM").replace(".", "")}`
+            ? `Neste: ${formatNorwegianDate(nextOccurrence, "EEEE d MMM p")}`
             : "Ikke planlagt"}
         </Box>
       </Link>
-    </Flex>
+    </Stack>
   );
 };
 
@@ -80,29 +73,20 @@ const SportSection = ({
   sport,
   series,
   headingAs,
-  fontSize,
 }: {
   sport?: Sport;
   series: Series[];
   headingAs: "h2" | "h3";
-  fontSize: string;
 }) => (
   <Box as="section" id={sport?.id} scrollMarginTop="6rem">
-    <Heading
-      as={headingAs}
-      textStyle="kicker"
-      color="deep.base"
-      paddingBottom=".625rem"
-      borderBottom="2px solid"
-      borderColor="arctic.ink"
-    >
+    <RuledHeading as={headingAs} rule="light" color="deep.base">
       {sport?.title ?? "Andre aktiviteter"}
-    </Heading>
-    <Stack gap="0">
+    </RuledHeading>
+    <CardGrid>
       {series.map((item) => (
-        <ActivityRow key={item._id} series={item} fontSize={fontSize} />
+        <ActivityCard key={item._id} series={item} />
       ))}
-    </Stack>
+    </CardGrid>
   </Box>
 );
 
@@ -132,38 +116,26 @@ export const RecurringEvents = async (props: Props) => {
 
   if (!bySport.length && !ungrouped.length) return null;
 
-  // På sin egen side får lista litt mer luft og større radtekst enn på forsiden
-  const embedded = !!props.heading;
-  const minColumn = embedded ? "18.75rem" : "20rem";
-  const fontSize = embedded ? "0.9375rem" : "1rem";
+  const headingAs = props.heading ? "h3" : "h2";
 
   return (
     <Box id="faste-aktiviteter" scrollMarginTop="6rem">
       {props.heading && (
         <SectionHeading marginBottom="1.5rem">{props.heading}</SectionHeading>
       )}
-      <Grid
-        gridTemplateColumns={`repeat(auto-fit, minmax(min(${minColumn}, 100%), 1fr))`}
-        gap={embedded ? "2.25rem 2.75rem" : "2.5rem 3rem"}
-        alignItems="start"
-      >
+      <Stack gap="1.625rem">
         {bySport.map(({ sport, series }) => (
           <SportSection
             key={sport.id}
             sport={sport}
             series={series}
-            headingAs={embedded ? "h3" : "h2"}
-            fontSize={fontSize}
+            headingAs={headingAs}
           />
         ))}
         {!!ungrouped.length && (
-          <SportSection
-            series={ungrouped}
-            headingAs={embedded ? "h3" : "h2"}
-            fontSize={fontSize}
-          />
+          <SportSection series={ungrouped} headingAs={headingAs} />
         )}
-      </Grid>
+      </Stack>
     </Box>
   );
 };

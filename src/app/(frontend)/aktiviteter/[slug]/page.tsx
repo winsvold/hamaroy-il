@@ -1,4 +1,5 @@
 import { Avatar } from "@/components/Avatar";
+import { CallToAction } from "@/components/CallToAction";
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { VippsIkon } from "@/components/ikoner/vipps";
 import { ImageGallery } from "@/components/ImageGallery";
@@ -8,8 +9,8 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
 import { resolveSport } from "@/sanity/sports";
 import {
-  formatNorwegianDate,
   formatNorwegianDateCapitalized,
+  formatNorwegianTimeRange,
 } from "@/utils/date";
 import { getSessionEndsAt } from "@/utils/session";
 import { Box, Flex, Grid, Heading, Icon, Stack, Text } from "@chakra-ui/react";
@@ -18,7 +19,7 @@ import { defineQuery } from "next-sanity";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AktivitetQueryResult } from "../../../../../sanity.types";
-import { Calendar, CalendarActionBar } from "../../components/calendar";
+import { Calendar } from "../../components/calendar";
 import { PageHero } from "../../layout/PageHero";
 
 const aktivitetQuery =
@@ -50,7 +51,7 @@ const getFacts = (data: Aktivitet) => {
       },
       {
         label: "Tid",
-        value: `${formatNorwegianDate(data.startsAt, "p")} – ${formatNorwegianDate(data.endsAt, "p")}`,
+        value: formatNorwegianTimeRange(data.startsAt, data.endsAt),
       },
       place && { label: "Sted", value: place },
     ];
@@ -76,7 +77,7 @@ const getFacts = (data: Aktivitet) => {
     },
     next && {
       label: "Tid",
-      value: `${formatNorwegianDate(next.startsAt, "p")} – ${formatNorwegianDate(getSessionEndsAt(next), "p")}`,
+      value: formatNorwegianTimeRange(next.startsAt, getSessionEndsAt(next)),
     },
     place && { label: "Sted", value: place },
   ];
@@ -214,17 +215,9 @@ const Page = async (props: Props) => {
                       </Text>
                     )}
                     {data.paymentInfo.url && (
-                      <Box
-                        asChild
-                        textStyle="kicker"
-                        background="arctic.base"
-                        color="aurora.green"
-                        padding=".625rem 1.125rem"
-                        transition="background .2s"
-                        _hover={{ background: "arctic.hover" }}
-                      >
-                        <a href={data.paymentInfo.url}>Betal på nett</a>
-                      </Box>
+                      <CallToAction href={data.paymentInfo.url}>
+                        Betal på nett
+                      </CallToAction>
                     )}
                   </Stack>
                 </SideCard>
@@ -250,9 +243,9 @@ const Page = async (props: Props) => {
           excludeIds={[data._id]}
           whenEmpty="hide"
           childrenAfter={
-            <CalendarActionBar href="/kalender">
+            <CallToAction href="/kalender" marginTop="1.875rem">
               Se hele kalenderen →
-            </CalendarActionBar>
+            </CallToAction>
           }
         />
       </DefaultContainer>
