@@ -14,13 +14,6 @@ import { Welcome } from "./components/Welcome";
 const frontPageQuery = defineQuery(`{
   "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },
   "intro": *[_type == "siteSettings"][0].intro,
-  "messages": *[
-    _type == "message" && (!defined(expiresAt) || expiresAt > now())
-  ] | order(publishedAt desc) {
-    _id,
-    label,
-    body,
-  },
   "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {
     ...,
     location->,
@@ -39,7 +32,7 @@ export default async function Home() {
     <>
       <Hero title={data.settings?.heroTitle} text={data.settings?.heroText} />
 
-      <Welcome intro={data.intro} messages={data.messages} />
+      <Welcome intro={data.intro} />
 
       {!!highlightedEvents.length && (
         <DefaultContainer paddingTop="3.25rem">

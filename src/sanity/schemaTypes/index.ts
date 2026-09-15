@@ -1,7 +1,6 @@
 import { type SchemaTypeDefinition } from "sanity";
 import { event } from "./event";
 import { location } from "./location";
-import { message } from "./message";
 import { person } from "./person";
 import { session, sessionSeries } from "./session";
 import { siteSettings } from "./siteSettings";
@@ -15,7 +14,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     event,
     session,
     sessionSeries,
-    message,
     person,
     location,
     paymentInfo,

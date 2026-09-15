@@ -175,35 +175,6 @@ export type Person = {
   };
 };
 
-export type Message = {
-  _id: string;
-  _type: "message";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  label?: string;
-  body?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  publishedAt?: string;
-  expiresAt?: string;
-};
-
 export type ClubReference = {
   _ref: string;
   _type: "reference";
@@ -509,7 +480,6 @@ export type AllSanitySchemaTypes =
   | InfoPage
   | PaymentInfo
   | Person
-  | Message
   | ClubReference
   | LocationReference
   | SessionSeries
@@ -1109,7 +1079,7 @@ export type LocationsQueryResult = Array<{
 
 // Source: src/app/(frontend)/page.tsx
 // Variable: frontPageQuery
-// Query: {  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },  "intro": *[_type == "siteSettings"][0].intro,  "messages": *[    _type == "message" && (!defined(expiresAt) || expiresAt > now())  ] | order(publishedAt desc) {    _id,    label,    body,  },  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {    ...,    location->,  }}
+// Query: {  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },  "intro": *[_type == "siteSettings"][0].intro,  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {    ...,    location->,  }}
 export type FrontPageQueryResult = {
   settings: {
     heroTitle: string | null;
@@ -1133,28 +1103,6 @@ export type FrontPageQueryResult = {
     _type: "block";
     _key: string;
   }> | null;
-  messages: Array<{
-    _id: string;
-    label: string | null;
-    body: Array<{
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }>;
-      style?: "normal";
-      listItem?: "bullet" | "number";
-      markDefs?: Array<{
-        href?: string;
-        _type: "link";
-        _key: string;
-      }>;
-      level?: number;
-      _type: "block";
-      _key: string;
-    }> | null;
-  }>;
   events: Array<{
     _id: string;
     _type: "event";
@@ -1255,6 +1203,6 @@ declare module "@sanity/client" {
     '{\n  "siteSettings": *[_type == "siteSettings"][0]{ logo },\n  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {\n    title,\n    slug,\n    menuPlacement,\n  },\n  "clubs": *[_type == "club"] | order(name asc) { name, slug }\n}': HeaderQueryResult;
     '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
     '*[_type == "location"] | order(name asc)': LocationsQueryResult;
-    '{\n  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },\n  "intro": *[_type == "siteSettings"][0].intro,\n  "messages": *[\n    _type == "message" && (!defined(expiresAt) || expiresAt > now())\n  ] | order(publishedAt desc) {\n    _id,\n    label,\n    body,\n  },\n  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {\n    ...,\n    location->,\n  }\n}': FrontPageQueryResult;
+    '{\n  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },\n  "intro": *[_type == "siteSettings"][0].intro,\n  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {\n    ...,\n    location->,\n  }\n}': FrontPageQueryResult;
   }
 }
