@@ -34,7 +34,7 @@ export const LocationCard = (location: Location) => {
           </Link>
         </LinkOverlay>
         {location.address && (
-          <Text fontSize="0.8125rem" fontWeight={500} color="muted">
+          <Text fontSize="sm" fontWeight="medium" color="muted">
             {[location.address, location.city].filter(Boolean).join(", ")}
           </Text>
         )}

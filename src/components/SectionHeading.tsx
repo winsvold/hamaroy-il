@@ -4,10 +4,9 @@ export const SectionHeading = (props: HeadingProps) => (
   <Heading
     as="h2"
     fontFamily="heading"
-    fontWeight={700}
-    fontSize={{ base: "1.5rem", md: "1.875rem" }}
-    lineHeight={1.06}
-    letterSpacing="-.01em"
+    fontWeight="bold"
+    fontSize={{ base: "2xl", md: "3xl" }}
+    lineHeight={1}
     color="ink"
     {...props}
   />

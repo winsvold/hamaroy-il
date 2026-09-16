@@ -15,7 +15,7 @@ export const AuroraGlow = () => (
       left="0"
       right="0"
       bottom="0"
-      height="21.875rem"
+      height="20rem"
       backgroundImage="radial-gradient(70% 66% at 22% 100%, rgba(164, 142, 224, 0.3) 0%, rgba(164, 142, 224, 0.06) 45%, transparent 62%)"
     />
   </>

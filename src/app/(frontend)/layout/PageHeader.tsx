@@ -13,11 +13,9 @@ export const PageHeader = (props: Props) => (
   <PageHero variant={props.variant ?? "page"}>
     <Stack
       gap="0"
-      maxWidth="44rem"
+      maxWidth="45rem"
       // Uten ingress havner overskriften ellers oppå fjelltoppene
-      paddingBottom={
-        props.text ? undefined : { base: "1.75rem", md: "2.75rem" }
-      }
+      paddingBottom={props.text ? undefined : { base: "1.75rem", md: "3rem" }}
     >
       {props.kicker && (
         <Kicker color="aurora.green" marginBottom="1rem">
@@ -27,10 +25,10 @@ export const PageHeader = (props: Props) => (
       <Heading
         as="h1"
         fontFamily="heading"
-        fontWeight={800}
-        fontSize={{ base: "1.875rem", sm: "2.25rem", md: "3.5rem" }}
-        lineHeight={0.98}
-        letterSpacing="-.02em"
+        fontWeight="extrabold"
+        fontSize={{ base: "3xl", sm: "4xl", md: "5xl" }}
+        lineHeight={1}
+        letterSpacing="tight"
         color="onDark.base"
         css={{ hyphens: "auto", overflowWrap: "break-word" }}
       >
@@ -38,11 +36,11 @@ export const PageHeader = (props: Props) => (
       </Heading>
       {props.text && (
         <Text
-          fontSize={{ base: "0.9375rem", md: "1rem" }}
-          lineHeight={1.6}
+          fontSize="md"
+          lineHeight={1.5}
           color="onDark.soft"
           maxWidth="30rem"
-          marginTop="1.125rem"
+          marginTop="1rem"
         >
           {props.text}
         </Text>

@@ -8,7 +8,7 @@ export const AuroraCurtain = () => (
     left="0"
     width="100%"
     height="60%"
-    filter="blur(.5625rem)"
+    filter="blur(.5rem)"
   >
     <svg
       viewBox="0 0 1440 300"

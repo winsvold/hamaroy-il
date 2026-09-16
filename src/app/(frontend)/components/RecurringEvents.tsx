@@ -32,9 +32,9 @@ const ActivityCard = ({ series }: { series: Series }) => {
   return (
     <Stack
       asChild
-      gap=".4375rem"
+      gap=".5rem"
       background="card.base"
-      padding={{ base: "1rem 1.125rem", md: "1.25rem 1.375rem" }}
+      padding={{ base: "1rem", md: "1.25rem 1.5rem" }}
       transition="background .2s"
       _hover={{
         background: "card.hover",
@@ -44,9 +44,9 @@ const ActivityCard = ({ series }: { series: Series }) => {
       <Link href={`/aktiviteter/${series.slug?.current ?? series._id}`}>
         <Box
           as="span"
-          fontWeight={700}
-          fontSize="1.0625rem"
-          lineHeight={1.32}
+          fontWeight="bold"
+          fontSize="lg"
+          lineHeight={1.25}
           color="ink"
           transition="color .2s"
         >
@@ -54,8 +54,8 @@ const ActivityCard = ({ series }: { series: Series }) => {
         </Box>
         <Box
           as="span"
-          fontSize="0.875rem"
-          fontWeight={500}
+          fontSize="sm"
+          fontWeight="medium"
           color="muted"
           fontStyle={nextOccurrence ? undefined : "italic"}
         >
@@ -81,12 +81,11 @@ const SportSection = ({
     <Heading
       as={headingAs}
       fontFamily="heading"
-      fontWeight={700}
-      fontSize="1.1875rem"
-      lineHeight={1.2}
-      letterSpacing="-.01em"
+      fontWeight="bold"
+      fontSize="xl"
+      lineHeight={1.25}
       color="deep.base"
-      marginBottom=".875rem"
+      marginBottom="1rem"
     >
       {sport?.title ?? "Andre aktiviteter"}
     </Heading>
@@ -126,7 +125,7 @@ export const RecurringEvents = async (props: Props) => {
       {props.heading && (
         <SectionHeading marginBottom="1.5rem">{props.heading}</SectionHeading>
       )}
-      <Stack gap="1.625rem">
+      <Stack gap="1.5rem">
         {bySport.map(({ sport, series }) => (
           <SportSection
             key={sport.id}

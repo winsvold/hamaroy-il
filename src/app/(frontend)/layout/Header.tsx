@@ -54,11 +54,11 @@ export const Header = async () => {
   const callToAction = infoPagesIn("toppknapp")[0];
 
   const logo = (
-    <Flex align="center" gap=".6rem" asChild flexShrink={0}>
+    <Flex align="center" gap=".5rem" asChild flexShrink={0}>
       <Link href="/">
         {logoUrl ? (
           <>
-            <Box asChild width="2.125rem" height="2.125rem" objectFit="contain">
+            <Box asChild width="2rem" height="2rem" objectFit="contain">
               <Image alt="" src={logoUrl} width={100} height={100} />
             </Box>
             <Box srOnly>Hamarøy IL</Box>
@@ -66,8 +66,8 @@ export const Header = async () => {
         ) : (
           <Box
             fontFamily="heading"
-            fontWeight={800}
-            fontSize="1.125rem"
+            fontWeight="extrabold"
+            fontSize="lg"
             color="onDark.base"
             whiteSpace="nowrap"
           >
@@ -86,7 +86,7 @@ export const Header = async () => {
       background="aurora.green"
       color="onAurora"
       borderRadius="none"
-      padding=".625rem 1.125rem"
+      padding=".5rem 1rem"
       whiteSpace="nowrap"
       transition="background .2s"
       _hover={{ background: "aurora.teal" }}
@@ -127,7 +127,7 @@ export const Header = async () => {
             {ctaButton}
             <Box display={{ base: "block", lg: "none" }}>
               <MobileMenu logo={logo}>
-                <Stack gap="1.25rem" fontSize="1.1rem">
+                <Stack gap="1.25rem">
                   {links.map((link) => (
                     <HeaderLink key={link.href} href={link.href}>
                       {link.label}

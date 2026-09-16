@@ -22,15 +22,11 @@ const Page = async (props: Props) => {
   return (
     <>
       <PageHeader variant="detail" title={data.title ?? ""} />
-      <DefaultContainer
-        maxW="42rem"
-        paddingTop="3.5rem"
-        paddingBottom="4.75rem"
-      >
+      <DefaultContainer maxW="2xl" paddingTop="3.5rem" paddingBottom="5rem">
         <RichText
           blockContent={data.body}
-          fontSize="1rem"
-          lineHeight={1.72}
+          fontSize="md"
+          lineHeight={1.75}
           maxWidth="none"
         />
       </DefaultContainer>

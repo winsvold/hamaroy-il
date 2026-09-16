@@ -16,7 +16,7 @@ const Page = async () => {
   return (
     <>
       <PageHeader kicker="Lokaler" title="Lokaler og steder" />
-      <DefaultContainer paddingTop="3.75rem" paddingBottom="4.75rem">
+      <DefaultContainer paddingTop="4rem" paddingBottom="5rem">
         <CardGrid>
           {data.map((location) => (
             <LinkBox
@@ -53,8 +53,8 @@ const Page = async () => {
                   <Heading
                     as="h2"
                     fontFamily="body"
-                    fontWeight={700}
-                    fontSize="1rem"
+                    fontWeight="bold"
+                    fontSize="md"
                     color="ink"
                     transition="color .2s"
                   >

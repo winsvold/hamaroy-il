@@ -19,30 +19,30 @@ const DateChip = ({ date }: { date: string }) => (
     align="center"
     justify="center"
     flexShrink={0}
-    width="3.25rem"
-    height="3.25rem"
+    width="3rem"
+    height="3rem"
     background="aurora.green"
     color="onAuroraSoft"
-    lineHeight={1.1}
+    lineHeight={1}
     title={formatNorwegianDate(date, "PPP")}
   >
     <Box
       as="span"
-      fontSize="0.5625rem"
-      fontWeight={700}
-      letterSpacing=".12em"
+      fontSize="2xs"
+      fontWeight="bold"
+      letterSpacing="widest"
       textTransform="uppercase"
     >
       {formatNorwegianDate(date, "E").replace(".", "")}
     </Box>
-    <Box as="span" fontWeight={800} fontSize="1.3125rem" color="onAurora">
+    <Box as="span" fontWeight="extrabold" fontSize="xl" color="onAurora">
       {formatNorwegianDate(date, "d")}
     </Box>
     <Box
       as="span"
-      fontSize="0.5625rem"
-      fontWeight={700}
-      letterSpacing=".12em"
+      fontSize="2xs"
+      fontWeight="bold"
+      letterSpacing="widest"
       textTransform="uppercase"
     >
       {formatNorwegianDate(date, "MMM").replace(".", "")}
@@ -53,7 +53,7 @@ const DateChip = ({ date }: { date: string }) => (
 const ImagePlaceholder = () => (
   <Box
     position="relative"
-    height="8.75rem"
+    height="9rem"
     flexShrink={0}
     overflow="hidden"
     backgroundImage="linear-gradient(#0a1f1a, #123a32)"
@@ -64,7 +64,7 @@ const ImagePlaceholder = () => (
       inset="0"
       backgroundImage="radial-gradient(90% 70% at 60% 100%, rgba(74, 222, 159, 0.4) 0%, rgba(74, 222, 159, 0.1) 42%, transparent 66%)"
     />
-    <MountainRange back="arctic.base" front="arctic.base" height="2.625rem" />
+    <MountainRange back="arctic.base" front="arctic.base" height="2.5rem" />
   </Box>
 );
 
@@ -81,7 +81,7 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
       _hover={{ background: "card.hover", "& h3": { color: "deep.base" } }}
     >
       {image ? (
-        <Box width="100%" height="8.75rem" flexShrink={0} overflow="hidden">
+        <Box width="100%" height="9rem" flexShrink={0} overflow="hidden">
           <Box asChild width="100%" height="100%" objectFit="cover">
             <Image
               alt=""
@@ -94,16 +94,16 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
       ) : (
         <ImagePlaceholder />
       )}
-      <Flex gap=".875rem" padding="1rem 1.125rem 1.125rem">
+      <Flex gap="1rem" padding="1rem">
         <Box flex="1" minWidth="0">
           <LinkOverlay asChild>
             <Link href={`/aktiviteter/${props._id}`}>
               <Heading
                 as="h3"
                 fontFamily="body"
-                fontWeight={700}
-                fontSize="0.96875rem"
-                lineHeight={1.3}
+                fontWeight="bold"
+                fontSize="md"
+                lineHeight={1.25}
                 color="ink"
                 transition="color .2s"
               >
@@ -112,8 +112,8 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
             </Link>
           </LinkOverlay>
           <Text
-            fontSize="0.8125rem"
-            fontWeight={700}
+            fontSize="sm"
+            fontWeight="bold"
             color="deep.base"
             marginTop=".5rem"
           >
@@ -121,10 +121,10 @@ export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
           </Text>
           {location?.name && (
             <Text
-              fontSize="0.8125rem"
-              fontWeight={500}
+              fontSize="sm"
+              fontWeight="medium"
               color="secondary"
-              marginTop=".1875rem"
+              marginTop=".25rem"
             >
               {location.name}
             </Text>

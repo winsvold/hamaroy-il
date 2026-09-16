@@ -11,13 +11,13 @@ export const CallToAction = ({ href, children, ...chakraProps }: Props) => (
     asChild
     display="inline-flex"
     alignItems="center"
-    gap=".625rem"
-    padding=".9375rem 1.625rem"
+    gap=".5rem"
+    padding="1rem 1.5rem"
     background="aurora.green"
     color="onAurora"
-    fontSize="0.75rem"
-    fontWeight={700}
-    letterSpacing=".14em"
+    fontSize="xs"
+    fontWeight="bold"
+    letterSpacing=".15em"
     textTransform="uppercase"
     transition="background .2s, color .2s"
     _hover={{ background: "arctic.base", color: "aurora.green" }}

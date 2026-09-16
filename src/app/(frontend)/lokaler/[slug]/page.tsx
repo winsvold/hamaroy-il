@@ -31,14 +31,10 @@ const Page = async (props: Props) => {
         title={data.name ?? ""}
         text={[data.address, data.zip, data.city].filter(Boolean).join(", ")}
       />
-      <DefaultContainer paddingTop="3.5rem" paddingBottom="4.75rem">
+      <DefaultContainer paddingTop="3.5rem" paddingBottom="5rem">
         <Stack gap="3.5rem">
           <ImageGallery images={data.images} aspectRatio={2 / 1} />
-          <RichText
-            blockContent={data.body}
-            fontSize="1rem"
-            lineHeight={1.72}
-          />
+          <RichText blockContent={data.body} fontSize="md" lineHeight={1.75} />
           <Calendar
             heading={`Aktiviteter i ${data.name}`}
             locationId={data._id}

@@ -82,8 +82,8 @@ const customConfig = defineConfig({
       kicker: {
         value: {
           fontFamily: "body",
-          fontWeight: "700",
-          fontSize: "0.65625rem",
+          fontWeight: "bold",
+          fontSize: "2xs",
           letterSpacing: "0.15em",
           textTransform: "uppercase",
         },

@@ -17,8 +17,8 @@ export const HeaderLink = (props: Props) => {
   return (
     <Box
       asChild
-      fontWeight={600}
-      fontSize={{ base: "1rem", lg: "0.84375rem" }}
+      fontWeight="semibold"
+      fontSize={{ base: "md", lg: "sm" }}
       whiteSpace="nowrap"
       color={isSelected ? "aurora.green" : "onDark.secondary"}
       transition="color .2s"

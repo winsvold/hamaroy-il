@@ -42,8 +42,8 @@ export const Avatar = ({
           />
         </Box>
       )}
-      <Stack gap=".375rem" minWidth="0">
-        <Box fontWeight={700} fontSize="1rem" color="inherit">
+      <Stack gap=".5rem" minWidth="0">
+        <Box fontWeight="bold" fontSize="md" color="inherit">
           {url ? (
             <LinkOverlay
               color="inherit"
@@ -58,7 +58,7 @@ export const Avatar = ({
             name
           )}
         </Box>
-        <Box opacity={0.8} fontSize="0.9375rem" lineHeight={1.75}>
+        <Box opacity={0.8} fontSize="md" lineHeight={1.75}>
           {phone && (
             <Text display="flex" alignItems="center" gap=".75em">
               <Phone size="1em" strokeWidth={2.2} />

@@ -10,7 +10,7 @@ const Page = async () => {
         title="Alt som skjer framover"
         text="Treninger og arrangementer i hele idrettslaget, sortert etter dato."
       />
-      <DefaultContainer paddingTop="3.75rem" paddingBottom="4.75rem">
+      <DefaultContainer paddingTop="4rem" paddingBottom="5rem">
         <Calendar />
       </DefaultContainer>
     </>

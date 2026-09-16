@@ -33,7 +33,7 @@ const Page = async (props: Props) => {
   return (
     <>
       <PageHeader variant="detail" kicker="Klubb" title={data.name ?? ""} />
-      <DefaultContainer paddingTop="3.5rem" paddingBottom="4.75rem">
+      <DefaultContainer paddingTop="3.5rem" paddingBottom="5rem">
         <Stack gap="3.5rem">
           <ImageGallery images={data.images} aspectRatio={2 / 1} />
 
@@ -44,24 +44,24 @@ const Page = async (props: Props) => {
           >
             <RichText
               blockContent={data.body}
-              fontSize="1rem"
-              lineHeight={1.72}
+              fontSize="md"
+              lineHeight={1.75}
             />
 
             {!!data.managers?.length && (
               <Box background="card.base" padding="1.5rem">
-                <Kicker as="h2" marginBottom=".875rem">
+                <Kicker as="h2" marginBottom="1rem">
                   Ledere
                 </Kicker>
                 <Stack gap="1.25rem">
                   {data.managers.map((manager) => (
                     <Stack
-                      gap=".35rem"
+                      gap=".25rem"
                       key={manager.person?._id ?? manager._key}
                     >
                       {manager.person && <Avatar entity={manager.person} />}
                       {manager.role && (
-                        <Text fontSize="0.8125rem" color="muted">
+                        <Text fontSize="sm" color="muted">
                           {manager.role}
                         </Text>
                       )}

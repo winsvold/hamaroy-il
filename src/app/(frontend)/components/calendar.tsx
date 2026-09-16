@@ -119,7 +119,7 @@ export const Calendar = async (props: Props) => {
       <Box>
         {heading}
         {whenEmpty === "note" ? (
-          <Text fontSize="0.9375rem" color="muted">
+          <Text fontSize="md" color="muted">
             Treningstidene legges ut så snart sesongen er satt.
           </Text>
         ) : (
@@ -143,16 +143,16 @@ export const Calendar = async (props: Props) => {
           background="hairline"
           aria-hidden="true"
         />
-        <Stack gap=".875rem">
+        <Stack gap="1rem">
           {entries.map(([date, activities]) => (
             <Flex
               key={date}
               position="relative"
               align="flex-start"
-              gap={{ base: ".875rem", md: "1.625rem" }}
+              gap={{ base: "1rem", md: "1.5rem" }}
             >
               <DatePill date={date} as={props.heading ? "h3" : "h2"} />
-              <Stack gap=".625rem" align="flex-start" flex="1" minWidth="0">
+              <Stack gap=".5rem" align="flex-start" flex="1" minWidth="0">
                 {activities?.map((item) =>
                   item._type === "event" ? (
                     <CalendarCard
@@ -195,18 +195,18 @@ const DatePill = ({ date, as }: { date: string; as: "h2" | "h3" }) => (
     alignItems="center"
     flexShrink={0}
     width={{ base: "4rem", md: "5.5rem" }}
-    padding=".6875rem 0 .8125rem"
+    padding=".75rem 0"
     background="arctic.base"
     fontFamily="body"
-    lineHeight={1.15}
+    lineHeight={1.25}
   >
     <Box srOnly>{formatNorwegianDate(date, "EEEE d. MMMM")}</Box>
     <Box
       as="span"
       aria-hidden="true"
-      fontSize="0.8125rem"
-      fontWeight={700}
-      letterSpacing=".04em"
+      fontSize="sm"
+      fontWeight="bold"
+      letterSpacing="wider"
       color="aurora.green"
     >
       {formatNorwegianDate(date, "EEE").replace(".", "")}
@@ -214,10 +214,10 @@ const DatePill = ({ date, as }: { date: string; as: "h2" | "h3" }) => (
     <Box
       as="span"
       aria-hidden="true"
-      fontSize="1.875rem"
-      fontWeight={800}
+      fontSize="3xl"
+      fontWeight="extrabold"
       lineHeight={1}
-      margin=".0625rem 0 .125rem"
+      margin="0"
       color="onDark.base"
     >
       {formatNorwegianDate(date, "d")}
@@ -225,9 +225,9 @@ const DatePill = ({ date, as }: { date: string; as: "h2" | "h3" }) => (
     <Box
       as="span"
       aria-hidden="true"
-      fontSize="0.8125rem"
-      fontWeight={700}
-      letterSpacing=".04em"
+      fontSize="sm"
+      fontWeight="bold"
+      letterSpacing="wider"
       color="aurora.green"
     >
       {formatNorwegianDate(date, "MMM").replace(".", "")}
@@ -236,23 +236,18 @@ const DatePill = ({ date, as }: { date: string; as: "h2" | "h3" }) => (
 );
 
 const EmptyState = () => (
-  <Stack
-    background="card.base"
-    padding="1.625rem"
-    gap=".5rem"
-    align="flex-start"
-  >
-    <Text fontWeight={700} fontSize="1.0625rem" color="ink">
+  <Stack background="card.base" padding="1.5rem" gap=".5rem" align="flex-start">
+    <Text fontWeight="bold" fontSize="lg" color="ink">
       Ingen planlagte aktiviteter akkurat nå
     </Text>
-    <Text fontSize="0.8125rem" color="muted">
+    <Text fontSize="sm" color="muted">
       Treningstidene legges ut så snart sesongen er satt.
     </Text>
     <Box
       asChild
       textStyle="kicker"
       color="deep.base"
-      marginTop=".375rem"
+      marginTop=".5rem"
       _hover={{ color: "deep.hover" }}
     >
       <Link href="/faste-aktiviteter">Se alle faste tilbud →</Link>

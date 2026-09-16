@@ -9,37 +9,37 @@ type Props = {
 
 export const Hero = (props: Props) => (
   <PageHero variant="front">
-    <Stack gap="0" maxWidth="43.75rem">
+    <Stack gap="0" maxWidth="45rem">
       <Box
-        fontSize={{ base: "1.125rem", md: "1.625rem" }}
+        fontSize={{ base: "lg", md: "2xl" }}
         color="onDark.soft"
-        marginBottom=".125rem"
+        marginBottom="0"
       >
         Velkommen til
       </Box>
       <Heading
         as="h1"
         fontFamily="heading"
-        fontWeight={800}
+        fontWeight="extrabold"
         // «Hamarøy» kan ikke brytes, og må få plass på smale skjermer
-        fontSize={{ base: "2.25rem", sm: "2.75rem", md: "4.125rem" }}
-        lineHeight={0.98}
-        letterSpacing="-.02em"
+        fontSize={{ base: "4xl", sm: "5xl", md: "6xl" }}
+        lineHeight={1}
+        letterSpacing="tight"
         color="onDark.base"
         css={{ hyphens: "auto", overflowWrap: "break-word" }}
       >
         {props.title || "Hamarøy IL"}
       </Heading>
-      <Kicker color="aurora.green" marginTop="1.125rem">
+      <Kicker color="aurora.green" marginTop="1rem">
         68° nord · siden 1937
       </Kicker>
       {props.text && (
         <Text
-          fontSize={{ base: "0.9375rem", md: "1rem" }}
-          lineHeight={1.6}
+          fontSize="md"
+          lineHeight={1.5}
           color="onDark.soft"
           maxWidth="30rem"
-          marginTop="1.125rem"
+          marginTop="1rem"
         >
           {props.text}
         </Text>

@@ -11,19 +11,19 @@ type Variant = "front" | "page" | "detail";
 
 const variants = {
   front: {
-    paddingTop: { base: "2rem", md: "2.875rem" },
-    paddingBottom: { base: "5rem", md: "10.625rem" },
-    rangeHeight: { base: "7rem", md: "13.75rem" },
+    paddingTop: { base: "2rem", md: "3rem" },
+    paddingBottom: { base: "5rem", md: "11rem" },
+    rangeHeight: { base: "7rem", md: "14rem" },
   },
   page: {
-    paddingTop: { base: "2rem", md: "2.75rem" },
-    paddingBottom: { base: "4rem", md: "8.125rem" },
-    rangeHeight: { base: "6rem", md: "11.25rem" },
+    paddingTop: { base: "2rem", md: "3rem" },
+    paddingBottom: { base: "4rem", md: "8rem" },
+    rangeHeight: { base: "6rem", md: "11rem" },
   },
   detail: {
     paddingTop: { base: "1.75rem", md: "2rem" },
     paddingBottom: { base: "3.5rem", md: "7.5rem" },
-    rangeHeight: { base: "5.5rem", md: "10.625rem" },
+    rangeHeight: { base: "5.5rem", md: "11rem" },
   },
 } satisfies Record<Variant, unknown>;
 

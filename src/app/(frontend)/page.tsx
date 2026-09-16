@@ -34,7 +34,7 @@ export default async function Home() {
       <Welcome intro={data.intro} />
 
       {!!highlightedEvents.length && (
-        <DefaultContainer paddingTop="3.25rem">
+        <DefaultContainer paddingTop="3rem">
           <Box as="section">
             <SectionHeading marginBottom="1.5rem">
               Gå ikke glipp av
@@ -48,19 +48,19 @@ export default async function Home() {
         </DefaultContainer>
       )}
 
-      <DefaultContainer paddingTop="3.25rem">
+      <DefaultContainer paddingTop="3rem">
         <Calendar
           heading="Kommende aktiviteter"
           limit={6}
           childrenAfter={
-            <CallToAction href="/kalender" marginTop="1.875rem">
+            <CallToAction href="/kalender" marginTop="2rem">
               Se hele kalenderen →
             </CallToAction>
           }
         />
       </DefaultContainer>
 
-      <DefaultContainer paddingTop="3.25rem" paddingBottom="4.75rem">
+      <DefaultContainer paddingTop="3rem" paddingBottom="5rem">
         <RecurringEvents heading="Faste aktiviteter" />
       </DefaultContainer>
     </>

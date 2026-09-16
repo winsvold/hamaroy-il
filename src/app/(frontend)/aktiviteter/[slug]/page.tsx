@@ -91,19 +91,19 @@ const Page = async (props: Props) => {
   return (
     <>
       <PageHero variant="detail">
-        <Stack gap="0" maxWidth="47.5rem">
+        <Stack gap="0" maxWidth="50rem">
           {sport && (
-            <Kicker color="aurora.green" marginBottom=".875rem">
+            <Kicker color="aurora.green" marginBottom="1rem">
               {sport.title}
             </Kicker>
           )}
           <Heading
             as="h1"
             fontFamily="heading"
-            fontWeight={800}
-            fontSize={{ base: "1.875rem", sm: "2.125rem", md: "3.25rem" }}
+            fontWeight="extrabold"
+            fontSize={{ base: "3xl", sm: "4xl", md: "5xl" }}
             lineHeight={1}
-            letterSpacing="-.02em"
+            letterSpacing="tight"
             color="onDark.base"
             css={{ hyphens: "auto", overflowWrap: "break-word" }}
           >
@@ -111,20 +111,16 @@ const Page = async (props: Props) => {
           </Heading>
           {!!facts.length && (
             <Flex
-              gap={{ base: "1.5rem", md: "2.75rem" }}
+              gap={{ base: "1.5rem", md: "3rem" }}
               flexWrap="wrap"
-              marginTop="1.875rem"
+              marginTop="2rem"
             >
               {facts.map((fact) => (
                 <Box key={fact.label}>
-                  <Kicker color="aurora.teal" marginBottom=".375rem">
+                  <Kicker color="aurora.teal" marginBottom=".5rem">
                     {fact.label}
                   </Kicker>
-                  <Box
-                    fontWeight={700}
-                    fontSize="1.0625rem"
-                    color="onDark.base"
-                  >
+                  <Box fontWeight="bold" fontSize="lg" color="onDark.base">
                     {fact.value}
                   </Box>
                 </Box>
@@ -150,8 +146,8 @@ const Page = async (props: Props) => {
                   </SectionHeading>
                   <RichText
                     blockContent={data.body}
-                    fontSize="1rem"
-                    lineHeight={1.72}
+                    fontSize="md"
+                    lineHeight={1.75}
                   />
                 </Box>
               )}
@@ -178,12 +174,12 @@ const Page = async (props: Props) => {
                     {data.paymentInfo.body && (
                       <RichText
                         blockContent={data.paymentInfo.body}
-                        fontSize="0.875rem"
+                        fontSize="sm"
                         maxWidth="none"
                       />
                     )}
                     {data.paymentInfo.vippsNumber && (
-                      <Text fontWeight={700} fontSize="0.9375rem">
+                      <Text fontWeight="bold" fontSize="md">
                         <Icon asChild height="1.5rem">
                           <VippsIkon />
                         </Icon>
@@ -212,14 +208,14 @@ const Page = async (props: Props) => {
         </Stack>
       </DefaultContainer>
 
-      <DefaultContainer paddingTop="3.75rem" paddingBottom="4.75rem">
+      <DefaultContainer paddingTop="4rem" paddingBottom="5rem">
         <Calendar
           heading="Andre kommende aktiviteter"
           limit={6}
           excludeIds={[data._id]}
           whenEmpty="hide"
           childrenAfter={
-            <CallToAction href="/kalender" marginTop="1.875rem">
+            <CallToAction href="/kalender" marginTop="2rem">
               Se hele kalenderen →
             </CallToAction>
           }

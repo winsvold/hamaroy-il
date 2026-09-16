@@ -6,9 +6,9 @@ export const AuroraRibbons = () => (
     position="absolute"
     top="0"
     right="-1.25rem"
-    width={{ base: "26rem", md: "41.25rem" }}
+    width={{ base: "25rem", md: "40rem" }}
     height="100%"
-    filter="blur(1.0625rem)"
+    filter="blur(1rem)"
   >
     <svg
       viewBox="0 0 640 400"

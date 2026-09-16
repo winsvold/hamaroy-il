@@ -23,8 +23,8 @@ const FootLink = ({
 }) => (
   <Box
     asChild
-    fontSize="0.875rem"
-    fontWeight={600}
+    fontSize="sm"
+    fontWeight="semibold"
     color="onDark.secondary"
     transition="color .2s"
     _hover={{ color: "aurora.green" }}
@@ -58,7 +58,7 @@ export const Footer = async () => {
       as="footer"
       background="arctic.base"
       color="onDark.base"
-      paddingTop="2.75rem"
+      paddingTop="3rem"
     >
       <DefaultContainer>
         <Grid
@@ -68,26 +68,25 @@ export const Footer = async () => {
             md: "1.6fr 1fr 1fr",
           }}
           gap="3rem"
-          paddingBottom="1.625rem"
+          paddingBottom="1.5rem"
           borderBottom="1px solid"
           borderColor="hairlineDarkFaint"
         >
           <Box>
             <Box
               fontFamily="heading"
-              fontWeight={800}
-              fontSize="1.25rem"
-              letterSpacing="-.01em"
-              marginBottom=".625rem"
+              fontWeight="extrabold"
+              fontSize="xl"
+              marginBottom=".5rem"
             >
               Hamarøy IL
             </Box>
             {data.siteSettings?.footerText && (
               <Box
-                fontSize="0.9375rem"
-                lineHeight={1.6}
+                fontSize="md"
+                lineHeight={1.5}
                 color="onDark.tertiary"
-                maxWidth="18.75rem"
+                maxWidth="20rem"
               >
                 {data.siteSettings.footerText}
               </Box>
@@ -95,10 +94,10 @@ export const Footer = async () => {
           </Box>
 
           <Box>
-            <Kicker color="aurora.green" marginBottom=".875rem">
+            <Kicker color="aurora.green" marginBottom="1rem">
               Snarveier
             </Kicker>
-            <Stack gap=".625rem" alignItems="flex-start">
+            <Stack gap=".5rem" alignItems="flex-start">
               {shortcuts.map((link) => (
                 <FootLink key={link.href} href={link.href}>
                   {link.label}
@@ -109,10 +108,10 @@ export const Footer = async () => {
 
           {(!!contactLinks.length || email) && (
             <Box>
-              <Kicker color="aurora.green" marginBottom=".875rem">
+              <Kicker color="aurora.green" marginBottom="1rem">
                 Kontakt
               </Kicker>
-              <Stack gap=".625rem" alignItems="flex-start">
+              <Stack gap=".5rem" alignItems="flex-start">
                 {contactLinks.map((link) => (
                   <FootLink key={link.href} href={link.href}>
                     {link.label}
@@ -125,13 +124,13 @@ export const Footer = async () => {
         </Grid>
 
         <Flex
-          paddingTop="1.125rem"
-          paddingBottom="1.375rem"
+          paddingTop="1rem"
+          paddingBottom="1.5rem"
           justify="space-between"
           align="center"
           gap="1rem"
-          fontSize="0.78125rem"
-          fontWeight={500}
+          fontSize="xs"
+          fontWeight="medium"
           color="onDark.faint"
         >
           <Box>© {new Date().getFullYear()} Hamarøy IL</Box>

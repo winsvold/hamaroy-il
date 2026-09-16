@@ -64,7 +64,7 @@ export const CalendarCard = (props: Props) => {
         direction={{ base: "row", sm: "column" }}
         align={{ base: "baseline", sm: "center" }}
         justify={{ base: "flex-start", sm: "center" }}
-        gap={{ base: ".625rem", sm: "0" }}
+        gap={{ base: ".5rem", sm: "0" }}
         flexShrink={0}
         width={{ base: "auto", sm: "5rem", md: "6.5rem" }}
         paddingY={{ base: ".5rem", sm: "1rem" }}
@@ -73,9 +73,9 @@ export const CalendarCard = (props: Props) => {
         textAlign="center"
       >
         <Box
-          fontWeight={700}
-          fontSize={{ base: "1.0625rem", sm: "1.25rem" }}
-          lineHeight={1.1}
+          fontWeight="bold"
+          fontSize={{ base: "lg", sm: "xl" }}
+          lineHeight={1}
           fontVariantNumeric="tabular-nums"
           whiteSpace="nowrap"
           color="onDark.base"
@@ -84,21 +84,21 @@ export const CalendarCard = (props: Props) => {
           {formatNorwegianDate(startsAt, "p")}
         </Box>
         <Text
-          fontSize="0.8125rem"
-          fontWeight={600}
+          fontSize="sm"
+          fontWeight="semibold"
           color="deep.light"
-          marginTop={{ base: "0", sm: ".1875rem" }}
+          marginTop={{ base: "0", sm: ".25rem" }}
         >
           {durationLabel(startsAt, props.endsAt)}
         </Text>
       </Flex>
       <Stack
-        gap=".375rem"
+        gap=".5rem"
         justify="center"
         minWidth="0"
         padding={{
-          base: ".75rem 1rem .875rem",
-          md: ".9375rem 1.375rem .9375rem 1.25rem",
+          base: ".75rem 1rem 1rem",
+          md: "1rem 1.5rem 1rem 1.25rem",
         }}
       >
         {cancelled && (
@@ -113,9 +113,9 @@ export const CalendarCard = (props: Props) => {
         {!props.hideTitle && props.title && (
           <Text
             data-name
-            fontWeight={700}
-            fontSize="1.0625rem"
-            lineHeight={1.32}
+            fontWeight="bold"
+            fontSize="lg"
+            lineHeight={1.25}
             color="ink"
             transition="color .2s"
             textDecoration={strike}
@@ -128,9 +128,9 @@ export const CalendarCard = (props: Props) => {
         {place && (
           <TextWithIcon
             icon={<MapPin size="1.07em" />}
-            gap=".4375rem"
-            fontSize="0.875rem"
-            fontWeight={500}
+            gap=".5rem"
+            fontSize="sm"
+            fontWeight="medium"
             color="secondary"
             css={{ "& svg": { color: "muted" } }}
           >
@@ -138,7 +138,7 @@ export const CalendarCard = (props: Props) => {
           </TextWithIcon>
         )}
         {props.note && (
-          <Text fontSize="0.8125rem" color="muted">
+          <Text fontSize="sm" color="muted">
             {props.note}
           </Text>
         )}
