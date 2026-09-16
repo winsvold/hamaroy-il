@@ -28,7 +28,7 @@ const aktivitetQuery =
   ...,
   location->,
   organizers[]->,
-  "nextSession": sessions[] {
+  "nextSession": sessions[cancelled != true] {
     "startsAt": dateTime(startsAt),
     "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,
   } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0],

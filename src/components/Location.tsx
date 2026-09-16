@@ -12,6 +12,8 @@ import { Location } from "../../sanity.types";
 import Link from "next/link";
 
 export const LocationCard = (location: Location) => {
+  const address = [location.address, location.city].filter(Boolean).join(", ");
+
   return (
     <LinkBox display="flex" gap="1rem">
       {location.images?.[0] && (
@@ -33,9 +35,9 @@ export const LocationCard = (location: Location) => {
             </Heading>
           </Link>
         </LinkOverlay>
-        {location.address && (
+        {address && (
           <Text fontSize="sm" fontWeight="medium" color="muted">
-            {[location.address, location.city].filter(Boolean).join(", ")}
+            {address}
           </Text>
         )}
       </Stack>

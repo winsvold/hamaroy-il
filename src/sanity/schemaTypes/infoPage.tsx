@@ -18,7 +18,7 @@ export const infoPage = defineType({
       name: "menuPlacement",
       title: "Hvor skal siden lenkes opp?",
       description:
-        "Siden kan stå flere steder samtidig — «Bli medlem» hører gjerne hjemme både som toppknapp og i bunnteksten. Uten valg her er siden bare tilgjengelig via direkte lenke.",
+        "Siden kan stå flere steder samtidig — «Bli medlem» hører gjerne hjemme både som toppknapp og i bunnteksten. Uten valg her havner siden i menyen, etter klubbene.",
       type: "array",
       of: [{ type: "string" }],
       options: {
