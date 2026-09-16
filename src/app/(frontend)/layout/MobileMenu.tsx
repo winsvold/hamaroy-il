@@ -20,13 +20,18 @@ export const MobileMenu = (props: Props) => {
   }, [pathName]);
 
   return (
-    <Drawer.Root open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
+    <Drawer.Root open={isOpen} onOpenChange={(event) => setIsOpen(event.open)}>
       <Drawer.Trigger asChild>
-        <IconButton variant="ghost" aria-label="Meny" color="onDark.base">
+        <IconButton
+          variant="ghost"
+          aria-label="Meny"
+          color="onDark.base"
+          hideFrom="lg"
+        >
           <Menu />
         </IconButton>
       </Drawer.Trigger>
-      <Drawer.Backdrop background="rgba(11, 26, 23, 0.55)" />
+      <Drawer.Backdrop background="arctic.base/55" />
       <Drawer.Positioner>
         {/* Settes her og ikke globalt, siden provideren også omslutter Sanity Studio */}
         <Drawer.Content
@@ -34,7 +39,10 @@ export const MobileMenu = (props: Props) => {
           color="onDark.base"
           borderRadius="none"
         >
-          <Drawer.Header borderBottom="1px solid" borderColor="hairlineDark">
+          <Drawer.Header
+            borderBottom="1px solid"
+            borderColor="onDark.secondary/30"
+          >
             <Drawer.Title asChild>
               <Flex justify="space-between" align="center" gap="1rem">
                 {props.logo}

@@ -1,50 +1,58 @@
 import { Kicker } from "@/components/Kicker";
-import { Heading, Stack, Text } from "@chakra-ui/react";
+import { Heading, HeadingProps, Stack, Text } from "@chakra-ui/react";
 import { PageHero } from "./PageHero";
+
+export const HeroTitle = (props: HeadingProps) => (
+  <Heading
+    as="h1"
+    fontWeight="extrabold"
+    fontSize={{ base: "3xl", sm: "4xl", md: "5xl" }}
+    lineHeight={1}
+    letterSpacing="tight"
+    css={{ hyphens: "auto", overflowWrap: "break-word" }}
+    {...props}
+  />
+);
+
+export const HeroText = ({ children }: { children: React.ReactNode }) => (
+  <Text lineHeight={1.5} color="onDark.soft" maxWidth="30rem" marginTop="1rem">
+    {children}
+  </Text>
+);
 
 type Props = {
   kicker?: string;
   title: string;
   text?: string | null;
   variant?: "page" | "detail";
+  /** Vises under tittelen */
+  children?: React.ReactNode;
 };
 
-export const PageHeader = (props: Props) => (
-  <PageHero variant={props.variant ?? "page"}>
+export const PageHeader = ({
+  kicker,
+  title,
+  text,
+  variant = "page",
+  children,
+}: Props) => (
+  <PageHero variant={variant}>
     <Stack
       gap="0"
-      maxWidth="45rem"
-      // Uten ingress havner overskriften ellers oppå fjelltoppene
-      paddingBottom={props.text ? undefined : { base: "1.75rem", md: "3rem" }}
+      maxWidth="50rem"
+      // Står tittelen alene, havner den ellers oppå fjelltoppene
+      paddingBottom={
+        text || children ? undefined : { base: "1.75rem", md: "3rem" }
+      }
     >
-      {props.kicker && (
+      {kicker && (
         <Kicker color="aurora.green" marginBottom="1rem">
-          {props.kicker}
+          {kicker}
         </Kicker>
       )}
-      <Heading
-        as="h1"
-        fontFamily="heading"
-        fontWeight="extrabold"
-        fontSize={{ base: "3xl", sm: "4xl", md: "5xl" }}
-        lineHeight={1}
-        letterSpacing="tight"
-        color="onDark.base"
-        css={{ hyphens: "auto", overflowWrap: "break-word" }}
-      >
-        {props.title}
-      </Heading>
-      {props.text && (
-        <Text
-          fontSize="md"
-          lineHeight={1.5}
-          color="onDark.soft"
-          maxWidth="30rem"
-          marginTop="1rem"
-        >
-          {props.text}
-        </Text>
-      )}
+      <HeroTitle>{title}</HeroTitle>
+      {text && <HeroText>{text}</HeroText>}
+      {children}
     </Stack>
   </PageHero>
 );

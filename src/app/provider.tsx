@@ -40,7 +40,6 @@ const customConfig = defineConfig({
         aurora: {
           green: { value: "#4ade9f" },
           teal: { value: "#7ce0d6" },
-          violet: { value: "#a48ee0" },
         },
         deep: {
           base: { value: "#0d5c4f" },
@@ -73,9 +72,6 @@ const customConfig = defineConfig({
         // Tekst oppå aurora.green
         onAurora: { value: "#062018" },
         onAuroraSoft: { value: "#0b4a3a" },
-        hairline: { value: "rgba(17, 28, 25, 0.14)" },
-        hairlineDark: { value: "rgba(195, 214, 208, 0.28)" },
-        hairlineDarkFaint: { value: "rgba(195, 214, 208, 0.22)" },
       },
     },
     textStyles: {

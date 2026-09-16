@@ -498,7 +498,7 @@ export type AllSanitySchemaTypes =
 
 // Source: src/app/(frontend)/aktiviteter/[slug]/page.tsx
 // Variable: aktivitetQuery
-// Query: *[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{  ...,  location->,  organizers[]->,}
+// Query: *[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{  ...,  location->,  organizers[]->,  "nextSession": sessions[] {    "startsAt": dateTime(startsAt),    "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0],}
 export type AktivitetQueryResult =
   | {
       _id: string;
@@ -641,6 +641,7 @@ export type AktivitetQueryResult =
         _type: "image";
         _key: string;
       }>;
+      nextSession: null;
     }
   | {
       _id: string;
@@ -787,44 +788,41 @@ export type AktivitetQueryResult =
         _key: string;
       }>;
       slug?: Slug;
+      nextSession: {
+        startsAt: string | null;
+        endsAt: string | null;
+      } | null;
     }
   | null;
 
 // Source: src/app/(frontend)/components/RecurringEvents.tsx
-// Variable: reoccurringEventsQuery
-// Query: {  "sessionSeries": *[    _type == "sessionSeries"  ]  {    _id,    title,    slug,    sport,    "sessions": sessions[] {      "startsAt": dateTime(startsAt),      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...1],  } | order(title asc),}
-export type ReoccurringEventsQueryResult = {
-  sessionSeries: Array<{
-    _id: string;
-    title: string | null;
-    slug: Slug | null;
-    sport:
-      | "allidrett"
-      | "fotball"
-      | "handball"
-      | "innebandy"
-      | "klatring"
-      | "turn"
-      | null;
-    sessions: Array<{
-      startsAt: string | null;
-      endsAt: string | null;
-    }> | null;
-  }>;
-};
+// Variable: recurringEventsQuery
+// Query: *[_type == "sessionSeries"] | order(title asc) {  _id,  title,  slug,  sport,  "nextStartsAt": sessions[] {    "startsAt": dateTime(startsAt),    "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0].startsAt,}
+export type RecurringEventsQueryResult = Array<{
+  _id: string;
+  title: string | null;
+  slug: Slug | null;
+  sport:
+    | "allidrett"
+    | "fotball"
+    | "handball"
+    | "innebandy"
+    | "klatring"
+    | "turn"
+    | null;
+  nextStartsAt: string | null;
+}>;
 
 // Source: src/app/(frontend)/components/calendar.tsx
 // Variable: activitiesQuery
-// Query: {  "events": *[    _type == "event" &&    endsAt > now() &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ] | order(startsAt asc) {    _id,    _type,    title,    startsAt,    endsAt,    location->{ _id, name },  },  "sessionSeries": *[    _type == "sessionSeries" &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ] {    _id,    title,    slug,    location->{ _id, name },    "sessions": sessions[] {      _key,      cancelled,      note,      "startsAt": dateTime(startsAt),      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],  },}
+// Query: {  "events": *[    _type == "event" &&    endsAt > now() &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($excludeId) || _id != $excludeId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ] {    _id,    title,    startsAt,    endsAt,    location->{ name },  },  "sessionSeries": *[    _type == "sessionSeries" &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($excludeId) || _id != $excludeId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ] {    _id,    title,    slug,    location->{ name },    "sessions": sessions[] {      _key,      cancelled,      note,      "startsAt": dateTime(startsAt),      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],  },}
 export type ActivitiesQueryResult = {
   events: Array<{
     _id: string;
-    _type: "event";
     title: string | null;
     startsAt: string | null;
     endsAt: string | null;
     location: {
-      _id: string;
       name: string | null;
     } | null;
   }>;
@@ -833,7 +831,6 @@ export type ActivitiesQueryResult = {
     title: string | null;
     slug: Slug | null;
     location: {
-      _id: string;
       name: string | null;
     } | null;
     sessions: Array<{
@@ -1036,88 +1033,29 @@ export type LokasjonQueryResult = {
 
 // Source: src/app/(frontend)/lokaler/page.tsx
 // Variable: locationsQuery
-// Query: *[_type == "location"] | order(name asc)
+// Query: *[_type == "location"] | order(name asc) {  _id,  name,  slug,  "image": images[0],}
 export type LocationsQueryResult = Array<{
   _id: string;
-  _type: "location";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  images?: Array<{
+  name: string | null;
+  slug: Slug | null;
+  image: {
     asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
     _key: string;
-  }>;
-  parent?: LocationReference;
-  address?: string;
-  zip?: string;
-  city?: string;
-  body?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "h2" | "normal";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  slug?: Slug;
+  } | null;
 }>;
 
 // Source: src/app/(frontend)/page.tsx
 // Variable: frontPageQuery
-// Query: {  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },  "intro": *[_type == "siteSettings"][0].intro,  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {    ...,    location->,  }}
+// Query: {  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText, intro },  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {    _id,    title,    startsAt,    endsAt,    "image": images[0],    location->{ name },  }}
 export type FrontPageQueryResult = {
   settings: {
     heroTitle: string | null;
     heroText: string | null;
-  } | null;
-  intro: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "h2" | "normal";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }> | null;
-  events: Array<{
-    _id: string;
-    _type: "event";
-    _createdAt: string;
-    _updatedAt: string;
-    _rev: string;
-    title?: string;
-    sport?:
-      | "allidrett"
-      | "fotball"
-      | "handball"
-      | "innebandy"
-      | "klatring"
-      | "turn";
-    body?: Array<{
+    intro: Array<{
       children?: Array<{
         marks?: Array<string>;
         text?: string;
@@ -1134,58 +1072,24 @@ export type FrontPageQueryResult = {
       level?: number;
       _type: "block";
       _key: string;
-    }>;
-    startsAt?: string;
-    endsAt?: string;
-    location: {
-      _id: string;
-      _type: "location";
-      _createdAt: string;
-      _updatedAt: string;
-      _rev: string;
-      name?: string;
-      images?: Array<{
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        _type: "image";
-        _key: string;
-      }>;
-      parent?: LocationReference;
-      address?: string;
-      zip?: string;
-      city?: string;
-      body?: Array<{
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?: "h2" | "normal";
-        listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
-        level?: number;
-        _type: "block";
-        _key: string;
-      }>;
-      slug?: Slug;
-    } | null;
-    organizers?: ArrayOf<ClubReference | PersonReference>;
-    paymentInfo?: PaymentInfo;
-    images?: Array<{
+    }> | null;
+  } | null;
+  events: Array<{
+    _id: string;
+    title: string | null;
+    startsAt: string | null;
+    endsAt: string | null;
+    image: {
       asset?: SanityImageAssetReference;
       media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
       _key: string;
-    }>;
+    } | null;
+    location: {
+      name: string | null;
+    } | null;
   }>;
 };
 
@@ -1193,16 +1097,16 @@ export type FrontPageQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{\n  ...,\n  location->,\n  organizers[]->,\n}': AktivitetQueryResult;
-    '{\n  "sessionSeries": *[\n    _type == "sessionSeries"\n  ]\n  {\n    _id,\n    title,\n    slug,\n    sport,\n    "sessions": sessions[] {\n      "startsAt": dateTime(startsAt),\n      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...1],\n  } | order(title asc),\n}': ReoccurringEventsQueryResult;
-    '{\n  "events": *[\n    _type == "event" &&\n    endsAt > now() &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] | order(startsAt asc) {\n    _id,\n    _type,\n    title,\n    startsAt,\n    endsAt,\n    location->{ _id, name },\n  },\n  "sessionSeries": *[\n    _type == "sessionSeries" &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] {\n    _id,\n    title,\n    slug,\n    location->{ _id, name },\n    "sessions": sessions[] {\n      _key,\n      cancelled,\n      note,\n      "startsAt": dateTime(startsAt),\n      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],\n  },\n}': ActivitiesQueryResult;
+    '*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{\n  ...,\n  location->,\n  organizers[]->,\n  "nextSession": sessions[] {\n    "startsAt": dateTime(startsAt),\n    "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0],\n}': AktivitetQueryResult;
+    '*[_type == "sessionSeries"] | order(title asc) {\n  _id,\n  title,\n  slug,\n  sport,\n  "nextStartsAt": sessions[] {\n    "startsAt": dateTime(startsAt),\n    "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0].startsAt,\n}': RecurringEventsQueryResult;
+    '{\n  "events": *[\n    _type == "event" &&\n    endsAt > now() &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($excludeId) || _id != $excludeId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] {\n    _id,\n    title,\n    startsAt,\n    endsAt,\n    location->{ name },\n  },\n  "sessionSeries": *[\n    _type == "sessionSeries" &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($excludeId) || _id != $excludeId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] {\n    _id,\n    title,\n    slug,\n    location->{ name },\n    "sessions": sessions[] {\n      _key,\n      cancelled,\n      note,\n      "startsAt": dateTime(startsAt),\n      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],\n  },\n}': ActivitiesQueryResult;
     '*[_type == "infoPage" && slug.current == $slug][0]': InfoPageQueryResult;
     '\n  *[_type == "club" && slug.current == $slug][0] {\n    ...,\n    managers[] {\n      ...,\n      person->\n    }\n  }\n': ClubPageQueryResult;
     '*[_type == "siteSettings"][0]{ logo }': FaviconQueryResult;
     '{\n  "siteSettings": *[_type == "siteSettings"][0]{ footerText, contactEmail },\n  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {\n    title,\n    slug,\n    menuPlacement,\n  }\n}': FooterQueryResult;
     '{\n  "siteSettings": *[_type == "siteSettings"][0]{ logo },\n  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {\n    title,\n    slug,\n    menuPlacement,\n  },\n  "clubs": *[_type == "club"] | order(name asc) { name, slug }\n}': HeaderQueryResult;
     '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
-    '*[_type == "location"] | order(name asc)': LocationsQueryResult;
-    '{\n  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },\n  "intro": *[_type == "siteSettings"][0].intro,\n  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {\n    ...,\n    location->,\n  }\n}': FrontPageQueryResult;
+    '*[_type == "location"] | order(name asc) {\n  _id,\n  name,\n  slug,\n  "image": images[0],\n}': LocationsQueryResult;
+    '{\n  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText, intro },\n  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {\n    _id,\n    title,\n    startsAt,\n    endsAt,\n    "image": images[0],\n    location->{ name },\n  }\n}': FrontPageQueryResult;
   }
 }

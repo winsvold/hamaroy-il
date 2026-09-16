@@ -1,13 +1,13 @@
-import { DefaultContainer } from "@/components/DefaultContainer";
 import { RecurringEvents } from "../components/RecurringEvents";
+import { PageContent } from "../layout/PageContent";
 import { PageHeader } from "../layout/PageHeader";
 
 const Page = () => (
   <>
     <PageHeader kicker="Hele året, alle aldre" title="Faste aktiviteter" />
-    <DefaultContainer paddingTop="4rem" paddingBottom="5rem">
+    <PageContent>
       <RecurringEvents />
-    </DefaultContainer>
+    </PageContent>
   </>
 );
 

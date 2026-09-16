@@ -6,12 +6,11 @@ type Props = {
   children: React.ReactNode;
 } & BoxProps;
 
-export const CallToAction = ({ href, children, ...chakraProps }: Props) => (
+export const CallToAction = ({ href, children, ...props }: Props) => (
   <Box
     asChild
     display="inline-flex"
-    alignItems="center"
-    gap=".5rem"
+    flexShrink={0}
     padding="1rem 1.5rem"
     background="aurora.green"
     color="onAurora"
@@ -19,9 +18,10 @@ export const CallToAction = ({ href, children, ...chakraProps }: Props) => (
     fontWeight="bold"
     letterSpacing=".15em"
     textTransform="uppercase"
+    whiteSpace="nowrap"
     transition="background .2s, color .2s"
     _hover={{ background: "arctic.base", color: "aurora.green" }}
-    {...chakraProps}
+    {...props}
   >
     <Link href={href}>{children}</Link>
   </Box>

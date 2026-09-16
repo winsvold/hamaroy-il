@@ -7,25 +7,26 @@ import { AuroraGlow } from "./AuroraGlow";
 import { AuroraRibbons } from "./AuroraRibbons";
 import { MountainRange } from "./MountainRange";
 
-type Variant = "front" | "page" | "detail";
-
 const variants = {
   front: {
     paddingTop: { base: "2rem", md: "3rem" },
     paddingBottom: { base: "5rem", md: "11rem" },
     rangeHeight: { base: "7rem", md: "14rem" },
+    skyOpacity: 1,
   },
   page: {
     paddingTop: { base: "2rem", md: "3rem" },
     paddingBottom: { base: "4rem", md: "8rem" },
     rangeHeight: { base: "6rem", md: "11rem" },
+    skyOpacity: 0.85,
   },
   detail: {
     paddingTop: { base: "1.75rem", md: "2rem" },
     paddingBottom: { base: "3.5rem", md: "7.5rem" },
     rangeHeight: { base: "5.5rem", md: "11rem" },
+    skyOpacity: 0.85,
   },
-} satisfies Record<Variant, unknown>;
+};
 
 const skies = [AuroraRibbons, AuroraCurtain, AuroraGlow];
 
@@ -34,11 +35,13 @@ const skyOfTheDay = () =>
   skies[getDayOfYear(toZonedTime(new Date(), "Europe/Oslo")) % skies.length];
 
 type Props = {
-  variant?: Variant;
+  variant?: keyof typeof variants;
   children: React.ReactNode;
 };
 
 export const PageHero = ({ variant = "page", children }: Props) => {
+  const { paddingTop, paddingBottom, rangeHeight, skyOpacity } =
+    variants[variant];
   const Sky = skyOfTheDay();
 
   return (
@@ -47,30 +50,24 @@ export const PageHero = ({ variant = "page", children }: Props) => {
       position="relative"
       overflow="hidden"
       background="arctic.hero"
-      paddingTop={variants[variant].paddingTop}
+      color="onDark.base"
+      paddingTop={paddingTop}
     >
       <Box
         position="absolute"
         inset="0"
-        opacity={variant === "front" ? 1 : 0.85}
+        opacity={skyOpacity}
         pointerEvents="none"
         aria-hidden="true"
       >
         <Sky />
       </Box>
 
-      <DefaultContainer
-        position="relative"
-        paddingBottom={variants[variant].paddingBottom}
-      >
+      <DefaultContainer position="relative" paddingBottom={paddingBottom}>
         {children}
       </DefaultContainer>
 
-      <MountainRange
-        back="sage.deep"
-        front="ground"
-        height={variants[variant].rangeHeight}
-      />
+      <MountainRange back="sage.deep" front="ground" height={rangeHeight} />
     </Box>
   );
 };

@@ -1,73 +1,62 @@
 import { CardGrid } from "@/components/CardGrid";
-import { DefaultContainer } from "@/components/DefaultContainer";
+import { LinkCard, LinkCardTitle } from "@/components/LinkCard";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { Box, Heading, LinkBox, LinkOverlay } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Image from "next/image";
-import Link from "next/link";
+import { LocationsQueryResult } from "../../../../sanity.types";
+import { PageContent } from "../layout/PageContent";
 import { PageHeader } from "../layout/PageHeader";
 
-const locationsQuery = defineQuery(`*[_type == "location"] | order(name asc)`);
+const locationsQuery = defineQuery(`*[_type == "location"] | order(name asc) {
+  _id,
+  name,
+  slug,
+  "image": images[0],
+}`);
 
 const Page = async () => {
-  const data = await sanityFetch(locationsQuery);
+  const locations = await sanityFetch(locationsQuery);
 
   return (
     <>
       <PageHeader kicker="Lokaler" title="Lokaler og steder" />
-      <DefaultContainer paddingTop="4rem" paddingBottom="5rem">
+      <PageContent>
         <CardGrid>
-          {data.map((location) => (
-            <LinkBox
-              display="flex"
-              alignItems="center"
-              key={location._id}
-              background="card.base"
-              padding="1rem"
-              gap="1rem"
-              transition="background .2s"
-              _hover={{
-                background: "card.hover",
-                "& h2": { color: "deep.base" },
-              }}
-            >
-              {location.images?.[0] && (
-                <Box
-                  asChild
-                  flexShrink={0}
-                  width="4.5rem"
-                  height="4.5rem"
-                  objectFit="cover"
-                >
-                  <Image
-                    alt=""
-                    src={urlFor(location.images[0]).size(300, 300).url()}
-                    width={300}
-                    height={300}
-                  />
-                </Box>
-              )}
-              <LinkOverlay asChild>
-                <Link href={`/lokaler/${location.slug?.current}`}>
-                  <Heading
-                    as="h2"
-                    fontFamily="body"
-                    fontWeight="bold"
-                    fontSize="md"
-                    color="ink"
-                    transition="color .2s"
-                  >
-                    {location.name}
-                  </Heading>
-                </Link>
-              </LinkOverlay>
-            </LinkBox>
+          {locations.map((location) => (
+            <LocationTile key={location._id} location={location} />
           ))}
         </CardGrid>
-      </DefaultContainer>
+      </PageContent>
     </>
   );
 };
+
+const LocationTile = ({
+  location,
+}: {
+  location: LocationsQueryResult[number];
+}) => (
+  <LinkCard display="flex" alignItems="center" gap="1rem" padding="1rem">
+    {location.image && (
+      <Box asChild flexShrink={0} boxSize="4.5rem" objectFit="cover">
+        <Image
+          alt=""
+          src={urlFor(location.image).size(300, 300).url()}
+          width={300}
+          height={300}
+        />
+      </Box>
+    )}
+    <LinkCardTitle
+      as="h2"
+      href={`/lokaler/${location.slug?.current}`}
+      fontSize="md"
+    >
+      {location.name}
+    </LinkCardTitle>
+  </LinkCard>
+);
 
 export default Page;

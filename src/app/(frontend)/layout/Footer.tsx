@@ -1,9 +1,11 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { Kicker } from "@/components/Kicker";
 import { sanityFetch } from "@/sanity/lib/client";
-import { Box, Flex, Grid, Stack } from "@chakra-ui/react";
+import { Box, Flex, Grid, Stack, Text } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Link from "next/link";
+import { sift } from "radash";
+import { fixedLinks, infoPageLinks, NavLink } from "./navigation";
 
 const footerQuery = defineQuery(`{
   "siteSettings": *[_type == "siteSettings"][0]{ footerText, contactEmail },
@@ -14,44 +16,13 @@ const footerQuery = defineQuery(`{
   }
 }`);
 
-const FootLink = ({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) => (
-  <Box
-    asChild
-    fontSize="sm"
-    fontWeight="semibold"
-    color="onDark.secondary"
-    transition="color .2s"
-    _hover={{ color: "aurora.green" }}
-  >
-    <Link href={href}>{children}</Link>
-  </Box>
-);
-
 export const Footer = async () => {
-  const data = await sanityFetch(footerQuery);
-
-  const infoPagesIn = (placement: string) =>
-    data.infoPages
-      .filter((page) => page.menuPlacement?.includes(placement))
-      .map((page) => ({
-        href: `/info/${page.slug?.current}`,
-        label: page.title ?? "",
-      }));
-
-  const shortcuts = [
-    { href: "/kalender", label: "Kalender" },
-    { href: "/faste-aktiviteter", label: "Faste aktiviteter" },
-    { href: "/lokaler", label: "Lokaler" },
-    ...infoPagesIn("bunn-snarveier"),
-  ];
-  const contactLinks = infoPagesIn("bunn-kontakt");
-  const email = data.siteSettings?.contactEmail;
+  const { siteSettings, infoPages } = await sanityFetch(footerQuery);
+  const email = siteSettings?.contactEmail;
+  const contactLinks = sift([
+    ...infoPageLinks(infoPages, "bunn-kontakt"),
+    email && { href: `mailto:${email}`, label: email },
+  ]);
 
   return (
     <Box
@@ -65,12 +36,12 @@ export const Footer = async () => {
           gridTemplateColumns={{
             base: "1fr",
             sm: "1fr 1fr",
-            md: "1.6fr 1fr 1fr",
+            md: "3fr 2fr 2fr",
           }}
           gap="3rem"
           paddingBottom="1.5rem"
           borderBottom="1px solid"
-          borderColor="hairlineDarkFaint"
+          borderColor="onDark.secondary/20"
         >
           <Box>
             <Box
@@ -81,45 +52,21 @@ export const Footer = async () => {
             >
               Hamarøy IL
             </Box>
-            {data.siteSettings?.footerText && (
-              <Box
-                fontSize="md"
-                lineHeight={1.5}
-                color="onDark.tertiary"
-                maxWidth="20rem"
-              >
-                {data.siteSettings.footerText}
-              </Box>
+            {siteSettings?.footerText && (
+              <Text lineHeight={1.5} color="onDark.tertiary" maxWidth="20rem">
+                {siteSettings.footerText}
+              </Text>
             )}
           </Box>
-
-          <Box>
-            <Kicker color="aurora.green" marginBottom="1rem">
-              Snarveier
-            </Kicker>
-            <Stack gap=".5rem" alignItems="flex-start">
-              {shortcuts.map((link) => (
-                <FootLink key={link.href} href={link.href}>
-                  {link.label}
-                </FootLink>
-              ))}
-            </Stack>
-          </Box>
-
-          {(!!contactLinks.length || email) && (
-            <Box>
-              <Kicker color="aurora.green" marginBottom="1rem">
-                Kontakt
-              </Kicker>
-              <Stack gap=".5rem" alignItems="flex-start">
-                {contactLinks.map((link) => (
-                  <FootLink key={link.href} href={link.href}>
-                    {link.label}
-                  </FootLink>
-                ))}
-                {email && <FootLink href={`mailto:${email}`}>{email}</FootLink>}
-              </Stack>
-            </Box>
+          <FooterColumn
+            title="Snarveier"
+            links={[
+              ...fixedLinks,
+              ...infoPageLinks(infoPages, "bunn-snarveier"),
+            ]}
+          />
+          {!!contactLinks.length && (
+            <FooterColumn title="Kontakt" links={contactLinks} />
           )}
         </Grid>
 
@@ -127,7 +74,6 @@ export const Footer = async () => {
           paddingTop="1rem"
           paddingBottom="1.5rem"
           justify="space-between"
-          align="center"
           gap="1rem"
           fontSize="xs"
           fontWeight="medium"
@@ -142,3 +88,32 @@ export const Footer = async () => {
     </Box>
   );
 };
+
+const FooterColumn = ({
+  title,
+  links,
+}: {
+  title: string;
+  links: NavLink[];
+}) => (
+  <Box>
+    <Kicker color="aurora.green" marginBottom="1rem">
+      {title}
+    </Kicker>
+    <Stack gap=".5rem" alignItems="flex-start">
+      {links.map((link) => (
+        <Box
+          key={link.href}
+          asChild
+          fontSize="sm"
+          fontWeight="semibold"
+          color="onDark.secondary"
+          transition="color .2s"
+          _hover={{ color: "aurora.green" }}
+        >
+          <Link href={link.href}>{link.label}</Link>
+        </Box>
+      ))}
+    </Stack>
+  </Box>
+);

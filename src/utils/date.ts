@@ -22,6 +22,12 @@ export const formatNorwegianDateCapitalized = (
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 };
 
+/** Ukedag eller måned forkortet uten punktum, som «man» og «sep» */
+export const formatNorwegianAbbreviation = (
+  date: string | Date,
+  format: "EEE" | "MMM",
+) => formatNorwegianDate(date, format).replace(".", "");
+
 /** Samme kalenderdag i norsk tid */
 export const isSameNorwegianDay = (a: string | Date, b: string | Date) =>
   formatNorwegianDate(a, "yyyy-MM-dd") === formatNorwegianDate(b, "yyyy-MM-dd");

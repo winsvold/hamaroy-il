@@ -1,6 +1,4 @@
-import { CallToAction } from "@/components/CallToAction";
 import { CardGrid } from "@/components/CardGrid";
-import { DefaultContainer } from "@/components/DefaultContainer";
 import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
 import { Box } from "@chakra-ui/react";
@@ -10,59 +8,41 @@ import { EventCard } from "./components/EventCard";
 import { Hero } from "./components/Hero";
 import { RecurringEvents } from "./components/RecurringEvents";
 import { Welcome } from "./components/Welcome";
+import { PageContent } from "./layout/PageContent";
 
 const frontPageQuery = defineQuery(`{
-  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText },
-  "intro": *[_type == "siteSettings"][0].intro,
-  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {
-    ...,
-    location->,
+  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText, intro },
+  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {
+    _id,
+    title,
+    startsAt,
+    endsAt,
+    "image": images[0],
+    location->{ name },
   }
 }`);
 
-const highlightedEventCount = 3;
-
 export default async function Home() {
-  const data = await sanityFetch(frontPageQuery);
-
-  const highlightedEvents = data.events.slice(0, highlightedEventCount);
+  const { settings, events } = await sanityFetch(frontPageQuery);
 
   return (
     <>
-      <Hero title={data.settings?.heroTitle} text={data.settings?.heroText} />
-
-      <Welcome intro={data.intro} />
-
-      {!!highlightedEvents.length && (
-        <DefaultContainer paddingTop="3rem">
+      <Hero title={settings?.heroTitle} text={settings?.heroText} />
+      <PageContent>
+        <Welcome intro={settings?.intro} />
+        {!!events.length && (
           <Box as="section">
-            <SectionHeading marginBottom="1.5rem">
-              Gå ikke glipp av
-            </SectionHeading>
+            <SectionHeading>Gå ikke glipp av</SectionHeading>
             <CardGrid>
-              {highlightedEvents.map((event) => (
+              {events.map((event) => (
                 <EventCard key={event._id} {...event} />
               ))}
             </CardGrid>
           </Box>
-        </DefaultContainer>
-      )}
-
-      <DefaultContainer paddingTop="3rem">
-        <Calendar
-          heading="Kommende aktiviteter"
-          limit={6}
-          childrenAfter={
-            <CallToAction href="/kalender" marginTop="2rem">
-              Se hele kalenderen →
-            </CallToAction>
-          }
-        />
-      </DefaultContainer>
-
-      <DefaultContainer paddingTop="3rem" paddingBottom="5rem">
+        )}
+        <Calendar heading="Kommende aktiviteter" limit={6} showCalendarLink />
         <RecurringEvents heading="Faste aktiviteter" />
-      </DefaultContainer>
+      </PageContent>
     </>
   );
 }

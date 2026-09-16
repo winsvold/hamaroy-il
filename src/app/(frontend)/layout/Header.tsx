@@ -1,3 +1,4 @@
+import { CallToAction } from "@/components/CallToAction";
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -7,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { HeaderLink } from "./HeaderLink";
 import { MobileMenu } from "./MobileMenu";
+import { fixedLinks, infoPageLinks } from "./navigation";
 
 const headerQuery = defineQuery(`{
   "siteSettings": *[_type == "siteSettings"][0]{ logo },
@@ -18,82 +20,28 @@ const headerQuery = defineQuery(`{
   "clubs": *[_type == "club"] | order(name asc) { name, slug }
 }`);
 
-type NavLink = { href: string; label: string };
-
 export const Header = async () => {
-  const data = await sanityFetch(headerQuery);
-  const logoUrl =
-    data?.siteSettings?.logo &&
-    urlFor(data?.siteSettings?.logo).size(100, 100).url();
+  const { siteSettings, infoPages, clubs } = await sanityFetch(headerQuery);
 
-  const infoPagesIn = (placement: string): NavLink[] =>
-    data.infoPages
-      .filter((page) =>
-        page.menuPlacement?.length
-          ? page.menuPlacement.includes(placement)
-          : // Sider uten plassering havner i sekundærmenyen
-            placement === "sekundaermeny",
-      )
-      .map((page) => ({
-        href: `/info/${page.slug?.current}`,
-        label: page.title ?? "",
-      }));
-
-  const links: NavLink[] = [
-    { href: "/kalender", label: "Kalender" },
-    { href: "/faste-aktiviteter", label: "Faste aktiviteter" },
-    { href: "/lokaler", label: "Lokaler" },
-    ...infoPagesIn("hovedmeny"),
-    ...data.clubs.map((club) => ({
+  const logo = (
+    <Logo
+      url={siteSettings?.logo && urlFor(siteSettings.logo).size(100, 100).url()}
+    />
+  );
+  const links = [
+    ...fixedLinks,
+    ...infoPageLinks(infoPages, "hovedmeny"),
+    ...clubs.map((club) => ({
       href: `/klubber/${club.slug?.current}`,
       label: club.name ?? "",
     })),
-    ...infoPagesIn("sekundaermeny"),
-  ];
-
-  const callToAction = infoPagesIn("toppknapp")[0];
-
-  const logo = (
-    <Flex align="center" gap=".5rem" asChild flexShrink={0}>
-      <Link href="/">
-        {logoUrl ? (
-          <>
-            <Box asChild width="2rem" height="2rem" objectFit="contain">
-              <Image alt="" src={logoUrl} width={100} height={100} />
-            </Box>
-            <Box srOnly>Hamarøy IL</Box>
-          </>
-        ) : (
-          <Box
-            fontFamily="heading"
-            fontWeight="extrabold"
-            fontSize="lg"
-            color="onDark.base"
-            whiteSpace="nowrap"
-          >
-            Hamarøy IL
-          </Box>
-        )}
-      </Link>
-    </Flex>
-  );
-
-  const ctaButton = callToAction && (
-    <Box
-      asChild
-      textStyle="kicker"
-      flexShrink={0}
-      background="aurora.green"
-      color="onAurora"
-      borderRadius="none"
-      padding=".5rem 1rem"
-      whiteSpace="nowrap"
-      transition="background .2s"
-      _hover={{ background: "aurora.teal" }}
-    >
-      <Link href={callToAction.href}>{callToAction.label}</Link>
-    </Box>
-  );
+    ...infoPageLinks(infoPages, "sekundaermeny"),
+  ].map((link) => (
+    <HeaderLink key={link.href} href={link.href}>
+      {link.label}
+    </HeaderLink>
+  ));
+  const [topButton] = infoPageLinks(infoPages, "toppknapp");
 
   return (
     <Box
@@ -102,43 +50,62 @@ export const Header = async () => {
       top="0"
       zIndex={10}
       background="arctic.base"
+      color="onDark.base"
       paddingY="1.25rem"
     >
       <DefaultContainer>
         <Flex align="center" gap={{ base: ".75rem", lg: "2.5rem" }}>
           {logo}
-
           <Flex
             as="nav"
-            display={{ base: "none", lg: "flex" }}
+            hideBelow="lg"
             align="center"
             gap="1.5rem"
-            marginRight="auto"
             flexWrap="wrap"
           >
-            {links.map((link) => (
-              <HeaderLink key={link.href} href={link.href}>
-                {link.label}
-              </HeaderLink>
-            ))}
+            {links}
           </Flex>
-
           <Flex marginLeft="auto" align="center" gap=".5rem" flexShrink={0}>
-            {ctaButton}
-            <Box display={{ base: "block", lg: "none" }}>
-              <MobileMenu logo={logo}>
-                <Stack gap="1.25rem">
-                  {links.map((link) => (
-                    <HeaderLink key={link.href} href={link.href}>
-                      {link.label}
-                    </HeaderLink>
-                  ))}
-                </Stack>
-              </MobileMenu>
-            </Box>
+            {topButton && (
+              <CallToAction
+                href={topButton.href}
+                fontSize="2xs"
+                padding=".5rem 1rem"
+                _hover={{ background: "aurora.teal" }}
+              >
+                {topButton.label}
+              </CallToAction>
+            )}
+            <MobileMenu logo={logo}>
+              <Stack gap="1.25rem">{links}</Stack>
+            </MobileMenu>
           </Flex>
         </Flex>
       </DefaultContainer>
     </Box>
   );
 };
+
+const Logo = ({ url }: { url?: string | null }) => (
+  <Flex asChild align="center" flexShrink={0}>
+    <Link href="/">
+      {url ? (
+        <>
+          <Box asChild boxSize="2rem" objectFit="contain">
+            <Image alt="" src={url} width={100} height={100} />
+          </Box>
+          <Box srOnly>Hamarøy IL</Box>
+        </>
+      ) : (
+        <Box
+          fontFamily="heading"
+          fontWeight="extrabold"
+          fontSize="lg"
+          whiteSpace="nowrap"
+        >
+          Hamarøy IL
+        </Box>
+      )}
+    </Link>
+  </Flex>
+);

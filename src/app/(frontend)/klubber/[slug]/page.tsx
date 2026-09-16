@@ -1,13 +1,15 @@
 import { Avatar } from "@/components/Avatar";
-import { DefaultContainer } from "@/components/DefaultContainer";
 import { ImageGallery } from "@/components/ImageGallery";
-import { Kicker } from "@/components/Kicker";
 import { RichText } from "@/components/RichText";
+import { SideCard } from "@/components/SideCard";
+import { WithSidebar } from "@/components/WithSidebar";
 import { sanityFetch } from "@/sanity/lib/client";
-import { Box, Grid, Stack, Text } from "@chakra-ui/react";
+import { Stack, Text } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import { notFound } from "next/navigation";
+import { ClubPageQueryResult } from "../../../../../sanity.types";
 import { Calendar } from "../../components/calendar";
+import { PageContent } from "../../layout/PageContent";
 import { PageHeader } from "../../layout/PageHeader";
 
 const clubPageQuery = defineQuery(`
@@ -25,58 +27,48 @@ type Props = {
 };
 
 const Page = async (props: Props) => {
-  const params = await props.params;
-  const data = await sanityFetch(clubPageQuery, { slug: params.slug });
+  const { slug } = await props.params;
+  const data = await sanityFetch(clubPageQuery, { slug });
 
   if (!data) return notFound();
 
   return (
     <>
       <PageHeader variant="detail" kicker="Klubb" title={data.name ?? ""} />
-      <DefaultContainer paddingTop="3.5rem" paddingBottom="5rem">
-        <Stack gap="3.5rem">
-          <ImageGallery images={data.images} aspectRatio={2 / 1} />
-
-          <Grid
-            gridTemplateColumns={{ base: "1fr", lg: "1.65fr 1fr" }}
-            gap={{ base: "2rem", lg: "3.5rem" }}
-            alignItems="start"
-          >
-            <RichText
-              blockContent={data.body}
-              fontSize="md"
-              lineHeight={1.75}
-            />
-
-            {!!data.managers?.length && (
-              <Box background="card.base" padding="1.5rem">
-                <Kicker as="h2" marginBottom="1rem">
-                  Ledere
-                </Kicker>
-                <Stack gap="1.25rem">
-                  {data.managers.map((manager) => (
-                    <Stack
-                      gap=".25rem"
-                      key={manager.person?._id ?? manager._key}
-                    >
-                      {manager.person && <Avatar entity={manager.person} />}
-                      {manager.role && (
-                        <Text fontSize="sm" color="muted">
-                          {manager.role}
-                        </Text>
-                      )}
-                    </Stack>
-                  ))}
-                </Stack>
-              </Box>
-            )}
-          </Grid>
-
-          <Calendar heading="Aktiviteter" clubId={data._id} whenEmpty="hide" />
-        </Stack>
-      </DefaultContainer>
+      <PageContent>
+        <ImageGallery images={data.images} aspectRatio={2 / 1} />
+        <WithSidebar
+          sidebar={
+            !!data.managers?.length && <Managers managers={data.managers} />
+          }
+        >
+          <RichText blockContent={data.body} />
+        </WithSidebar>
+        <Calendar heading="Aktiviteter" clubId={data._id} whenEmpty="hide" />
+      </PageContent>
     </>
   );
 };
+
+type Manager = NonNullable<
+  NonNullable<ClubPageQueryResult>["managers"]
+>[number];
+
+const Managers = ({ managers }: { managers: Manager[] }) => (
+  <SideCard title="Ledere">
+    <Stack gap="1.25rem">
+      {managers.map((manager) => (
+        <Stack key={manager._key} gap=".25rem">
+          {manager.person && <Avatar entity={manager.person} />}
+          {manager.role && (
+            <Text fontSize="sm" color="muted">
+              {manager.role}
+            </Text>
+          )}
+        </Stack>
+      ))}
+    </Stack>
+  </SideCard>
+);
 
 export default Page;

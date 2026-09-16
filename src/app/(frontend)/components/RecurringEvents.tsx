@@ -1,143 +1,93 @@
 import { CardGrid } from "@/components/CardGrid";
+import { LinkCard, LinkCardTitle } from "@/components/LinkCard";
 import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
-import { resolveSport, Sport, sports } from "@/sanity/sports";
+import { resolveSport, sports } from "@/sanity/sports";
 import { formatNorwegianDate } from "@/utils/date";
-import { Box, Heading, Stack } from "@chakra-ui/react";
+import { Box, Heading, Stack, Text } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
-import Link from "next/link";
-import { ReoccurringEventsQueryResult } from "../../../../sanity.types";
+import { group } from "radash";
+import { RecurringEventsQueryResult } from "../../../../sanity.types";
 
-const reoccurringEventsQuery = defineQuery(`{
-  "sessionSeries": *[
-    _type == "sessionSeries"
-  ]
-  {
-    _id,
-    title,
-    slug,
-    sport,
-    "sessions": sessions[] {
-      "startsAt": dateTime(startsAt),
-      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,
-    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...1],
-  } | order(title asc),
+const recurringEventsQuery =
+  defineQuery(`*[_type == "sessionSeries"] | order(title asc) {
+  _id,
+  title,
+  slug,
+  sport,
+  "nextStartsAt": sessions[] {
+    "startsAt": dateTime(startsAt),
+    "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,
+  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0].startsAt,
 }`);
 
-type Series = ReoccurringEventsQueryResult["sessionSeries"][number];
-
-const ActivityCard = ({ series }: { series: Series }) => {
-  const nextOccurrence = series.sessions?.[0]?.startsAt;
-
-  return (
-    <Stack
-      asChild
-      gap=".5rem"
-      background="card.base"
-      padding={{ base: "1rem", md: "1.25rem 1.5rem" }}
-      transition="background .2s"
-      _hover={{
-        background: "card.hover",
-        "& > span:first-of-type": { color: "deep.base" },
-      }}
-    >
-      <Link href={`/aktiviteter/${series.slug?.current ?? series._id}`}>
-        <Box
-          as="span"
-          fontWeight="bold"
-          fontSize="lg"
-          lineHeight={1.25}
-          color="ink"
-          transition="color .2s"
-        >
-          {series.title}
-        </Box>
-        <Box
-          as="span"
-          fontSize="sm"
-          fontWeight="medium"
-          color="muted"
-          fontStyle={nextOccurrence ? undefined : "italic"}
-        >
-          {nextOccurrence
-            ? `Neste: ${formatNorwegianDate(nextOccurrence, "EEEE d MMM p")}`
-            : "Ikke planlagt"}
-        </Box>
-      </Link>
-    </Stack>
-  );
-};
-
-const SportSection = ({
-  sport,
-  series,
-  headingAs,
-}: {
-  sport?: Sport;
-  series: Series[];
-  headingAs: "h2" | "h3";
-}) => (
-  <Box as="section" id={sport?.id}>
-    <Heading
-      as={headingAs}
-      fontFamily="heading"
-      fontWeight="bold"
-      fontSize="xl"
-      lineHeight={1.25}
-      color="deep.base"
-      marginBottom="1rem"
-    >
-      {sport?.title ?? "Andre aktiviteter"}
-    </Heading>
-    <CardGrid>
-      {series.map((item) => (
-        <ActivityCard key={item._id} series={item} />
-      ))}
-    </CardGrid>
-  </Box>
-);
+type Series = RecurringEventsQueryResult[number];
 
 type Props = {
   /** Egen overskrift når lista står inne i en annen side */
   heading?: string;
 };
 
-export const RecurringEvents = async (props: Props) => {
-  const { sessionSeries } = await sanityFetch(reoccurringEventsQuery);
-
-  const bySport = sports
-    .map((sport) => ({
-      sport,
-      series: sessionSeries.filter(
-        (item) => resolveSport(item)?.id === sport.id,
-      ),
-    }))
-    .filter((section) => section.series.length > 0);
-
-  const ungrouped = sessionSeries.filter((item) => !resolveSport(item));
-
-  if (!bySport.length && !ungrouped.length) return null;
-
-  const headingAs = props.heading ? "h3" : "h2";
+export const RecurringEvents = async ({ heading }: Props) => {
+  const sections = groupBySport(await sanityFetch(recurringEventsQuery));
+  if (!sections.length) return null;
 
   return (
-    <Box id="faste-aktiviteter">
-      {props.heading && (
-        <SectionHeading marginBottom="1.5rem">{props.heading}</SectionHeading>
-      )}
+    <Box as="section" id="faste-aktiviteter">
+      {heading && <SectionHeading>{heading}</SectionHeading>}
       <Stack gap="1.5rem">
-        {bySport.map(({ sport, series }) => (
-          <SportSection
-            key={sport.id}
-            sport={sport}
-            series={series}
-            headingAs={headingAs}
-          />
+        {sections.map((section) => (
+          <Box as="section" key={section.id} id={section.id}>
+            <Heading
+              as={heading ? "h3" : "h2"}
+              fontWeight="bold"
+              fontSize="xl"
+              lineHeight={1.25}
+              color="deep.base"
+              marginBottom="1rem"
+            >
+              {section.title}
+            </Heading>
+            <CardGrid>
+              {section.series.map((item) => (
+                <SeriesCard key={item._id} series={item} />
+              ))}
+            </CardGrid>
+          </Box>
         ))}
-        {!!ungrouped.length && (
-          <SportSection series={ungrouped} headingAs={headingAs} />
-        )}
       </Stack>
     </Box>
   );
 };
+
+/** Grupperer på idrett i rekkefølgen fra sports.ts, med resten til slutt */
+const groupBySport = (series: Series[]) => {
+  const bySport = group(series, (item) => resolveSport(item)?.id ?? "andre");
+
+  return [...sports, { id: "andre", title: "Andre aktiviteter" }]
+    .map(({ id, title }) => ({ id, title, series: bySport[id] ?? [] }))
+    .filter((section) => section.series.length);
+};
+
+const SeriesCard = ({ series }: { series: Series }) => (
+  <LinkCard padding={{ base: "1rem", md: "1.25rem 1.5rem" }}>
+    <LinkCardTitle
+      as="p"
+      href={`/aktiviteter/${series.slug?.current ?? series._id}`}
+      fontSize="lg"
+    >
+      {series.title}
+    </LinkCardTitle>
+    <Text
+      fontSize="sm"
+      fontWeight="medium"
+      color="muted"
+      fontStyle={series.nextStartsAt ? undefined : "italic"}
+      marginTop=".5rem"
+    >
+      {series.nextStartsAt
+        ? `Neste: ${formatNorwegianDate(series.nextStartsAt, "EEEE d MMM p")}`
+        : "Ikke planlagt"}
+    </Text>
+  </LinkCard>
+);

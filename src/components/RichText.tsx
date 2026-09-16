@@ -76,7 +76,7 @@ export const RichText = ({ blockContent, ...chakraProps }: Props) => {
 
   return (
     <Box
-      fontSize="lg"
+      lineHeight={1.75}
       color="prose"
       css={css}
       maxWidth="35rem"
