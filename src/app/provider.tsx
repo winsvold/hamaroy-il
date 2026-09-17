@@ -91,20 +91,42 @@ const customConfig = defineConfig({
 const system = createSystem(defaultConfig, customConfig);
 
 function EmotionRegistry(props: Props) {
-  const [cache] = useState(() => {
-    const instance = createCache({ key: "css" });
-    instance.compat = true;
-    return instance;
+  const [{ cache, flush }] = useState(() => {
+    const cache = createCache({ key: "css" });
+    cache.compat = true;
+
+    // Husker nye stiler, så hver del av en strømmet side bare sender sine egne
+    const insert = cache.insert;
+    let names: string[] = [];
+    cache.insert = (...args) => {
+      const serialized = args[1];
+      if (cache.inserted[serialized.name] === undefined) {
+        names.push(serialized.name);
+      }
+      return insert(...args);
+    };
+    const flush = () => {
+      const flushed = names;
+      names = [];
+      return flushed;
+    };
+
+    return { cache, flush };
   });
 
-  useServerInsertedHTML(() => (
-    <style
-      data-emotion={`${cache.key} ${Object.keys(cache.inserted).join(" ")}`}
-      dangerouslySetInnerHTML={{
-        __html: Object.values(cache.inserted).join(" "),
-      }}
-    />
-  ));
+  useServerInsertedHTML(() => {
+    const names = flush();
+    if (!names.length) return null;
+
+    return (
+      <style
+        data-emotion={`${cache.key} ${names.join(" ")}`}
+        dangerouslySetInnerHTML={{
+          __html: names.map((name) => cache.inserted[name]).join(" "),
+        }}
+      />
+    );
+  });
 
   return <CacheProvider value={cache}>{props.children}</CacheProvider>;
 }

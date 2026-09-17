@@ -21,39 +21,33 @@ const components: ComponentProps<typeof PortableText>["components"] = {
     normal: ({ children }) => <Text marginBottom="1.5em">{children}</Text>,
   },
   marks: {
-    link: ({ value, children }) => {
-      const target = !(value?.href || "").startsWith("https://")
-        ? "_blank"
-        : undefined;
-      return (
-        <Link
-          variant="underline"
-          color="deep.base"
-          textDecorationColor="deep.base"
-          _hover={{ color: "deep.hover" }}
-          href={value?.href}
-          target={target}
-          rel={target === "_blank" ? "noindex nofollow" : undefined}
-        >
-          {children}
-        </Link>
-      );
-    },
+    link: ({ value, children }) => (
+      <Link
+        variant="underline"
+        color="deep.base"
+        textDecorationColor="deep.base"
+        _hover={{ color: "deep.hover" }}
+        href={value?.href}
+      >
+        {children}
+      </Link>
+    ),
   },
   list: {
     bullet: ({ children }) => (
-      <List.Root as="ol" marginBottom="1em">
+      <List.Root as="ul" marginBottom="1em">
         {children}
       </List.Root>
     ),
     number: ({ children }) => (
-      <List.Root as="ul" marginBottom="1em">
+      <List.Root as="ol" marginBottom="1em">
         {children}
       </List.Root>
     ),
   },
   listItem: {
     bullet: ({ children }) => <List.Item>{children}</List.Item>,
+    number: ({ children }) => <List.Item>{children}</List.Item>,
   },
 };
 

@@ -1,27 +1,16 @@
 import { CallToAction } from "@/components/CallToAction";
 import { DefaultContainer } from "@/components/DefaultContainer";
-import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { Box, Flex, Stack } from "@chakra-ui/react";
-import { defineQuery } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
 import { HeaderLink } from "./HeaderLink";
+import { getLayoutData } from "./layoutData";
 import { MobileMenu } from "./MobileMenu";
 import { fixedLinks, infoPageLinks } from "./navigation";
 
-const headerQuery = defineQuery(`{
-  "siteSettings": *[_type == "siteSettings"][0]{ logo },
-  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {
-    title,
-    slug,
-    menuPlacement,
-  },
-  "clubs": *[_type == "club"] | order(name asc) { name, slug }
-}`);
-
 export const Header = async () => {
-  const { siteSettings, infoPages, clubs } = await sanityFetch(headerQuery);
+  const { siteSettings, infoPages, clubs } = await getLayoutData();
 
   const logo = (
     <Logo

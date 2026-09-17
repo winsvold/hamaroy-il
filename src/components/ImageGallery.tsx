@@ -26,7 +26,7 @@ import type { SessionSeries } from "../../sanity.types";
 type Images = NonNullable<SessionSeries["images"]>;
 
 export const ImageGallery = (props: {
-  images?: Images;
+  images?: Images | null;
   aspectRatio: number;
 }) => {
   const [fullScreen, setFullScreen] = useState(false); // Store state in parent component to avoid flickering in fullscreen mode

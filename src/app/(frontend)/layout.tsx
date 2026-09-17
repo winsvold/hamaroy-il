@@ -1,17 +1,12 @@
 import { Box, Grid } from "@chakra-ui/react";
 import type { Metadata } from "next";
-import { defineQuery } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { Footer } from "./layout/Footer";
 import { Header } from "./layout/Header";
-
-const faviconQuery = defineQuery(`*[_type == "siteSettings"][0]{ logo }`);
+import { getLayoutData } from "./layout/layoutData";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const siteSettings = await sanityFetch(faviconQuery, undefined, {
-    revalidate: 3600,
-  });
+  const { siteSettings } = await getLayoutData();
 
   // Med både bredde og høyde beskjærer Sanity logoen til en firkant
   const iconUrl =

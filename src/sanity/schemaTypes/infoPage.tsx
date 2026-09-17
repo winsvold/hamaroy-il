@@ -1,13 +1,20 @@
 import { Stack, Text } from "@chakra-ui/react";
+import {
+  orderRankField,
+  orderRankOrdering,
+} from "@sanity/orderable-document-list";
 import { defineField, defineType } from "sanity";
 import { menuPlacements } from "../menuPlacements";
 import { getBlockContentType } from "./blockContentType";
+
+export const InfoPageIcon = () => "ℹ️";
 
 export const infoPage = defineType({
   name: "infoPage",
   title: "Infoside",
   type: "document",
-  icon: () => "ℹ️",
+  icon: InfoPageIcon,
+  orderings: [orderRankOrdering],
   fields: [
     defineField({
       name: "title",
@@ -26,14 +33,7 @@ export const infoPage = defineType({
         layout: "grid",
       },
     }),
-    defineField({
-      name: "order",
-      title: "Sortering",
-      description:
-        "Lavest tall kommer først i menyen. Sider med likt tall sorteres alfabetisk.",
-      type: "number",
-      initialValue: 0,
-    }),
+    orderRankField({ type: "infoPage" }),
     getBlockContentType({ headings: ["h2"] }),
     defineField({
       name: "slug",

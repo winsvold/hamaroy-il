@@ -25,12 +25,20 @@ import { PageHeader } from "../../layout/PageHeader";
 
 const aktivitetQuery =
   defineQuery(`*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{
-  ...,
+  _id,
+  _type,
+  title,
+  sport,
+  startsAt,
+  endsAt,
+  body,
+  images,
+  paymentInfo,
   location->,
   organizers[]->,
   "nextSession": sessions[cancelled != true] {
     "startsAt": dateTime(startsAt),
-    "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,
+    "endsAt": dateTime(startsAt) + coalesce(duration.hours, 0) * 60 * 60 + coalesce(duration.minutes, 0) * 60,
   } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0],
 }`);
 

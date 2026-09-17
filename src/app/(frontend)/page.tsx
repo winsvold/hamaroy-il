@@ -17,7 +17,7 @@ const frontPageQuery = defineQuery(`{
     title,
     startsAt,
     endsAt,
-    "image": images[0],
+    "image": images[defined(asset)][0],
     location->{ name },
   }
 }`);

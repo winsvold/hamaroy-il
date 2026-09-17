@@ -13,7 +13,7 @@ const locationsQuery = defineQuery(`*[_type == "location"] | order(name asc) {
   _id,
   name,
   slug,
-  "image": images[0],
+  "image": images[defined(asset)][0],
 }`);
 
 const Page = async () => {

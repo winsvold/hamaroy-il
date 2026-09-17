@@ -8,7 +8,6 @@ import {
 import { Box, Flex, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import { FrontPageQueryResult } from "../../../../sanity.types";
-import { MountainRange } from "../layout/MountainRange";
 
 type Event = FrontPageQueryResult["events"][number];
 
@@ -53,7 +52,7 @@ export const EventCard = ({
 
 const imageHeight = "9rem";
 
-/** Bildet, eller nordlys bak fjellrekka når arrangementet mangler bilde */
+/** Bildet, eller en farget flate når arrangementet mangler bilde */
 const EventImage = ({ image }: { image: Event["image"] }) =>
   image ? (
     <Box
@@ -71,16 +70,7 @@ const EventImage = ({ image }: { image: Event["image"] }) =>
       />
     </Box>
   ) : (
-    <Box
-      position="relative"
-      height={imageHeight}
-      flexShrink={0}
-      overflow="hidden"
-      backgroundImage="radial-gradient(90% 70% at 60% 100%, rgba(74, 222, 159, 0.4), rgba(74, 222, 159, 0.1) 40%, transparent 65%), linear-gradient(#0a1f1a, #123a32)"
-      aria-hidden="true"
-    >
-      <MountainRange back="arctic.base" front="arctic.base" height="2.5rem" />
-    </Box>
+    <Box height={imageHeight} flexShrink={0} background="sage.deep" />
   );
 
 const DateChip = ({ date }: { date: string }) => (

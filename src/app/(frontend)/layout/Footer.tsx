@@ -1,23 +1,13 @@
 import { DefaultContainer } from "@/components/DefaultContainer";
 import { Kicker } from "@/components/Kicker";
-import { sanityFetch } from "@/sanity/lib/client";
 import { Box, Flex, Grid, Stack, Text } from "@chakra-ui/react";
-import { defineQuery } from "next-sanity";
 import Link from "next/link";
 import { sift } from "radash";
+import { getLayoutData } from "./layoutData";
 import { fixedLinks, infoPageLinks, NavLink } from "./navigation";
 
-const footerQuery = defineQuery(`{
-  "siteSettings": *[_type == "siteSettings"][0]{ footerText, contactEmail },
-  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {
-    title,
-    slug,
-    menuPlacement,
-  }
-}`);
-
 export const Footer = async () => {
-  const { siteSettings, infoPages } = await sanityFetch(footerQuery);
+  const { siteSettings, infoPages } = await getLayoutData();
   const email = siteSettings?.contactEmail;
   const contactLinks = sift([
     ...infoPageLinks(infoPages, "bunn-kontakt"),

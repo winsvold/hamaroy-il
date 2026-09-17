@@ -13,15 +13,16 @@ import Link from "next/link";
 
 export const LocationCard = (location: Location) => {
   const address = [location.address, location.city].filter(Boolean).join(", ");
+  const image = location.images?.find((image) => image.asset);
 
   return (
     <LinkBox display="flex" gap="1rem">
-      {location.images?.[0] && (
+      {image && (
         <Box asChild height="4rem" width="4rem" flexShrink={0}>
           <Image
             height={200}
             width={200}
-            src={urlFor(location.images[0]).size(200, 200).url()}
+            src={urlFor(image).size(200, 200).url()}
             alt={location.name ?? ""}
           />
         </Box>

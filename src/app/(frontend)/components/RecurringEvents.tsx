@@ -17,7 +17,7 @@ const recurringEventsQuery =
   sport,
   "nextStartsAt": sessions[cancelled != true] {
     "startsAt": dateTime(startsAt),
-    "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,
+    "endsAt": dateTime(startsAt) + coalesce(duration.hours, 0) * 60 * 60 + coalesce(duration.minutes, 0) * 60,
   } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0].startsAt,
 }`);
 

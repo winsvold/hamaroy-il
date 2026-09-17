@@ -111,7 +111,7 @@ export type InfoPage = {
   _rev: string;
   title?: string;
   menuPlacement?: Array<string>;
-  order?: number;
+  orderRank?: string;
   body?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -498,23 +498,23 @@ export type AllSanitySchemaTypes =
 
 // Source: src/app/(frontend)/aktiviteter/[slug]/page.tsx
 // Variable: aktivitetQuery
-// Query: *[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{  ...,  location->,  organizers[]->,  "nextSession": sessions[cancelled != true] {    "startsAt": dateTime(startsAt),    "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0],}
+// Query: *[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{  _id,  _type,  title,  sport,  startsAt,  endsAt,  body,  images,  paymentInfo,  location->,  organizers[]->,  "nextSession": sessions[cancelled != true] {    "startsAt": dateTime(startsAt),    "endsAt": dateTime(startsAt) + coalesce(duration.hours, 0) * 60 * 60 + coalesce(duration.minutes, 0) * 60,  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0],}
 export type AktivitetQueryResult =
   | {
       _id: string;
       _type: "event";
-      _createdAt: string;
-      _updatedAt: string;
-      _rev: string;
-      title?: string;
-      sport?:
+      title: string | null;
+      sport:
         | "allidrett"
         | "fotball"
         | "handball"
         | "innebandy"
         | "klatring"
-        | "turn";
-      body?: Array<{
+        | "turn"
+        | null;
+      startsAt: string | null;
+      endsAt: string | null;
+      body: Array<{
         children?: Array<{
           marks?: Array<string>;
           text?: string;
@@ -531,9 +531,16 @@ export type AktivitetQueryResult =
         level?: number;
         _type: "block";
         _key: string;
-      }>;
-      startsAt?: string;
-      endsAt?: string;
+      }> | null;
+      images: Array<{
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }> | null;
+      paymentInfo: PaymentInfo | null;
       location: {
         _id: string;
         _type: "location";
@@ -632,37 +639,23 @@ export type AktivitetQueryResult =
             };
           }
       > | null;
-      paymentInfo?: PaymentInfo;
-      images?: Array<{
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        _type: "image";
-        _key: string;
-      }>;
       nextSession: null;
     }
   | {
       _id: string;
       _type: "sessionSeries";
-      _createdAt: string;
-      _updatedAt: string;
-      _rev: string;
-      title?: string;
-      sport?:
+      title: string | null;
+      sport:
         | "allidrett"
         | "fotball"
         | "handball"
         | "innebandy"
         | "klatring"
-        | "turn";
-      sessions?: Array<
-        {
-          _key: string;
-        } & Session
-      >;
-      body?: Array<{
+        | "turn"
+        | null;
+      startsAt: null;
+      endsAt: null;
+      body: Array<{
         children?: Array<{
           marks?: Array<string>;
           text?: string;
@@ -679,7 +672,55 @@ export type AktivitetQueryResult =
         level?: number;
         _type: "block";
         _key: string;
-      }>;
+      }> | null;
+      images: Array<{
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }> | null;
+      paymentInfo: PaymentInfo | null;
+      location: {
+        _id: string;
+        _type: "location";
+        _createdAt: string;
+        _updatedAt: string;
+        _rev: string;
+        name?: string;
+        images?: Array<{
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          _type: "image";
+          _key: string;
+        }>;
+        parent?: LocationReference;
+        address?: string;
+        zip?: string;
+        city?: string;
+        body?: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "h2" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs?: Array<{
+            href?: string;
+            _type: "link";
+            _key: string;
+          }>;
+          level?: number;
+          _type: "block";
+          _key: string;
+        }>;
+        slug?: Slug;
+      } | null;
       organizers: Array<
         | {
             _id: string;
@@ -739,55 +780,6 @@ export type AktivitetQueryResult =
             };
           }
       > | null;
-      location: {
-        _id: string;
-        _type: "location";
-        _createdAt: string;
-        _updatedAt: string;
-        _rev: string;
-        name?: string;
-        images?: Array<{
-          asset?: SanityImageAssetReference;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
-          _key: string;
-        }>;
-        parent?: LocationReference;
-        address?: string;
-        zip?: string;
-        city?: string;
-        body?: Array<{
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: "span";
-            _key: string;
-          }>;
-          style?: "h2" | "normal";
-          listItem?: "bullet" | "number";
-          markDefs?: Array<{
-            href?: string;
-            _type: "link";
-            _key: string;
-          }>;
-          level?: number;
-          _type: "block";
-          _key: string;
-        }>;
-        slug?: Slug;
-      } | null;
-      paymentInfo?: PaymentInfo;
-      images?: Array<{
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        _type: "image";
-        _key: string;
-      }>;
-      slug?: Slug;
       nextSession: {
         startsAt: string | null;
         endsAt: string | null;
@@ -797,7 +789,7 @@ export type AktivitetQueryResult =
 
 // Source: src/app/(frontend)/components/RecurringEvents.tsx
 // Variable: recurringEventsQuery
-// Query: *[_type == "sessionSeries"] | order(title asc) {  _id,  title,  slug,  sport,  "nextStartsAt": sessions[cancelled != true] {    "startsAt": dateTime(startsAt),    "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0].startsAt,}
+// Query: *[_type == "sessionSeries"] | order(title asc) {  _id,  title,  slug,  sport,  "nextStartsAt": sessions[cancelled != true] {    "startsAt": dateTime(startsAt),    "endsAt": dateTime(startsAt) + coalesce(duration.hours, 0) * 60 * 60 + coalesce(duration.minutes, 0) * 60,  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0].startsAt,}
 export type RecurringEventsQueryResult = Array<{
   _id: string;
   title: string | null;
@@ -815,7 +807,7 @@ export type RecurringEventsQueryResult = Array<{
 
 // Source: src/app/(frontend)/components/calendar.tsx
 // Variable: activitiesQuery
-// Query: {  "events": *[    _type == "event" &&    endsAt > now() &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($excludeId) || _id != $excludeId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ] {    _id,    title,    startsAt,    endsAt,    location->{ name },  },  "sessionSeries": *[    _type == "sessionSeries" &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($excludeId) || _id != $excludeId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ] {    _id,    title,    slug,    location->{ name },    "sessions": sessions[] {      _key,      cancelled,      note,      "startsAt": dateTime(startsAt),      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],  },}
+// Query: {  "events": *[    _type == "event" &&    endsAt > now() &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($excludeId) || _id != $excludeId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ] {    _id,    title,    startsAt,    endsAt,    location->{ name },  },  "sessionSeries": *[    _type == "sessionSeries" &&    (!defined($seriesId) || _id == $seriesId) &&    (!defined($excludeId) || _id != $excludeId) &&    (!defined($locationId) || location._ref == $locationId) &&    (!defined($clubId) || references($clubId))  ] {    _id,    title,    slug,    location->{ name },    "sessions": sessions[] {      _key,      cancelled,      note,      "startsAt": dateTime(startsAt),      "endsAt": dateTime(startsAt) + coalesce(duration.hours, 0) * 60 * 60 + coalesce(duration.minutes, 0) * 60,    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],  },}
 export type ActivitiesQueryResult = {
   events: Array<{
     _id: string;
@@ -854,7 +846,7 @@ export type InfoPageQueryResult = {
   _rev: string;
   title?: string;
   menuPlacement?: Array<string>;
-  order?: number;
+  orderRank?: string;
   body?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -936,38 +928,10 @@ export type ClubPageQueryResult = {
   slug?: Slug;
 } | null;
 
-// Source: src/app/(frontend)/layout.tsx
-// Variable: faviconQuery
-// Query: *[_type == "siteSettings"][0]{ logo }
-export type FaviconQueryResult = {
-  logo: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  } | null;
-} | null;
-
-// Source: src/app/(frontend)/layout/Footer.tsx
-// Variable: footerQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0]{ footerText, contactEmail },  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {    title,    slug,    menuPlacement,  }}
-export type FooterQueryResult = {
-  siteSettings: {
-    footerText: string | null;
-    contactEmail: string | null;
-  } | null;
-  infoPages: Array<{
-    title: string | null;
-    slug: Slug | null;
-    menuPlacement: Array<string> | null;
-  }>;
-};
-
-// Source: src/app/(frontend)/layout/Header.tsx
-// Variable: headerQuery
-// Query: {  "siteSettings": *[_type == "siteSettings"][0]{ logo },  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {    title,    slug,    menuPlacement,  },  "clubs": *[_type == "club"] | order(name asc) { name, slug }}
-export type HeaderQueryResult = {
+// Source: src/app/(frontend)/layout/layoutData.ts
+// Variable: layoutQuery
+// Query: {  "siteSettings": *[_type == "siteSettings"][0]{ logo, footerText, contactEmail },  "infoPages": *[_type == "infoPage"] | order(orderRank asc, title asc) {    title,    slug,    menuPlacement,  },  "clubs": *[_type == "club"] | order(name asc) { name, slug }}
+export type LayoutQueryResult = {
   siteSettings: {
     logo: {
       asset?: SanityImageAssetReference;
@@ -976,6 +940,8 @@ export type HeaderQueryResult = {
       crop?: SanityImageCrop;
       _type: "image";
     } | null;
+    footerText: string | null;
+    contactEmail: string | null;
   } | null;
   infoPages: Array<{
     title: string | null;
@@ -1033,13 +999,13 @@ export type LokasjonQueryResult = {
 
 // Source: src/app/(frontend)/lokaler/page.tsx
 // Variable: locationsQuery
-// Query: *[_type == "location"] | order(name asc) {  _id,  name,  slug,  "image": images[0],}
+// Query: *[_type == "location"] | order(name asc) {  _id,  name,  slug,  "image": images[defined(asset)][0],}
 export type LocationsQueryResult = Array<{
   _id: string;
   name: string | null;
   slug: Slug | null;
   image: {
-    asset?: SanityImageAssetReference;
+    asset: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
@@ -1050,7 +1016,7 @@ export type LocationsQueryResult = Array<{
 
 // Source: src/app/(frontend)/page.tsx
 // Variable: frontPageQuery
-// Query: {  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText, intro },  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {    _id,    title,    startsAt,    endsAt,    "image": images[0],    location->{ name },  }}
+// Query: {  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText, intro },  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {    _id,    title,    startsAt,    endsAt,    "image": images[defined(asset)][0],    location->{ name },  }}
 export type FrontPageQueryResult = {
   settings: {
     heroTitle: string | null;
@@ -1080,7 +1046,7 @@ export type FrontPageQueryResult = {
     startsAt: string | null;
     endsAt: string | null;
     image: {
-      asset?: SanityImageAssetReference;
+      asset: SanityImageAssetReference;
       media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
@@ -1097,16 +1063,14 @@ export type FrontPageQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{\n  ...,\n  location->,\n  organizers[]->,\n  "nextSession": sessions[cancelled != true] {\n    "startsAt": dateTime(startsAt),\n    "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0],\n}': AktivitetQueryResult;
-    '*[_type == "sessionSeries"] | order(title asc) {\n  _id,\n  title,\n  slug,\n  sport,\n  "nextStartsAt": sessions[cancelled != true] {\n    "startsAt": dateTime(startsAt),\n    "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0].startsAt,\n}': RecurringEventsQueryResult;
-    '{\n  "events": *[\n    _type == "event" &&\n    endsAt > now() &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($excludeId) || _id != $excludeId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] {\n    _id,\n    title,\n    startsAt,\n    endsAt,\n    location->{ name },\n  },\n  "sessionSeries": *[\n    _type == "sessionSeries" &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($excludeId) || _id != $excludeId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] {\n    _id,\n    title,\n    slug,\n    location->{ name },\n    "sessions": sessions[] {\n      _key,\n      cancelled,\n      note,\n      "startsAt": dateTime(startsAt),\n      "endsAt": dateTime(startsAt) + duration.hours * 60 * 60 + duration.minutes * 60,\n    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],\n  },\n}': ActivitiesQueryResult;
+    '*[_type in ["sessionSeries", "event"] && (slug.current == $slug || _id == $slug)][0]{\n  _id,\n  _type,\n  title,\n  sport,\n  startsAt,\n  endsAt,\n  body,\n  images,\n  paymentInfo,\n  location->,\n  organizers[]->,\n  "nextSession": sessions[cancelled != true] {\n    "startsAt": dateTime(startsAt),\n    "endsAt": dateTime(startsAt) + coalesce(duration.hours, 0) * 60 * 60 + coalesce(duration.minutes, 0) * 60,\n  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0],\n}': AktivitetQueryResult;
+    '*[_type == "sessionSeries"] | order(title asc) {\n  _id,\n  title,\n  slug,\n  sport,\n  "nextStartsAt": sessions[cancelled != true] {\n    "startsAt": dateTime(startsAt),\n    "endsAt": dateTime(startsAt) + coalesce(duration.hours, 0) * 60 * 60 + coalesce(duration.minutes, 0) * 60,\n  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0].startsAt,\n}': RecurringEventsQueryResult;
+    '{\n  "events": *[\n    _type == "event" &&\n    endsAt > now() &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($excludeId) || _id != $excludeId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] {\n    _id,\n    title,\n    startsAt,\n    endsAt,\n    location->{ name },\n  },\n  "sessionSeries": *[\n    _type == "sessionSeries" &&\n    (!defined($seriesId) || _id == $seriesId) &&\n    (!defined($excludeId) || _id != $excludeId) &&\n    (!defined($locationId) || location._ref == $locationId) &&\n    (!defined($clubId) || references($clubId))\n  ] {\n    _id,\n    title,\n    slug,\n    location->{ name },\n    "sessions": sessions[] {\n      _key,\n      cancelled,\n      note,\n      "startsAt": dateTime(startsAt),\n      "endsAt": dateTime(startsAt) + coalesce(duration.hours, 0) * 60 * 60 + coalesce(duration.minutes, 0) * 60,\n    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],\n  },\n}': ActivitiesQueryResult;
     '*[_type == "infoPage" && slug.current == $slug][0]': InfoPageQueryResult;
     '\n  *[_type == "club" && slug.current == $slug][0] {\n    ...,\n    managers[] {\n      ...,\n      person->\n    }\n  }\n': ClubPageQueryResult;
-    '*[_type == "siteSettings"][0]{ logo }': FaviconQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0]{ footerText, contactEmail },\n  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {\n    title,\n    slug,\n    menuPlacement,\n  }\n}': FooterQueryResult;
-    '{\n  "siteSettings": *[_type == "siteSettings"][0]{ logo },\n  "infoPages": *[_type == "infoPage"] | order(order asc, title asc) {\n    title,\n    slug,\n    menuPlacement,\n  },\n  "clubs": *[_type == "club"] | order(name asc) { name, slug }\n}': HeaderQueryResult;
+    '{\n  "siteSettings": *[_type == "siteSettings"][0]{ logo, footerText, contactEmail },\n  "infoPages": *[_type == "infoPage"] | order(orderRank asc, title asc) {\n    title,\n    slug,\n    menuPlacement,\n  },\n  "clubs": *[_type == "club"] | order(name asc) { name, slug }\n}': LayoutQueryResult;
     '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
-    '*[_type == "location"] | order(name asc) {\n  _id,\n  name,\n  slug,\n  "image": images[0],\n}': LocationsQueryResult;
-    '{\n  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText, intro },\n  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {\n    _id,\n    title,\n    startsAt,\n    endsAt,\n    "image": images[0],\n    location->{ name },\n  }\n}': FrontPageQueryResult;
+    '*[_type == "location"] | order(name asc) {\n  _id,\n  name,\n  slug,\n  "image": images[defined(asset)][0],\n}': LocationsQueryResult;
+    '{\n  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText, intro },\n  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {\n    _id,\n    title,\n    startsAt,\n    endsAt,\n    "image": images[defined(asset)][0],\n    location->{ name },\n  }\n}': FrontPageQueryResult;
   }
 }
