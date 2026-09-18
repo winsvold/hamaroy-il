@@ -1,4 +1,4 @@
-import { MenuPlacement } from "@/sanity/menuPlacements";
+import { FooterPlacement, MenuPlacement } from "@/sanity/menuPlacements";
 
 export type NavLink = { href: string; label: string };
 
@@ -12,21 +12,24 @@ export const fixedLinks: NavLink[] = [
 type InfoPage = {
   title: string | null;
   slug: { current?: string } | null;
-  menuPlacement: string[] | null;
+  menuPlacement: string | null;
+  footerPlacement: string | null;
 };
 
-export const infoPageLinks = (
+const linksTo = (
   pages: InfoPage[],
-  placement: MenuPlacement,
+  field: "menuPlacement" | "footerPlacement",
+  placement: string,
 ): NavLink[] =>
   pages
-    .filter((page) =>
-      page.menuPlacement?.length
-        ? page.menuPlacement.includes(placement)
-        : // Sider uten plassering havner i sekundærmenyen
-          placement === "sekundaermeny",
-    )
+    .filter((page) => page[field] === placement)
     .map((page) => ({
       href: `/info/${page.slug?.current}`,
       label: page.title ?? "",
     }));
+
+export const menuLinks = (pages: InfoPage[], placement: MenuPlacement) =>
+  linksTo(pages, "menuPlacement", placement);
+
+export const footerLinks = (pages: InfoPage[], placement: FooterPlacement) =>
+  linksTo(pages, "footerPlacement", placement);

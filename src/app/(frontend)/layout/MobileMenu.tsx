@@ -33,7 +33,6 @@ export const MobileMenu = (props: Props) => {
       </Drawer.Trigger>
       <Drawer.Backdrop background="arctic.base/55" />
       <Drawer.Positioner>
-        {/* Settes her og ikke globalt, siden provideren også omslutter Sanity Studio */}
         <Drawer.Content
           background="arctic.base"
           color="onDark.base"

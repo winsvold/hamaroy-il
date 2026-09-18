@@ -7,18 +7,7 @@ const paths = {
     "M0 220V184l72-32 52 20 66-10 74-58 68-22 92 8 62 38 40-14 44 24 26 4 10-72 12 72 46 10 52-24 42-24 34 14 26-22 30 26 70 22 100 20 100-8 150 20 100-10H1440v76z",
 };
 
-/** SVG-fyll kan ikke slå opp Chakra-tokens, så de gis som CSS-variabler */
-const tokenVar = (token: string) =>
-  `var(--chakra-colors-${token.replaceAll(".", "-")})`;
-
-type Props = {
-  /** Fargetoken for den bakre, halvgjennomsiktige ryggen */
-  back: string;
-  /** Fargetoken for selve rekka */
-  front: string;
-} & BoxProps;
-
-export const MountainRange = ({ back, front, ...boxProps }: Props) => (
+export const MountainRange = (props: BoxProps) => (
   <Box
     position="absolute"
     left="0"
@@ -27,7 +16,7 @@ export const MountainRange = ({ back, front, ...boxProps }: Props) => (
     aria-hidden="true"
     // Rekka ligger over teksten, som ellers ikke kan markeres
     pointerEvents="none"
-    {...boxProps}
+    {...props}
   >
     <svg
       viewBox="0 0 1440 220"
@@ -36,8 +25,13 @@ export const MountainRange = ({ back, front, ...boxProps }: Props) => (
       height="100%"
       style={{ display: "block" }}
     >
-      <path d={paths.back} fill={tokenVar(back)} opacity=".55" />
-      <path d={paths.front} fill={tokenVar(front)} />
+      {/* SVG-fyll kan ikke slå opp Chakra-tokens, så fargene gis som CSS-variabler */}
+      <path
+        d={paths.back}
+        fill="var(--chakra-colors-sage-deep)"
+        opacity=".55"
+      />
+      <path d={paths.front} fill="var(--chakra-colors-ground)" />
     </svg>
   </Box>
 );

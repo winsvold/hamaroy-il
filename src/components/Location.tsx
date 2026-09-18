@@ -1,4 +1,5 @@
 import { urlFor } from "@/sanity/lib/image";
+import { formatAddress } from "@/utils/address";
 import {
   Box,
   Heading,
@@ -12,7 +13,7 @@ import { Location } from "../../sanity.types";
 import Link from "next/link";
 
 export const LocationCard = (location: Location) => {
-  const address = [location.address, location.city].filter(Boolean).join(", ");
+  const address = formatAddress(location);
   const image = location.images?.find((image) => image.asset);
 
   return (

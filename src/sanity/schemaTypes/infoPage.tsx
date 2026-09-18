@@ -1,11 +1,11 @@
-import { Stack, Text } from "@chakra-ui/react";
 import {
   orderRankField,
   orderRankOrdering,
 } from "@sanity/orderable-document-list";
 import { defineField, defineType } from "sanity";
-import { menuPlacements } from "../menuPlacements";
+import { footerPlacements, menuPlacements } from "../menuPlacements";
 import { getBlockContentType } from "./blockContentType";
+import { slugUrlField } from "./slugUrlField";
 
 export const InfoPageIcon = () => "ℹ️";
 
@@ -23,15 +23,19 @@ export const infoPage = defineType({
     }),
     defineField({
       name: "menuPlacement",
-      title: "Hvor skal siden lenkes opp?",
+      title: "Plassering i menyen",
+      type: "string",
+      options: { list: [...menuPlacements], layout: "radio" },
+      initialValue: "sekundaermeny",
+    }),
+    defineField({
+      name: "footerPlacement",
+      title: "Plassering i bunnteksten",
       description:
-        "Siden kan stå flere steder samtidig — «Bli medlem» hører gjerne hjemme både som toppknapp og i bunnteksten. Uten valg her havner siden i menyen, etter klubbene.",
-      type: "array",
-      of: [{ type: "string" }],
-      options: {
-        list: [...menuPlacements],
-        layout: "grid",
-      },
+        "Siden kan stå både i menyen og i bunnteksten — «Bli medlem» hører gjerne hjemme begge steder.",
+      type: "string",
+      options: { list: [...footerPlacements], layout: "radio" },
+      initialValue: "ingen",
     }),
     orderRankField({ type: "infoPage" }),
     getBlockContentType({ headings: ["h2"] }),
@@ -52,17 +56,7 @@ export const infoPage = defineType({
           return true;
         }),
       ],
-      components: {
-        field: (props) => (
-          <Stack>
-            {props.renderDefault(props)}
-            <Text
-              fontSize="xs"
-              color="gray.600"
-            >{`URL: https://hamaroyil.no/info/${props.value?.current ?? "din-verdi-her"}`}</Text>
-          </Stack>
-        ),
-      },
+      components: { field: slugUrlField("info") },
     }),
   ],
 });

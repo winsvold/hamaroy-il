@@ -8,6 +8,7 @@ const layoutQuery = defineQuery(`{
     title,
     slug,
     menuPlacement,
+    footerPlacement,
   },
   "clubs": *[_type == "club"] | order(name asc) { name, slug }
 }`);

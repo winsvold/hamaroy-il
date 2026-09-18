@@ -9,7 +9,8 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { SideCard } from "@/components/SideCard";
 import { WithSidebar } from "@/components/WithSidebar";
 import { sanityFetch } from "@/sanity/lib/client";
-import { resolveSport } from "@/sanity/sports";
+import { sessionTimes, upcomingFirst } from "@/sanity/lib/sessions";
+import { getSport } from "@/sanity/sports";
 import {
   formatNorwegianDateCapitalized,
   formatNorwegianTimeRange,
@@ -36,10 +37,7 @@ const aktivitetQuery =
   paymentInfo,
   location->,
   organizers[]->,
-  "nextSession": sessions[cancelled != true] {
-    "startsAt": dateTime(startsAt),
-    "endsAt": dateTime(startsAt) + coalesce(duration.hours, 0) * 60 * 60 + coalesce(duration.minutes, 0) * 60,
-  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0],
+  "nextSession": sessions[cancelled != true] { ${sessionTimes} } ${upcomingFirst} [0],
 }`);
 
 type Aktivitet = NonNullable<AktivitetQueryResult>;
@@ -55,12 +53,15 @@ const Page = async (props: Props) => {
   if (!data) return notFound();
 
   const isEvent = data._type === "event";
+  // Referanser til upubliserte personer kommer ut som null
+  const organizers = sift(data.organizers ?? []);
+  const hasSidebar = !!(organizers.length || data.location || data.paymentInfo);
 
   return (
     <>
       <PageHeader
         variant="detail"
-        kicker={resolveSport(data)?.title}
+        kicker={getSport(data.sport)?.title}
         title={data.title ?? ""}
       >
         <Facts facts={getFacts(data)} />
@@ -69,27 +70,29 @@ const Page = async (props: Props) => {
       <PageContent>
         <WithSidebar
           sidebar={
-            <>
-              {!!data.organizers?.length && (
-                <SideCard title="Arrangør" dark>
-                  <Stack gap="1rem">
-                    {data.organizers.map((organizer) => (
-                      <Avatar key={organizer._id} entity={organizer} />
-                    ))}
-                  </Stack>
-                </SideCard>
-              )}
-              {data.location && (
-                <SideCard title="Sted">
-                  <LocationCard {...data.location} />
-                </SideCard>
-              )}
-              {data.paymentInfo && (
-                <SideCard title="Betaling">
-                  <Payment paymentInfo={data.paymentInfo} />
-                </SideCard>
-              )}
-            </>
+            hasSidebar && (
+              <>
+                {!!organizers.length && (
+                  <SideCard title="Arrangør" dark>
+                    <Stack gap="1rem">
+                      {organizers.map((organizer) => (
+                        <Avatar key={organizer._id} entity={organizer} />
+                      ))}
+                    </Stack>
+                  </SideCard>
+                )}
+                {data.location && (
+                  <SideCard title="Sted">
+                    <LocationCard {...data.location} />
+                  </SideCard>
+                )}
+                {data.paymentInfo && (
+                  <SideCard title="Betaling">
+                    <Payment paymentInfo={data.paymentInfo} />
+                  </SideCard>
+                )}
+              </>
+            )
           }
         >
           <ImageGallery images={data.images} aspectRatio={2 / 1} />

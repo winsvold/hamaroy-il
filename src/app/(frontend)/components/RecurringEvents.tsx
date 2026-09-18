@@ -2,7 +2,8 @@ import { CardGrid } from "@/components/CardGrid";
 import { LinkCard, LinkCardTitle } from "@/components/LinkCard";
 import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
-import { resolveSport, sports } from "@/sanity/sports";
+import { sessionTimes, upcomingFirst } from "@/sanity/lib/sessions";
+import { getSport, sports } from "@/sanity/sports";
 import { formatNorwegianDate } from "@/utils/date";
 import { Box, Heading, Stack, Text } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
@@ -15,10 +16,7 @@ const recurringEventsQuery =
   title,
   slug,
   sport,
-  "nextStartsAt": sessions[cancelled != true] {
-    "startsAt": dateTime(startsAt),
-    "endsAt": dateTime(startsAt) + coalesce(duration.hours, 0) * 60 * 60 + coalesce(duration.minutes, 0) * 60,
-  } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0].startsAt,
+  "nextStartsAt": sessions[cancelled != true] { ${sessionTimes} } ${upcomingFirst} [0].startsAt,
 }`);
 
 type Series = RecurringEventsQueryResult[number];
@@ -62,7 +60,7 @@ export const RecurringEvents = async ({ heading }: Props) => {
 
 /** Grupperer på idrett i rekkefølgen fra sports.ts, med resten til slutt */
 const groupBySport = (series: Series[]) => {
-  const bySport = group(series, (item) => resolveSport(item)?.id ?? "andre");
+  const bySport = group(series, (item) => getSport(item.sport)?.id ?? "andre");
 
   return [...sports, { id: "andre", title: "Andre aktiviteter" }]
     .map(({ id, title }) => ({ id, title, series: bySport[id] ?? [] }))

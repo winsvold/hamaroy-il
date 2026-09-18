@@ -1,6 +1,7 @@
 import { ImageGallery } from "@/components/ImageGallery";
 import { RichText } from "@/components/RichText";
 import { sanityFetch } from "@/sanity/lib/client";
+import { formatAddress } from "@/utils/address";
 import { defineQuery } from "next-sanity";
 import { notFound } from "next/navigation";
 import { Calendar } from "../../components/calendar";
@@ -28,7 +29,7 @@ const Page = async (props: Props) => {
         variant="detail"
         kicker="Lokale"
         title={data.name ?? ""}
-        text={[data.address, data.zip, data.city].filter(Boolean).join(", ")}
+        text={formatAddress(data)}
       />
       <PageContent>
         <ImageGallery images={data.images} aspectRatio={2 / 1} />

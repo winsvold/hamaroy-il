@@ -1,6 +1,7 @@
 import { Box, Grid } from "@chakra-ui/react";
 import type { Metadata } from "next";
 import { urlFor } from "@/sanity/lib/image";
+import { Provider } from "../provider";
 import { Footer } from "./layout/Footer";
 import { Header } from "./layout/Header";
 import { getLayoutData } from "./layout/layoutData";
@@ -10,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   // Med både bredde og høyde beskjærer Sanity logoen til en firkant
   const iconUrl =
-    siteSettings?.logo &&
+    siteSettings?.logo?.asset &&
     urlFor(siteSettings.logo).width(180).format("png").url();
 
   return {
@@ -26,19 +27,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // Ikke i globalCss, siden provideren også omslutter Sanity Studio
-    <Grid
-      minH="100vh"
-      gridTemplateRows="auto 1fr auto"
-      // Uten minmax(0, …) kan et langt ord gjøre siden bredere enn skjermen
-      gridTemplateColumns="minmax(0, 1fr)"
-      background="ground"
-      color="ink"
-      fontFamily="body"
-    >
-      <Header />
-      <Box as="main">{children}</Box>
-      <Footer />
-    </Grid>
+    <Provider>
+      <Grid
+        minH="100vh"
+        gridTemplateRows="auto 1fr auto"
+        // Uten minmax(0, …) kan et langt ord gjøre siden bredere enn skjermen
+        gridTemplateColumns="minmax(0, 1fr)"
+      >
+        <Header />
+        <Box as="main">{children}</Box>
+        <Footer />
+      </Grid>
+    </Provider>
   );
 }

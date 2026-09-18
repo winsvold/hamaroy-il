@@ -7,30 +7,33 @@ import Link from "next/link";
 import { HeaderLink } from "./HeaderLink";
 import { getLayoutData } from "./layoutData";
 import { MobileMenu } from "./MobileMenu";
-import { fixedLinks, infoPageLinks } from "./navigation";
+import { fixedLinks, menuLinks } from "./navigation";
 
 export const Header = async () => {
   const { siteSettings, infoPages, clubs } = await getLayoutData();
 
   const logo = (
     <Logo
-      url={siteSettings?.logo && urlFor(siteSettings.logo).size(100, 100).url()}
+      // Bare bredde, ellers beskjærer Sanity logoen til en firkant
+      url={
+        siteSettings?.logo?.asset && urlFor(siteSettings.logo).width(100).url()
+      }
     />
   );
   const links = [
     ...fixedLinks,
-    ...infoPageLinks(infoPages, "hovedmeny"),
+    ...menuLinks(infoPages, "hovedmeny"),
     ...clubs.map((club) => ({
       href: `/klubber/${club.slug?.current}`,
       label: club.name ?? "",
     })),
-    ...infoPageLinks(infoPages, "sekundaermeny"),
+    ...menuLinks(infoPages, "sekundaermeny"),
   ].map((link) => (
     <HeaderLink key={link.href} href={link.href}>
       {link.label}
     </HeaderLink>
   ));
-  const [topButton] = infoPageLinks(infoPages, "toppknapp");
+  const [topButton] = menuLinks(infoPages, "toppknapp");
 
   return (
     <Box

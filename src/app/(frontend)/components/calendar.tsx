@@ -1,8 +1,10 @@
 import { CallToAction } from "@/components/CallToAction";
+import { DateBadge } from "@/components/DateBadge";
 import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
-import { formatNorwegianAbbreviation, formatNorwegianDate } from "@/utils/date";
-import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import { sessionTimes, upcomingFirst } from "@/sanity/lib/sessions";
+import { formatNorwegianDate } from "@/utils/date";
+import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
 import Link from "next/link";
 import { group, sift } from "radash";
@@ -39,9 +41,8 @@ const activitiesQuery = defineQuery(`{
       _key,
       cancelled,
       note,
-      "startsAt": dateTime(startsAt),
-      "endsAt": dateTime(startsAt) + coalesce(duration.hours, 0) * 60 * 60 + coalesce(duration.minutes, 0) * 60,
-    } [defined(startsAt) && dateTime(endsAt) > dateTime(now())] | order(startsAt asc) [0...$sessionLimit],
+      ${sessionTimes}
+    } ${upcomingFirst} [0...$sessionLimit],
   },
 }`);
 
@@ -132,7 +133,8 @@ const toDays = (
       (series.sessions ?? []).map(
         (session) =>
           session.startsAt && {
-            id: session._key,
+            // `_key` er bare unik innenfor sin egen serie
+            id: `${series._id}-${session._key}`,
             startsAt: session.startsAt,
             endsAt: session.endsAt,
             title: series.title,
@@ -183,7 +185,20 @@ const Timeline = ({
           align="flex-start"
           gap={{ base: "1rem", md: "1.5rem" }}
         >
-          <DatePill date={entries[0].startsAt} as={dayHeadingAs} />
+          <DateBadge
+            as={dayHeadingAs}
+            date={entries[0].startsAt}
+            daySize="3xl"
+            dayColor="onDark.base"
+            width={{ base: "4rem", md: "5.5rem" }}
+            paddingY=".75rem"
+            background="arctic.base"
+            color="aurora.green"
+            fontSize="sm"
+            fontWeight="bold"
+            lineHeight={1.25}
+            letterSpacing="wider"
+          />
           <Stack gap=".5rem" align="flex-start" flex="1" minWidth="0">
             {entries.map((entry) => (
               <CalendarCard key={entry.id} {...entry} hideTitle={hideTitles} />
@@ -193,40 +208,6 @@ const Timeline = ({
       ))}
     </Stack>
   </Box>
-);
-
-const DatePill = ({ date, as }: { date: string; as: "h2" | "h3" }) => (
-  <Heading
-    as={as}
-    display="flex"
-    flexDirection="column"
-    alignItems="center"
-    flexShrink={0}
-    width={{ base: "4rem", md: "5.5rem" }}
-    paddingY=".75rem"
-    background="arctic.base"
-    color="aurora.green"
-    fontFamily="body"
-    fontSize="sm"
-    fontWeight="bold"
-    lineHeight={1.25}
-    letterSpacing="wider"
-  >
-    <Box srOnly>{formatNorwegianDate(date, "EEEE d. MMMM")}</Box>
-    <span aria-hidden="true">{formatNorwegianAbbreviation(date, "EEE")}</span>
-    <Box
-      as="span"
-      aria-hidden="true"
-      fontSize="3xl"
-      fontWeight="extrabold"
-      lineHeight={1}
-      letterSpacing="normal"
-      color="onDark.base"
-    >
-      {formatNorwegianDate(date, "d")}
-    </Box>
-    <span aria-hidden="true">{formatNorwegianAbbreviation(date, "MMM")}</span>
-  </Heading>
 );
 
 const EmptyState = () => (

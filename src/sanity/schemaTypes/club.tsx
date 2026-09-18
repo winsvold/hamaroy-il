@@ -1,6 +1,6 @@
-import { Stack, Text } from "@chakra-ui/react";
 import { defineField, defineType } from "sanity";
 import { getBlockContentType } from "./blockContentType";
+import { slugUrlField } from "./slugUrlField";
 
 export const club = defineType({
   name: "club",
@@ -78,17 +78,7 @@ export const club = defineType({
           return true;
         }),
       ],
-      components: {
-        field: (props) => (
-          <Stack>
-            {props.renderDefault(props)}
-            <Text
-              fontSize="xs"
-              color="gray.600"
-            >{`URL: https://hamaroyil.no/klubb/${props.value?.current ?? "din-verdi-her"}`}</Text>
-          </Stack>
-        ),
-      },
+      components: { field: slugUrlField("klubb") },
     }),
   ],
   preview: {

@@ -37,14 +37,7 @@ export const PageHeader = ({
   children,
 }: Props) => (
   <PageHero variant={variant}>
-    <Stack
-      gap="0"
-      maxWidth="50rem"
-      // Står tittelen alene, havner den ellers oppå fjelltoppene
-      paddingBottom={
-        text || children ? undefined : { base: "1.75rem", md: "3rem" }
-      }
-    >
+    <Stack gap="0" maxWidth="50rem">
       {kicker && (
         <Kicker color="aurora.green" marginBottom="1rem">
           {kicker}

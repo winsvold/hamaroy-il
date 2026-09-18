@@ -1,10 +1,7 @@
+import { DateBadge } from "@/components/DateBadge";
 import { LinkCard, LinkCardTitle } from "@/components/LinkCard";
 import { urlFor } from "@/sanity/lib/image";
-import {
-  formatNorwegianAbbreviation,
-  formatNorwegianDate,
-  formatNorwegianTimeRange,
-} from "@/utils/date";
+import { formatNorwegianTimeRange } from "@/utils/date";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import { FrontPageQueryResult } from "../../../../sanity.types";
@@ -74,28 +71,14 @@ const EventImage = ({ image }: { image: Event["image"] }) =>
   );
 
 const DateChip = ({ date }: { date: string }) => (
-  <Flex
-    direction="column"
-    align="center"
-    justify="center"
-    flexShrink={0}
+  <DateBadge
+    date={date}
+    daySize="xl"
+    dayColor="onAurora"
     boxSize="3rem"
     background="aurora.green"
     color="onAuroraSoft"
     textStyle="kicker"
     lineHeight={1}
-    title={formatNorwegianDate(date, "PPP")}
-  >
-    <span>{formatNorwegianAbbreviation(date, "EEE")}</span>
-    <Box
-      as="span"
-      fontSize="xl"
-      fontWeight="extrabold"
-      letterSpacing="normal"
-      color="onAurora"
-    >
-      {formatNorwegianDate(date, "d")}
-    </Box>
-    <span>{formatNorwegianAbbreviation(date, "MMM")}</span>
-  </Flex>
+  />
 );

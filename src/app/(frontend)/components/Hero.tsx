@@ -11,9 +11,11 @@ type Props = {
 export const Hero = ({ title, text }: Props) => (
   <PageHero variant="front">
     <Stack gap="0" maxWidth="45rem">
-      <Box fontSize={{ base: "lg", md: "2xl" }} color="onDark.soft">
-        Velkommen til
-      </Box>
+      {!title && (
+        <Box fontSize={{ base: "lg", md: "2xl" }} color="onDark.soft">
+          Velkommen til
+        </Box>
+      )}
       {/* «Hamarøy» kan ikke brytes, og må få plass på smale skjermer */}
       <HeroTitle fontSize={{ base: "4xl", sm: "5xl", md: "6xl" }}>
         {title || "Hamarøy IL"}

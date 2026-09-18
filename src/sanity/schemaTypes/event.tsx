@@ -17,8 +17,7 @@ export const event = defineType({
     defineField({
       name: "sport",
       title: "Idrett",
-      description:
-        "Vises som kategori øverst på arrangementssiden. Gjettes ut fra navnet hvis den står tom.",
+      description: "Vises som kategori øverst på arrangementssiden.",
       type: "string",
       options: { list: sportOptions },
     }),

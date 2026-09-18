@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Figtree, Syne } from "next/font/google";
-import { Provider } from "./provider";
 
 const display = Syne({
   weight: ["600", "700", "800"],
@@ -29,9 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="no" className={`${display.variable} ${body.variable}`}>
-      <body>
-        <Provider>{children}</Provider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

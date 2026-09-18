@@ -551,10 +551,46 @@
       "menuPlacement": {
         "type": "objectAttribute",
         "value": {
-          "type": "array",
-          "of": {
-            "type": "string"
-          }
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "hovedmeny"
+            },
+            {
+              "type": "string",
+              "value": "sekundaermeny"
+            },
+            {
+              "type": "string",
+              "value": "toppknapp"
+            },
+            {
+              "type": "string",
+              "value": "ingen"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "footerPlacement": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "snarveier"
+            },
+            {
+              "type": "string",
+              "value": "kontakt"
+            },
+            {
+              "type": "string",
+              "value": "ingen"
+            }
+          ]
         },
         "optional": true
       },

@@ -4,13 +4,13 @@ import { Box, Flex, Grid, Stack, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import { sift } from "radash";
 import { getLayoutData } from "./layoutData";
-import { fixedLinks, infoPageLinks, NavLink } from "./navigation";
+import { fixedLinks, footerLinks, NavLink } from "./navigation";
 
 export const Footer = async () => {
   const { siteSettings, infoPages } = await getLayoutData();
   const email = siteSettings?.contactEmail;
   const contactLinks = sift([
-    ...infoPageLinks(infoPages, "bunn-kontakt"),
+    ...footerLinks(infoPages, "kontakt"),
     email && { href: `mailto:${email}`, label: email },
   ]);
 
@@ -50,10 +50,7 @@ export const Footer = async () => {
           </Box>
           <FooterColumn
             title="Snarveier"
-            links={[
-              ...fixedLinks,
-              ...infoPageLinks(infoPages, "bunn-snarveier"),
-            ]}
+            links={[...fixedLinks, ...footerLinks(infoPages, "snarveier")]}
           />
           {!!contactLinks.length && (
             <FooterColumn title="Kontakt" links={contactLinks} />
@@ -71,7 +68,10 @@ export const Footer = async () => {
         >
           <Box>© {new Date().getFullYear()} Hamarøy IL</Box>
           <Box asChild _hover={{ textDecoration: "underline" }}>
-            <Link href="/cms">Admin</Link>
+            {/* Studioet er tungt, og skal ikke lastes ned av alle som ser bunnteksten */}
+            <Link href="/cms" prefetch={false}>
+              Admin
+            </Link>
           </Box>
         </Flex>
       </DefaultContainer>

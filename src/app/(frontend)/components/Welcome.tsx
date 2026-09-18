@@ -15,8 +15,8 @@ export const Welcome = ({ intro }: Props) => {
       background="card.base"
       padding={{ base: "1.5rem", md: "2.5rem" }}
       css={{
-        // Første overskrift i teksten er feltets tittel
-        "& h2": {
+        // Bare den første overskriften i teksten er feltets tittel
+        "& h2:first-of-type": {
           columnSpan: "all",
           maxWidth: "50rem",
           fontSize: { base: "2xl", md: "3xl" },

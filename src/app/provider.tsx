@@ -24,6 +24,11 @@ const customConfig = defineConfig({
       // Ankerlenker skal ikke havne bak den klebrige toppmenyen
       scrollPaddingTop: "6rem",
     },
+    body: {
+      background: "ground",
+      color: "ink",
+      fontFamily: "body",
+    },
   },
   theme: {
     tokens: {
