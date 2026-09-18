@@ -26,7 +26,7 @@ import type { SessionSeries } from "../../sanity.types";
 type Images = NonNullable<SessionSeries["images"]>;
 
 export const ImageGallery = (props: {
-  images?: Images;
+  images?: Images | null;
   aspectRatio: number;
 }) => {
   const [fullScreen, setFullScreen] = useState(false); // Store state in parent component to avoid flickering in fullscreen mode
@@ -55,7 +55,7 @@ export const ImageGallery = (props: {
         onOpenChange={() => setFullScreen((s) => !s)}
       >
         <Dialog.Positioner>
-          <Dialog.Content background="blackAlpha.900" color="white">
+          <Dialog.Content background="arctic.base/95" color="onDark.base">
             <Dialog.CloseTrigger asChild>
               <IconButton aria-label={"Lukk fullskjerm"}>
                 <X />
@@ -91,7 +91,7 @@ const DefaultImageView = (props: {
   return (
     <Image
       width="100%"
-      borderRadius="sm"
+      borderRadius="none"
       alt=""
       src={urlFor(props.image).width(width).height(height).url()}
     />
@@ -104,7 +104,7 @@ const FullScreenImageView = (props: { image: Images[number] }) => {
     <Grid
       height="75vmin"
       width="100vw"
-      background="gray.800"
+      background="arctic.hover"
       placeItems="center"
       css={{
         "& img": {
@@ -114,7 +114,7 @@ const FullScreenImageView = (props: { image: Images[number] }) => {
       }}
     >
       <Image
-        borderRadius="sm"
+        borderRadius="none"
         alt=""
         src={urlFor(props.image).width(resolution).url()}
       />
@@ -243,7 +243,7 @@ const SelectImage = ({
             key={image._key}
             value={index.toString()}
             flexShrink="0"
-            borderRadius="sm"
+            borderRadius="none"
             overflow="hidden"
             cursor="pointer"
             filter="brightness(65%)"
@@ -299,9 +299,9 @@ const StyledIconButton = (
 ) => (
   <IconButton
     size={{ base: "xs", sm: "sm" }}
-    background="blackAlpha.600"
-    _hover={{ background: "blackAlpha.800" }}
-    color="white"
+    background="arctic.base/60"
+    _hover={{ background: "arctic.base/85" }}
+    color="onDark.base"
     position="absolute"
     {...props}
   />

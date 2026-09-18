@@ -2,11 +2,12 @@
   "name": "hamaroy-il",
   "version": "0.1.0",
   "private": true,
+  "license": "PolyForm-Noncommercial-1.0.0",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "type-check": "tsc",
     "prepare": "husky install",
     "generate-types": "sanity schema extract && sanity typegen generate"
@@ -17,9 +18,9 @@
     "@portabletext/react": "^3.2.1",
     "@sanity/image-url": "^2.0.3",
     "@sanity/locale-nb-no": "^1.1.29",
-    "@sanity/vision": "^5.8.0",
+    "@sanity/orderable-document-list": "^2.0.24",
     "@sanity/ui": "^3.1.11",
-    "sanity": "^5.8.0",
+    "@sanity/vision": "^5.8.0",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "next": "^16.2.6",
@@ -29,6 +30,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-feather": "^2.0.10",
+    "sanity": "^5.8.0",
     "sanity-plugin-asset-source-unsplash": "^7.0.3",
     "styled-components": "^6.3.8"
   },

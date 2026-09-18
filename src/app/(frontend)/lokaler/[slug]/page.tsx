@@ -1,11 +1,12 @@
-import { DefaultContainer } from "@/components/DefaultContainer";
 import { ImageGallery } from "@/components/ImageGallery";
 import { RichText } from "@/components/RichText";
 import { sanityFetch } from "@/sanity/lib/client";
-import { Heading, Stack } from "@chakra-ui/react";
+import { formatAddress } from "@/utils/address";
 import { defineQuery } from "next-sanity";
 import { notFound } from "next/navigation";
 import { Calendar } from "../../components/calendar";
+import { PageContent } from "../../layout/PageContent";
+import { PageHeader } from "../../layout/PageHeader";
 
 const lokasjonQuery =
   defineQuery(`*[_type == "location" && slug.current == $slug][0]{
@@ -17,27 +18,29 @@ type Props = {
 };
 
 const Page = async (props: Props) => {
-  const params = await props.params;
-  const data = await sanityFetch(lokasjonQuery, { slug: params.slug });
+  const { slug } = await props.params;
+  const data = await sanityFetch(lokasjonQuery, { slug });
 
   if (!data) return notFound();
 
   return (
-    <DefaultContainer>
-      <Stack gap="2rem">
-        <Stack gap="1rem">
-          <Heading as="h1" size="4xl">
-            {data?.name}
-          </Heading>
-          <ImageGallery images={data.images} aspectRatio={2 / 1} />
-        </Stack>
+    <>
+      <PageHeader
+        variant="detail"
+        kicker="Lokale"
+        title={data.name ?? ""}
+        text={formatAddress(data)}
+      />
+      <PageContent>
+        <ImageGallery images={data.images} aspectRatio={2 / 1} />
         <RichText blockContent={data.body} />
         <Calendar
-          heading={`Aktiviteter i ${data?.name}:`}
-          locationId={data?._id}
+          heading={`Aktiviteter i ${data.name}`}
+          locationId={data._id}
+          whenEmpty="hide"
         />
-      </Stack>
-    </DefaultContainer>
+      </PageContent>
+    </>
   );
 };
 

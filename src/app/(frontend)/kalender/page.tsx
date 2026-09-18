@@ -1,15 +1,18 @@
-import { DefaultContainer } from "@/components/DefaultContainer";
-import { Stack } from "@chakra-ui/react";
 import { Calendar } from "../components/calendar";
+import { PageContent } from "../layout/PageContent";
+import { PageHeader } from "../layout/PageHeader";
 
-const Page = async () => {
-  return (
-    <DefaultContainer>
-      <Stack>
-        <Calendar />
-      </Stack>
-    </DefaultContainer>
-  );
-};
+const Page = () => (
+  <>
+    <PageHeader
+      kicker="Kalender"
+      title="Alt som skjer framover"
+      text="Treninger og arrangementer i hele idrettslaget, sortert etter dato."
+    />
+    <PageContent>
+      <Calendar />
+    </PageContent>
+  </>
+);
 
 export default Page;

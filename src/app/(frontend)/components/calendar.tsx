@@ -1,188 +1,231 @@
+import { CallToAction } from "@/components/CallToAction";
+import { DateBadge } from "@/components/DateBadge";
+import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
+import { sessionTimes, upcomingFirst } from "@/sanity/lib/sessions";
 import { formatNorwegianDate } from "@/utils/date";
-import { getSessionEndsAt } from "@/utils/session";
-import {
-  Box,
-  Flex,
-  FlexProps,
-  Grid,
-  Heading,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { isAfter, startOfDay } from "date-fns";
+import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
+import Link from "next/link";
 import { group, sift } from "radash";
-import { KeyedSegment } from "sanity";
-import { ActivitiesQueryResult, Session } from "../../../../sanity.types";
-import { CalendarCard } from "./CalendarCard";
+import { ActivitiesQueryResult } from "../../../../sanity.types";
+import { CalendarCard, CalendarEntry } from "./CalendarCard";
+
+/** Hvert filter slipper alt gjennom når parameteren mangler */
+const filters = `(!defined($id) || _id == $id) &&
+    (!defined($excludeId) || _id != $excludeId) &&
+    (!defined($locationId) || location._ref == $locationId) &&
+    (!defined($clubId) || references($clubId))`;
 
 const activitiesQuery = defineQuery(`{
-  "eventsAndSessionSeries": *[
-    _type in ["sessionSeries", "event"] && 
-    (!defined($seriesId) || _id == $seriesId) && 
-    (!defined($locationId) || location._ref == $locationId) &&
-    (!defined($clubId) || references($clubId))
-  ]
-  {
-    ...,
-    location->,
-    organizers[]->,
+  "events": *[
+    _type == "event" &&
+    endsAt > now() &&
+    ${filters}
+  ] {
+    _id,
+    title,
+    startsAt,
+    endsAt,
+    location->{ name },
+  },
+  "sessionSeries": *[
+    _type == "sessionSeries" &&
+    ${filters}
+  ] {
+    _id,
+    title,
+    slug,
+    location->{ name },
+    "sessions": sessions[] {
+      _key,
+      cancelled,
+      note,
+      ${sessionTimes}
+    } ${upcomingFirst} [0...$sessionLimit],
   },
 }`);
 
-type Props = {
-  limit?: number;
-  seriesId?: string;
-  locationId?: string;
-  heading?: string;
-  clubId?: string;
-  childrenAfter?: React.ReactNode;
-};
+// Ingen serie trenger flere sesjoner enn `limit`. Uten limit hentes i praksis alle.
+const NO_SESSION_LIMIT = 1000;
 
-export type SessionOccurrence = Session &
-  KeyedSegment & {
-    series: Extract<
-      ActivitiesQueryResult["eventsAndSessionSeries"][number],
-      { _type: "sessionSeries" }
-    >;
-  };
+const noSessionsYet = "Treningstidene legges ut så snart de er planlagt.";
+
+type Props = {
+  heading?: string;
+  limit?: number;
+  id?: string;
+  locationId?: string;
+  clubId?: string;
+  excludeId?: string;
+  hideTitles?: boolean;
+  showCalendarLink?: boolean;
+  /** Tom liste: tomkort (standard), en linje tekst eller ingenting */
+  whenEmpty?: "card" | "note" | "hide";
+};
 
 export const Calendar = async (props: Props) => {
-  const { eventsAndSessionSeries } = await sanityFetch(activitiesQuery, {
-    seriesId: props.seriesId ?? null,
+  const data = await sanityFetch(activitiesQuery, {
+    id: props.id ?? null,
     locationId: props.locationId ?? null,
     clubId: props.clubId ?? null,
+    excludeId: props.excludeId ?? null,
+    sessionLimit: props.limit ?? NO_SESSION_LIMIT,
   });
+  const days = toDays(data, props.limit);
 
-  const sessionSeries = eventsAndSessionSeries.filter(
-    (item) => item._type === "sessionSeries",
+  const heading = props.heading && (
+    <SectionHeading>{props.heading}</SectionHeading>
   );
 
-  const sessions: SessionOccurrence[] = sift(
-    sessionSeries.flatMap((series) =>
-      series.sessions?.map((session) => ({
-        series,
-        ...session,
-      })),
-    ),
-  ).filter(
-    (session) =>
-      session && isAfter(new Date(getSessionEndsAt(session)), new Date()),
-  );
+  if (!days.length) {
+    const empty = {
+      card: <EmptyState />,
+      note: <Text color="muted">{noSessionsYet}</Text>,
+      hide: null,
+    }[props.whenEmpty ?? "card"];
 
-  const events = eventsAndSessionSeries
-    .filter((item) => item._type === "event")
-    .filter(
-      (event) => event.endsAt && isAfter(new Date(event.endsAt), new Date()),
-    );
-
-  const sortedEventsAndSessions = [...events, ...sessions]
-    .sort(
-      (a, b) =>
-        new Date(a.startsAt!).getTime() - new Date(b.startsAt!).getTime(),
-    )
-    .slice(0, props.limit);
-
-  const groupedByDate = group(
-    sortedEventsAndSessions,
-    (item) =>
-      (item.startsAt && startOfDay(new Date(item.startsAt)).toISOString()) ||
-      "Ukjent dato",
-  );
-
-  const entries = Object.entries(groupedByDate);
-
-  if (entries.length === 0)
     return (
-      <Stack>
-        <Heading as="h2">{props.heading}</Heading>
-        <Text>Vi har for øyeblikket ingen planlagte aktiviteter</Text>
-      </Stack>
+      empty && (
+        <Box as="section">
+          {heading}
+          {empty}
+        </Box>
+      )
     );
+  }
 
   return (
-    <Stack>
-      {props.heading && <Heading as="h2">{props.heading}</Heading>}
-      <Stack gap="1rem">
-        {entries.map(([date, activities]) => (
-          <Grid
-            key={date}
-            gap={{ base: ".5rem", sm: "1rem" }}
-            gridTemplateColumns={{ base: "3rem 1fr", sm: "4rem 1fr" }}
-          >
-            <Box position="relative">
-              <Box
-                position="absolute"
-                height="calc(100% + 1rem)"
-                top="0"
-                left="50%"
-                transform="translateX(-50%)"
-                border=".1rem solid"
-                borderColor="gray.200"
-              />
-              <DatoBadge position="sticky" top=".75rem" date={date} />
-            </Box>
-            <Stack gap=".5rem" alignItems="flex-start">
-              {activities?.map((session) =>
-                session._type === "event" ? (
-                  <CalendarCard
-                    key={session._id}
-                    startsAt={session.startsAt}
-                    endsAt={session.endsAt}
-                    title={session.title}
-                    location={session.location}
-                    slug={session._id}
-                    image={session.images?.[0]}
-                    type="event"
-                  />
-                ) : (
-                  <CalendarCard
-                    key={session._key}
-                    startsAt={session.startsAt}
-                    endsAt={getSessionEndsAt(session).toISOString()}
-                    title={session.series.title}
-                    location={session.series.location}
-                    slug={session.series.slug?.current}
-                    cancelled={session.cancelled}
-                    note={session.note}
-                    type="session"
-                  />
-                ),
-              )}
-            </Stack>
-          </Grid>
-        ))}
-      </Stack>
-      {props.childrenAfter}
-    </Stack>
+    <Box as="section">
+      {heading}
+      <Timeline
+        days={days}
+        dayHeadingAs={props.heading ? "h3" : "h2"}
+        hideTitles={props.hideTitles}
+      />
+      {props.showCalendarLink && (
+        <CallToAction href="/kalender" marginTop="2rem">
+          Se hele kalenderen →
+        </CallToAction>
+      )}
+    </Box>
   );
 };
 
-export const DatoBadge = ({
-  date,
-  ...chakraProps
-}: { date: string } & FlexProps) => (
-  <Flex
-    flexDirection="column"
-    as="p"
-    padding=".5rem 1rem"
-    minWidth={{ sm: "3.5rem" }}
-    textAlign="center"
-    alignItems="center"
-    borderRadius="md"
-    backgroundColor="green.700"
-    color="white"
-    fontWeight={600}
-    lineHeight={1}
-    title={formatNorwegianDate(date, "PPP p")}
-    fontSize={{ base: ".8rem", sm: "0.9rem" }}
-    {...chakraProps}
-  >
-    <Box as="span">{formatNorwegianDate(date, "E")}</Box>
-    <Box as="span" fontSize="1.5em">
-      {formatNorwegianDate(date, "d")}
+/** Arrangementer og sesjoner i én liste, sortert og gruppert per dag i norsk tid */
+const toDays = (
+  { events, sessionSeries }: ActivitiesQueryResult,
+  limit?: number,
+) => {
+  const entries: CalendarEntry[] = sift([
+    ...events.map(
+      (event) =>
+        event.startsAt && {
+          id: event._id,
+          startsAt: event.startsAt,
+          endsAt: event.endsAt,
+          title: event.title,
+          place: event.location?.name,
+          href: `/aktiviteter/${event._id}`,
+        },
+    ),
+    ...sessionSeries.flatMap((series) =>
+      (series.sessions ?? []).map(
+        (session) =>
+          session.startsAt && {
+            // `_key` er bare unik innenfor sin egen serie
+            id: `${series._id}-${session._key}`,
+            startsAt: session.startsAt,
+            endsAt: session.endsAt,
+            title: series.title,
+            place: series.location?.name,
+            href: `/aktiviteter/${series.slug?.current ?? series._id}`,
+            cancelled: session.cancelled,
+            note: session.note,
+          },
+      ),
+    ),
+  ])
+    .sort(
+      (a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+    )
+    .slice(0, limit);
+
+  const byDay = group(entries, (entry) =>
+    formatNorwegianDate(entry.startsAt, "yyyy-MM-dd"),
+  );
+  return sift(Object.values(byDay));
+};
+
+const Timeline = ({
+  days,
+  dayHeadingAs,
+  hideTitles,
+}: {
+  days: CalendarEntry[][];
+  dayHeadingAs: "h2" | "h3";
+  hideTitles?: boolean;
+}) => (
+  <Box position="relative">
+    {/* Streken går midt gjennom datobrikkene */}
+    <Box
+      position="absolute"
+      top="1rem"
+      bottom="1rem"
+      left={{ base: "calc(2rem - 1px)", md: "calc(2.75rem - 1px)" }}
+      width="2px"
+      background="ink/15"
+      aria-hidden="true"
+    />
+    <Stack gap="1rem">
+      {days.map((entries) => (
+        <Flex
+          key={entries[0].id}
+          position="relative"
+          align="flex-start"
+          gap={{ base: "1rem", md: "1.5rem" }}
+        >
+          <DateBadge
+            as={dayHeadingAs}
+            date={entries[0].startsAt}
+            daySize="3xl"
+            dayColor="onDark.base"
+            width={{ base: "4rem", md: "5.5rem" }}
+            paddingY=".75rem"
+            background="arctic.base"
+            color="aurora.green"
+            fontSize="sm"
+            fontWeight="bold"
+            lineHeight={1.25}
+            letterSpacing="wider"
+          />
+          <Stack gap=".5rem" align="flex-start" flex="1" minWidth="0">
+            {entries.map((entry) => (
+              <CalendarCard key={entry.id} {...entry} hideTitle={hideTitles} />
+            ))}
+          </Stack>
+        </Flex>
+      ))}
+    </Stack>
+  </Box>
+);
+
+const EmptyState = () => (
+  <Stack background="card.base" padding="1.5rem" gap=".5rem" align="flex-start">
+    <Text fontWeight="bold" fontSize="lg">
+      Ingen planlagte aktiviteter akkurat nå
+    </Text>
+    <Text fontSize="sm" color="muted">
+      {noSessionsYet}
+    </Text>
+    <Box
+      asChild
+      textStyle="kicker"
+      color="deep.base"
+      marginTop=".5rem"
+      _hover={{ color: "deep.hover" }}
+    >
+      <Link href="/faste-aktiviteter">Se alle faste tilbud →</Link>
     </Box>
-    <Box as="span">{formatNorwegianDate(date, "MMM").replace(".", "")}</Box>
-  </Flex>
+  </Stack>
 );

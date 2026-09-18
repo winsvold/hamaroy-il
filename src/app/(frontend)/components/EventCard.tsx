@@ -1,70 +1,84 @@
+import { DateBadge } from "@/components/DateBadge";
+import { LinkCard, LinkCardTitle } from "@/components/LinkCard";
 import { urlFor } from "@/sanity/lib/image";
-import { formatNorwegianDate } from "@/utils/date";
-import {
-  Flex,
-  Heading,
-  Image,
-  LinkBox,
-  LinkOverlay,
-  Stack,
-} from "@chakra-ui/react";
-import Link from "next/link";
-import { MapPin } from "react-feather";
+import { formatNorwegianTimeRange } from "@/utils/date";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import Image from "next/image";
 import { FrontPageQueryResult } from "../../../../sanity.types";
-import { TextWithIcon } from "./CalendarCard";
-import { DatoBadge } from "./calendar";
 
-export const EventCard = (props: FrontPageQueryResult["events"][number]) => {
-  const { startsAt, endsAt, title, location } = props;
-  const image = props.images?.[0];
+type Event = FrontPageQueryResult["events"][number];
 
-  return (
-    <LinkBox
-      key={props._id}
-      display="flex"
-      flexDirection="column"
-      borderRadius="md"
-      backgroundColor={`blue.100`}
-      gap=".75rem"
-      _hover={{
-        backgroundColor: `blue.200`,
-      }}
-      transition=".3s"
-      overflow="hidden"
-      padding=".75rem"
-    >
-      {image && (
-        <Image
-          borderRadius="sm"
-          alt=""
-          src={urlFor(image).width(400).height(200).url()}
-          width={400}
-          height={200}
-        />
-      )}
-      <Flex gap="1rem" justifyContent="space-between" alignItems="flex-start">
-        <Stack>
-          <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
-            <Link href={`/aktiviteter/${props._id}`}>
-              <Heading as="h3" size={{ base: "md", sm: "lg" }}>
-                {title}
-              </Heading>
-            </Link>
-          </LinkOverlay>
-          <Flex gap=".75rem" fontWeight={600}>
-            {formatNorwegianDate(startsAt, "p")} -{" "}
-            {formatNorwegianDate(endsAt, "p")}
-          </Flex>
-        </Stack>
-        {startsAt && <DatoBadge date={startsAt} background="blue.600" />}
-      </Flex>
-      <Stack gap=".25rem">
-        {location && (
-          <TextWithIcon icon={<MapPin size="1em" />}>
-            {location?.name}
-          </TextWithIcon>
+export const EventCard = ({
+  _id,
+  title,
+  startsAt,
+  endsAt,
+  location,
+  image,
+}: Event) => (
+  <LinkCard display="flex" flexDirection="column">
+    <EventImage image={image} />
+    <Flex gap="1rem" padding="1rem">
+      <Box flex="1" minWidth="0">
+        <LinkCardTitle href={`/aktiviteter/${_id}`} fontSize="md">
+          {title}
+        </LinkCardTitle>
+        <Text
+          fontSize="sm"
+          fontWeight="bold"
+          color="deep.base"
+          marginTop=".5rem"
+        >
+          {formatNorwegianTimeRange(startsAt, endsAt)}
+        </Text>
+        {location?.name && (
+          <Text
+            fontSize="sm"
+            fontWeight="medium"
+            color="secondary"
+            marginTop=".25rem"
+          >
+            {location.name}
+          </Text>
         )}
-      </Stack>
-    </LinkBox>
+      </Box>
+      {startsAt && <DateChip date={startsAt} />}
+    </Flex>
+  </LinkCard>
+);
+
+const imageHeight = "9rem";
+
+/** Bildet, eller en farget flate når arrangementet mangler bilde */
+const EventImage = ({ image }: { image: Event["image"] }) =>
+  image ? (
+    <Box
+      asChild
+      width="100%"
+      height={imageHeight}
+      flexShrink={0}
+      objectFit="cover"
+    >
+      <Image
+        alt=""
+        src={urlFor(image).width(800).height(300).url()}
+        width={800}
+        height={300}
+      />
+    </Box>
+  ) : (
+    <Box height={imageHeight} flexShrink={0} background="sage.deep" />
   );
-};
+
+const DateChip = ({ date }: { date: string }) => (
+  <DateBadge
+    date={date}
+    daySize="xl"
+    dayColor="onAurora"
+    boxSize="3rem"
+    background="aurora.green"
+    color="onAuroraSoft"
+    textStyle="kicker"
+    lineHeight={1}
+  />
+);

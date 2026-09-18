@@ -1,11 +1,13 @@
 import { formatNorwegianDate } from "@/utils/date";
-import { Button, Flex, Input, Stack, Text } from "@chakra-ui/react";
+import { Button, Flex, Text, TextInput } from "@sanity/ui";
 import { add, roundToNearestMinutes } from "date-fns";
 import { alphabetical, isEqual } from "radash";
 import { useEffect, useState } from "react";
 import { ArrayOfObjectsInputProps, defineField, defineType, set } from "sanity";
 import { Session } from "../../../sanity.types";
+import { getSport } from "../sports";
 import { getBlockContentType } from "./blockContentType";
+import { slugUrlField } from "./slugUrlField";
 
 const SessionsInput = (props: ArrayOfObjectsInputProps) => {
   // Make sure sessions are sorted by date
@@ -58,20 +60,19 @@ const AddMultipleSessions = (props: ArrayOfObjectsInputProps) => {
   };
 
   return (
-    <Flex gap=".5rem" alignItems="center">
-      Legg til ny sesjon
-      <Input
-        width="3rem"
+    <Flex gap={2} align="center">
+      <Text size={1}>Legg til ny sesjon</Text>
+      <TextInput
+        style={{ width: "3rem" }}
         pattern="\d*"
         value={value}
         onChange={(e) => setValue(Number(e.currentTarget.value) || 0)}
       />
-      dager senere
-      <Button onClick={handleAddSession}>
-        Legg til{" "}
-        {nextSession?.startsAt &&
-          formatNorwegianDate(nextSession?.startsAt, "PPP p")}
-      </Button>
+      <Text size={1}>dager senere</Text>
+      <Button
+        onClick={handleAddSession}
+        text={`Legg til ${nextSession?.startsAt ? formatNorwegianDate(nextSession.startsAt, "PPP p") : ""}`}
+      />
     </Flex>
   );
 };
@@ -86,6 +87,14 @@ export const sessionSeries = defineType({
       name: "title",
       title: "Navn",
       type: "string",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "sport",
+      title: "Idrett",
+      description:
+        "Grupperer aktiviteten på «Faste aktiviteter» og vises som kategori på aktivitetssiden.",
+      type: "sport",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -148,26 +157,22 @@ export const sessionSeries = defineType({
           return true;
         }),
       ],
-      components: {
-        field: (props) => (
-          <Stack>
-            {props.renderDefault(props)}
-            <Text
-              fontSize="xs"
-              color="gray.600"
-            >{`URL: https://hamaroyil.no/aktiviteter/${props.value?.current ?? "din-verdi-her"}`}</Text>
-          </Stack>
-        ),
-      },
+      components: { field: slugUrlField("aktiviteter") },
     }),
   ],
   preview: {
     select: {
       title: "title",
+      sport: "sport",
     },
-    prepare: ({ title }) => ({
-      title: title,
-    }),
+    prepare: ({ title, sport }) => {
+      const resolved = getSport(sport);
+      return {
+        title: title,
+        subtitle: resolved?.title,
+        media: () => resolved?.emoji ?? "🏋️‍♀️",
+      };
+    },
   },
 });
 

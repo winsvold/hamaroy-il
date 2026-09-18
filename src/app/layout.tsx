@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
-import { Source_Sans_3 } from "next/font/google";
-import { Provider } from "./provider";
+import { Figtree, Syne } from "next/font/google";
 
-const sourceSans = Source_Sans_3({
-  weight: ["400", "600", "700"],
+const display = Syne({
+  weight: ["600", "700", "800"],
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const body = Figtree({
+  weight: ["400", "500", "600", "700", "800"],
   style: ["normal", "italic"],
   subsets: ["latin"],
+  variable: "--font-body",
   display: "swap",
 });
 
@@ -20,10 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="no" className={`${sourceSans.className}`}>
-      <body>
-        <Provider>{children}</Provider>
-      </body>
+    <html lang="no" className={`${display.variable} ${body.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

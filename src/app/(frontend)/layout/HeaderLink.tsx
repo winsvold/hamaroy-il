@@ -6,19 +6,36 @@ import { usePathname } from "next/navigation";
 
 type Props = { href: string; children: React.ReactNode };
 
+/** Sant for href-en selv og alt som ligger under den, men ikke for «/info/om-oss-2» */
+const isCurrent = (pathName: string, href: string) =>
+  pathName === href || pathName.startsWith(`${href}/`);
+
 export const HeaderLink = (props: Props) => {
   const pathName = usePathname();
-
-  const isSelected = pathName.includes(props.href);
+  const isSelected = isCurrent(pathName, props.href);
 
   return (
     <Box
       asChild
-      textDecoration={isSelected ? "underline" : "none"}
-      fontWeight={isSelected ? "600" : "normal"}
-      _hover={{ textDecoration: "underline" }}
+      fontWeight="semibold"
+      fontSize={{ base: "md", lg: "sm" }}
+      whiteSpace="nowrap"
+      color={isSelected ? "aurora.green" : "onDark.secondary"}
+      transition="color .2s"
+      _hover={{ color: isSelected ? "aurora.green" : "onDark.base" }}
     >
-      <Link href={props.href}>{props.children}</Link>
+      <Link
+        href={props.href}
+        aria-current={
+          pathName === props.href
+            ? "page"
+            : isSelected
+              ? "location"
+              : undefined
+        }
+      >
+        {props.children}
+      </Link>
     </Box>
   );
 };

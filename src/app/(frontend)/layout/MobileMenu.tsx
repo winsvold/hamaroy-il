@@ -20,23 +20,35 @@ export const MobileMenu = (props: Props) => {
   }, [pathName]);
 
   return (
-    <Drawer.Root open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
-      <Drawer.Trigger>
-        <IconButton variant="ghost" about="menu">
+    <Drawer.Root open={isOpen} onOpenChange={(event) => setIsOpen(event.open)}>
+      <Drawer.Trigger asChild>
+        <IconButton
+          variant="ghost"
+          aria-label="Meny"
+          color="onDark.base"
+          hideFrom="lg"
+        >
           <Menu />
         </IconButton>
       </Drawer.Trigger>
-      <Drawer.Backdrop />
+      <Drawer.Backdrop background="arctic.base/55" />
       <Drawer.Positioner>
-        <Drawer.Content>
-          <Drawer.CloseTrigger />
-          <Drawer.Header>
-            <Drawer.Title>
-              <Flex justify="space-between" align="center">
+        <Drawer.Content
+          background="arctic.base"
+          color="onDark.base"
+          borderRadius="none"
+        >
+          <Drawer.Header
+            borderBottom="1px solid"
+            borderColor="onDark.secondary/30"
+          >
+            <Drawer.Title asChild>
+              <Flex justify="space-between" align="center" gap="1rem">
                 {props.logo}
                 <IconButton
                   variant="ghost"
-                  aria-label="Close menu"
+                  aria-label="Lukk meny"
+                  color="onDark.base"
                   onClick={() => setIsOpen(false)}
                 >
                   <X />
@@ -44,7 +56,7 @@ export const MobileMenu = (props: Props) => {
               </Flex>
             </Drawer.Title>
           </Drawer.Header>
-          <Drawer.Body>{props.children}</Drawer.Body>
+          <Drawer.Body paddingY="1.5rem">{props.children}</Drawer.Body>
         </Drawer.Content>
       </Drawer.Positioner>
     </Drawer.Root>
