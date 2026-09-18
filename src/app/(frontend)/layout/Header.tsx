@@ -22,12 +22,11 @@ export const Header = async () => {
   );
   const links = [
     ...fixedLinks,
-    ...menuLinks(infoPages, "hovedmeny"),
+    ...menuLinks(infoPages, "meny"),
     ...clubs.map((club) => ({
       href: `/klubber/${club.slug?.current}`,
       label: club.name ?? "",
     })),
-    ...menuLinks(infoPages, "sekundaermeny"),
   ].map((link) => (
     <HeaderLink key={link.href} href={link.href}>
       {link.label}

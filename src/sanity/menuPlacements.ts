@@ -1,7 +1,6 @@
 /** Delt mellom infoPage-skjemaet og Header/Footer */
 export const menuPlacements = [
-  { title: "Hovedmeny", value: "hovedmeny" },
-  { title: "Meny (etter klubbene)", value: "sekundaermeny" },
+  { title: "I menyen", value: "meny" },
   { title: "Knapp øverst til høyre", value: "toppknapp" },
   { title: "Ikke i menyen", value: "ingen" },
 ] as const;

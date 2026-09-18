@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "type-check": "tsc",
     "prepare": "husky install",
     "generate-types": "sanity schema extract && sanity typegen generate"

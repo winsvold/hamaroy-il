@@ -588,11 +588,7 @@
           "of": [
             {
               "type": "string",
-              "value": "hovedmeny"
-            },
-            {
-              "type": "string",
-              "value": "sekundaermeny"
+              "value": "meny"
             },
             {
               "type": "string",

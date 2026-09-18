@@ -10,6 +10,8 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  // next lint ignorerte byggekatalogen selv, eslint gjør det ikke
+  { ignores: [".next/**"] },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 

@@ -26,7 +26,7 @@ export const infoPage = defineType({
       title: "Plassering i menyen",
       type: "string",
       options: { list: [...menuPlacements], layout: "radio" },
-      initialValue: "sekundaermeny",
+      initialValue: "meny",
     }),
     defineField({
       name: "footerPlacement",

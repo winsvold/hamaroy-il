@@ -118,7 +118,7 @@ export type InfoPage = {
   _updatedAt: string;
   _rev: string;
   title?: string;
-  menuPlacement?: "hovedmeny" | "sekundaermeny" | "toppknapp" | "ingen";
+  menuPlacement?: "meny" | "toppknapp" | "ingen";
   footerPlacement?: "snarveier" | "kontakt" | "ingen";
   orderRank?: string;
   body?: Array<{
@@ -821,7 +821,7 @@ export type InfoPageQueryResult = {
   _updatedAt: string;
   _rev: string;
   title?: string;
-  menuPlacement?: "hovedmeny" | "ingen" | "sekundaermeny" | "toppknapp";
+  menuPlacement?: "ingen" | "meny" | "toppknapp";
   footerPlacement?: "ingen" | "kontakt" | "snarveier";
   orderRank?: string;
   body?: Array<{
@@ -923,7 +923,7 @@ export type LayoutQueryResult = {
   infoPages: Array<{
     title: string | null;
     slug: Slug | null;
-    menuPlacement: "hovedmeny" | "ingen" | "sekundaermeny" | "toppknapp" | null;
+    menuPlacement: "ingen" | "meny" | "toppknapp" | null;
     footerPlacement: "ingen" | "kontakt" | "snarveier" | null;
   }>;
   clubs: Array<{
