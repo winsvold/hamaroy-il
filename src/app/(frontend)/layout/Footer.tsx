@@ -66,7 +66,14 @@ export const Footer = async () => {
           fontWeight="medium"
           color="onDark.faint"
         >
-          <Box>© {new Date().getFullYear()} Hamarøy IL</Box>
+          <Box>
+            © {new Date().getFullYear()} Hamarøy IL ·{" "}
+            <Box asChild _hover={{ textDecoration: "underline" }}>
+              <Link href="https://github.com/winsvold/hamaroy-il">
+                Laget av Daniel Winsvold
+              </Link>
+            </Box>
+          </Box>
           <Box asChild _hover={{ textDecoration: "underline" }}>
             {/* Studioet er tungt, og skal ikke lastes ned av alle som ser bunnteksten */}
             <Link href="/cms" prefetch={false}>
