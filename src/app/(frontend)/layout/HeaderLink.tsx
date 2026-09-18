@@ -24,7 +24,16 @@ export const HeaderLink = (props: Props) => {
       transition="color .2s"
       _hover={{ color: isSelected ? "aurora.green" : "onDark.base" }}
     >
-      <Link href={props.href} aria-current={isSelected ? "page" : undefined}>
+      <Link
+        href={props.href}
+        aria-current={
+          pathName === props.href
+            ? "page"
+            : isSelected
+              ? "location"
+              : undefined
+        }
+      >
         {props.children}
       </Link>
     </Box>
