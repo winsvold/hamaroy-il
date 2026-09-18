@@ -6,7 +6,7 @@ type Props = {
   intro?: NonNullable<FrontPageQueryResult["settings"]>["intro"];
 };
 
-export const Welcome = ({ intro }: Props) => {
+export const FrontpageIntro = ({ intro }: Props) => {
   if (!intro?.length) return null;
 
   return (

@@ -7,7 +7,7 @@ import { Calendar } from "./components/calendar";
 import { EventCard } from "./components/EventCard";
 import { Hero } from "./components/Hero";
 import { RecurringEvents } from "./components/RecurringEvents";
-import { Welcome } from "./components/Welcome";
+import { FrontpageIntro } from "./components/FrontpageIntro";
 import { PageContent } from "./layout/PageContent";
 
 const frontPageQuery = defineQuery(`{
@@ -29,7 +29,7 @@ export default async function Home() {
     <>
       <Hero text={settings?.heroText} />
       <PageContent>
-        <Welcome intro={settings?.intro} />
+        <FrontpageIntro intro={settings?.intro} />
         {!!events.length && (
           <Box as="section">
             <SectionHeading>Gå ikke glipp av</SectionHeading>

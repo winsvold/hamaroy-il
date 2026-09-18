@@ -49,7 +49,7 @@ const activitiesQuery = defineQuery(`{
 // Ingen serie trenger flere sesjoner enn `limit`. Uten limit hentes i praksis alle.
 const NO_SESSION_LIMIT = 1000;
 
-const noSessionsYet = "Treningstidene legges ut så snart sesongen er satt.";
+const noSessionsYet = "Treningstidene legges ut så snart de er planlagt.";
 
 type Props = {
   heading?: string;
