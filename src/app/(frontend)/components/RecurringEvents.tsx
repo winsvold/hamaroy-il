@@ -58,11 +58,11 @@ export const RecurringEvents = async ({ heading }: Props) => {
   );
 };
 
-/** Grupperer på idrett i rekkefølgen fra sports.ts, med resten til slutt */
+/** Grupperer på idrett i rekkefølgen fra sports.ts */
 const groupBySport = (series: Series[]) => {
-  const bySport = group(series, (item) => getSport(item.sport)?.id ?? "andre");
+  const bySport = group(series, (item) => getSport(item.sport)?.id ?? "annet");
 
-  return [...sports, { id: "andre", title: "Andre aktiviteter" } as const]
+  return sports
     .map(({ id, title }) => ({ id, title, series: bySport[id] ?? [] }))
     .filter((section) => section.series.length);
 };

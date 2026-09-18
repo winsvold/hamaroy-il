@@ -32,7 +32,7 @@ export type Sport =
   | "handball"
   | "turn"
   | "innebandy"
-  | "allidrett";
+  | "annet";
 
 export type SanityImageAssetReference = {
   _ref: string;
@@ -345,10 +345,8 @@ export type SiteSettings = {
     crop?: SanityImageCrop;
     _type: "image";
   };
-  heroTitle?: string;
   heroText?: string;
   footerText?: string;
-  contactEmail?: string;
   intro?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -367,6 +365,7 @@ export type SiteSettings = {
     _type: "block";
     _key: string;
   }>;
+  contactEmail?: string;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -995,10 +994,9 @@ export type LocationsQueryResult = Array<{
 
 // Source: src/app/(frontend)/page.tsx
 // Variable: frontPageQuery
-// Query: {  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText, intro },  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {    _id,    title,    startsAt,    endsAt,    "image": images[defined(asset)][0],    location->{ name },  }}
+// Query: {  "settings": *[_type == "siteSettings"][0]{ heroText, intro },  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {    _id,    title,    startsAt,    endsAt,    "image": images[defined(asset)][0],    location->{ name },  }}
 export type FrontPageQueryResult = {
   settings: {
-    heroTitle: string | null;
     heroText: string | null;
     intro: Array<{
       children?: Array<{
@@ -1050,6 +1048,6 @@ declare module "@sanity/client" {
     '{\n  "siteSettings": *[_type == "siteSettings"][0]{ logo, footerText, contactEmail },\n  "infoPages": *[_type == "infoPage"] | order(orderRank asc, title asc) {\n    title,\n    slug,\n    menuPlacement,\n    footerPlacement,\n  },\n  "clubs": *[_type == "club"] | order(name asc) { name, slug }\n}': LayoutQueryResult;
     '*[_type == "location" && slug.current == $slug][0]{\n  ...,\n}': LokasjonQueryResult;
     '*[_type == "location"] | order(name asc) {\n  _id,\n  name,\n  slug,\n  "image": images[defined(asset)][0],\n}': LocationsQueryResult;
-    '{\n  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText, intro },\n  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {\n    _id,\n    title,\n    startsAt,\n    endsAt,\n    "image": images[defined(asset)][0],\n    location->{ name },\n  }\n}': FrontPageQueryResult;
+    '{\n  "settings": *[_type == "siteSettings"][0]{ heroText, intro },\n  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {\n    _id,\n    title,\n    startsAt,\n    endsAt,\n    "image": images[defined(asset)][0],\n    location->{ name },\n  }\n}': FrontPageQueryResult;
   }
 }

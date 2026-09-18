@@ -16,12 +16,6 @@ export const siteSettings = defineType({
       },
     }),
     defineField({
-      name: "heroTitle",
-      title: "Overskrift på forsiden",
-      description: "Står den tom blir det «Velkommen til Hamarøy IL».",
-      type: "string",
-    }),
-    defineField({
       name: "heroText",
       title: "Ingress på forsiden",
       description: "Én til to setninger under overskriften. Maks 200 tegn.",
@@ -37,11 +31,6 @@ export const siteSettings = defineType({
       rows: 3,
       validation: (Rule) => Rule.max(300),
     }),
-    defineField({
-      name: "contactEmail",
-      title: "Kontakt-e-post",
-      type: "email",
-    }),
     {
       ...getBlockContentType({ headings: ["h2"] }),
       name: "intro",
@@ -49,6 +38,11 @@ export const siteSettings = defineType({
       description:
         "Velkomstteksten i det hvite feltet øverst på forsiden. Start med en overskrift — den blir feltets tittel.",
     },
+    defineField({
+      name: "contactEmail",
+      title: "Kontakt-e-post",
+      type: "email",
+    }),
   ],
   preview: {
     prepare: () => ({

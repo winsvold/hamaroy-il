@@ -11,7 +11,7 @@ import { Welcome } from "./components/Welcome";
 import { PageContent } from "./layout/PageContent";
 
 const frontPageQuery = defineQuery(`{
-  "settings": *[_type == "siteSettings"][0]{ heroTitle, heroText, intro },
+  "settings": *[_type == "siteSettings"][0]{ heroText, intro },
   "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {
     _id,
     title,
@@ -27,7 +27,7 @@ export default async function Home() {
 
   return (
     <>
-      <Hero title={settings?.heroTitle} text={settings?.heroText} />
+      <Hero text={settings?.heroText} />
       <PageContent>
         <Welcome intro={settings?.intro} />
         {!!events.length && (

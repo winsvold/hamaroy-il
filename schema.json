@@ -50,7 +50,7 @@
         },
         {
           "type": "string",
-          "value": "allidrett"
+          "value": "annet"
         }
       ]
     }
@@ -2221,13 +2221,6 @@
         },
         "optional": true
       },
-      "heroTitle": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
       "heroText": {
         "type": "objectAttribute",
         "value": {
@@ -2236,13 +2229,6 @@
         "optional": true
       },
       "footerText": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "contactEmail": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
@@ -2401,6 +2387,13 @@
               }
             }
           }
+        },
+        "optional": true
+      },
+      "contactEmail": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
         },
         "optional": true
       }
