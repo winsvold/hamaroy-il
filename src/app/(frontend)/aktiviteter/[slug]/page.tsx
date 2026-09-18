@@ -109,7 +109,7 @@ const Page = async (props: Props) => {
         {!isEvent && (
           <Calendar
             heading="Treningstider"
-            seriesId={data._id}
+            id={data._id}
             hideTitles
             whenEmpty="note"
           />

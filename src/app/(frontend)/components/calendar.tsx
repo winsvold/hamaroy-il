@@ -11,14 +11,17 @@ import { group, sift } from "radash";
 import { ActivitiesQueryResult } from "../../../../sanity.types";
 import { CalendarCard, CalendarEntry } from "./CalendarCard";
 
+/** Hvert filter slipper alt gjennom når parameteren mangler */
+const filters = `(!defined($id) || _id == $id) &&
+    (!defined($excludeId) || _id != $excludeId) &&
+    (!defined($locationId) || location._ref == $locationId) &&
+    (!defined($clubId) || references($clubId))`;
+
 const activitiesQuery = defineQuery(`{
   "events": *[
     _type == "event" &&
     endsAt > now() &&
-    (!defined($seriesId) || _id == $seriesId) &&
-    (!defined($excludeId) || _id != $excludeId) &&
-    (!defined($locationId) || location._ref == $locationId) &&
-    (!defined($clubId) || references($clubId))
+    ${filters}
   ] {
     _id,
     title,
@@ -28,10 +31,7 @@ const activitiesQuery = defineQuery(`{
   },
   "sessionSeries": *[
     _type == "sessionSeries" &&
-    (!defined($seriesId) || _id == $seriesId) &&
-    (!defined($excludeId) || _id != $excludeId) &&
-    (!defined($locationId) || location._ref == $locationId) &&
-    (!defined($clubId) || references($clubId))
+    ${filters}
   ] {
     _id,
     title,
@@ -54,7 +54,7 @@ const noSessionsYet = "Treningstidene legges ut så snart sesongen er satt.";
 type Props = {
   heading?: string;
   limit?: number;
-  seriesId?: string;
+  id?: string;
   locationId?: string;
   clubId?: string;
   excludeId?: string;
@@ -66,7 +66,7 @@ type Props = {
 
 export const Calendar = async (props: Props) => {
   const data = await sanityFetch(activitiesQuery, {
-    seriesId: props.seriesId ?? null,
+    id: props.id ?? null,
     locationId: props.locationId ?? null,
     clubId: props.clubId ?? null,
     excludeId: props.excludeId ?? null,
