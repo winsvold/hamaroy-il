@@ -7,6 +7,7 @@ import { siteSettings } from "./siteSettings";
 import { paymentInfo } from "./paymentInfo";
 import { infoPage } from "./infoPage";
 import { club } from "./club";
+import { sport } from "./sportType";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -19,5 +20,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     paymentInfo,
     infoPage,
     club,
+    sport,
   ],
 };

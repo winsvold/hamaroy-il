@@ -5,7 +5,7 @@ import { alphabetical, isEqual } from "radash";
 import { useEffect, useState } from "react";
 import { ArrayOfObjectsInputProps, defineField, defineType, set } from "sanity";
 import { Session } from "../../../sanity.types";
-import { getSport, sportOptions } from "../sports";
+import { getSport } from "../sports";
 import { getBlockContentType } from "./blockContentType";
 import { slugUrlField } from "./slugUrlField";
 
@@ -94,8 +94,7 @@ export const sessionSeries = defineType({
       title: "Idrett",
       description:
         "Grupperer aktiviteten på «Faste aktiviteter» og vises som kategori på aktivitetssiden.",
-      type: "string",
-      options: { list: sportOptions },
+      type: "sport",
       validation: (Rule) => Rule.required(),
     }),
     defineField({

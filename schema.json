@@ -23,6 +23,39 @@
     }
   },
   {
+    "name": "sport",
+    "type": "type",
+    "value": {
+      "type": "union",
+      "of": [
+        {
+          "type": "string",
+          "value": "fotball"
+        },
+        {
+          "type": "string",
+          "value": "klatring"
+        },
+        {
+          "type": "string",
+          "value": "handball"
+        },
+        {
+          "type": "string",
+          "value": "turn"
+        },
+        {
+          "type": "string",
+          "value": "innebandy"
+        },
+        {
+          "type": "string",
+          "value": "allidrett"
+        }
+      ]
+    }
+  },
+  {
     "type": "type",
     "name": "sanity.imageAsset.reference",
     "value": {
@@ -1157,33 +1190,8 @@
       "sport": {
         "type": "objectAttribute",
         "value": {
-          "type": "union",
-          "of": [
-            {
-              "type": "string",
-              "value": "fotball"
-            },
-            {
-              "type": "string",
-              "value": "klatring"
-            },
-            {
-              "type": "string",
-              "value": "handball"
-            },
-            {
-              "type": "string",
-              "value": "turn"
-            },
-            {
-              "type": "string",
-              "value": "innebandy"
-            },
-            {
-              "type": "string",
-              "value": "allidrett"
-            }
-          ]
+          "type": "inline",
+          "name": "sport"
         },
         "optional": true
       },
@@ -1561,33 +1569,8 @@
       "sport": {
         "type": "objectAttribute",
         "value": {
-          "type": "union",
-          "of": [
-            {
-              "type": "string",
-              "value": "fotball"
-            },
-            {
-              "type": "string",
-              "value": "klatring"
-            },
-            {
-              "type": "string",
-              "value": "handball"
-            },
-            {
-              "type": "string",
-              "value": "turn"
-            },
-            {
-              "type": "string",
-              "value": "innebandy"
-            },
-            {
-              "type": "string",
-              "value": "allidrett"
-            }
-          ]
+          "type": "inline",
+          "name": "sport"
         },
         "optional": true
       },

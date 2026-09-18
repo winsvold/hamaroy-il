@@ -62,7 +62,7 @@ export const RecurringEvents = async ({ heading }: Props) => {
 const groupBySport = (series: Series[]) => {
   const bySport = group(series, (item) => getSport(item.sport)?.id ?? "andre");
 
-  return [...sports, { id: "andre", title: "Andre aktiviteter" }]
+  return [...sports, { id: "andre", title: "Andre aktiviteter" } as const]
     .map(({ id, title }) => ({ id, title, series: bySport[id] ?? [] }))
     .filter((section) => section.series.length);
 };

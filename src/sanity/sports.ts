@@ -6,12 +6,14 @@ export const sports = [
   { id: "turn", title: "Turn & gym", emoji: "🤸" },
   { id: "innebandy", title: "Innebandy", emoji: "🏐" },
   { id: "allidrett", title: "Allidrett barn", emoji: "🧒" },
-];
+] as const;
+
+export type SportId = (typeof sports)[number]["id"];
 
 export const sportOptions = sports.map((sport) => ({
   title: `${sport.emoji} ${sport.title}`,
   value: sport.id,
 }));
 
-export const getSport = (id?: string | null) =>
+export const getSport = (id?: SportId | null) =>
   sports.find((sport) => sport.id === id);

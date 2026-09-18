@@ -26,6 +26,14 @@ export type Duration = {
   minutes?: number;
 };
 
+export type Sport =
+  | "fotball"
+  | "klatring"
+  | "handball"
+  | "turn"
+  | "innebandy"
+  | "allidrett";
+
 export type SanityImageAssetReference = {
   _ref: string;
   _type: "reference";
@@ -197,13 +205,7 @@ export type SessionSeries = {
   _updatedAt: string;
   _rev: string;
   title?: string;
-  sport?:
-    | "fotball"
-    | "klatring"
-    | "handball"
-    | "turn"
-    | "innebandy"
-    | "allidrett";
+  sport?: Sport;
   sessions?: Array<
     {
       _key: string;
@@ -256,13 +258,7 @@ export type Event = {
   _updatedAt: string;
   _rev: string;
   title?: string;
-  sport?:
-    | "fotball"
-    | "klatring"
-    | "handball"
-    | "turn"
-    | "innebandy"
-    | "allidrett";
+  sport?: Sport;
   body?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -472,6 +468,7 @@ export type Geopoint = {
 
 export type AllSanitySchemaTypes =
   | Duration
+  | Sport
   | SanityImageAssetReference
   | PersonReference
   | Club
@@ -505,14 +502,7 @@ export type AktivitetQueryResult =
       _id: string;
       _type: "event";
       title: string | null;
-      sport:
-        | "allidrett"
-        | "fotball"
-        | "handball"
-        | "innebandy"
-        | "klatring"
-        | "turn"
-        | null;
+      sport: Sport | null;
       startsAt: string | null;
       endsAt: string | null;
       body: Array<{
@@ -646,14 +636,7 @@ export type AktivitetQueryResult =
       _id: string;
       _type: "sessionSeries";
       title: string | null;
-      sport:
-        | "allidrett"
-        | "fotball"
-        | "handball"
-        | "innebandy"
-        | "klatring"
-        | "turn"
-        | null;
+      sport: Sport | null;
       startsAt: null;
       endsAt: null;
       body: Array<{
@@ -795,14 +778,7 @@ export type RecurringEventsQueryResult = Array<{
   _id: string;
   title: string | null;
   slug: Slug | null;
-  sport:
-    | "allidrett"
-    | "fotball"
-    | "handball"
-    | "innebandy"
-    | "klatring"
-    | "turn"
-    | null;
+  sport: Sport | null;
   nextStartsAt: string | null;
 }>;
 
