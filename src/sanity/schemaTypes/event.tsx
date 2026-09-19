@@ -13,6 +13,12 @@ export const event = defineType({
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: "sport",
+      title: "Idrett",
+      description: "Vises som kategori øverst på arrangementssiden.",
+      type: "sport",
+    }),
     getBlockContentType({ headings: ["h2"] }),
     defineField({
       name: "startsAt",

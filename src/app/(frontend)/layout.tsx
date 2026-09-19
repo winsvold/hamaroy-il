@@ -1,20 +1,25 @@
 import { Box, Grid } from "@chakra-ui/react";
 import type { Metadata } from "next";
-import { Source_Sans_3 } from "next/font/google";
+import { urlFor } from "@/sanity/lib/image";
+import { Provider } from "../provider";
 import { Footer } from "./layout/Footer";
 import { Header } from "./layout/Header";
+import { getLayoutData } from "./layout/layoutData";
 
-const sourceSans = Source_Sans_3({
-  weight: ["400", "600", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  display: "swap",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const { siteSettings } = await getLayoutData();
 
-export const metadata: Metadata = {
-  title: "Hamarøy IL",
-  description: "Hjemmesidene til Hamarøy IL",
-};
+  // Med både bredde og høyde beskjærer Sanity logoen til en firkant
+  const iconUrl =
+    siteSettings?.logo?.asset &&
+    urlFor(siteSettings.logo).width(180).format("png").url();
+
+  return {
+    title: "Hamarøy IL",
+    description: "Hjemmesidene til Hamarøy IL",
+    icons: iconUrl ? { icon: iconUrl, apple: iconUrl } : undefined,
+  };
+}
 
 export default function RootLayout({
   children,
@@ -22,16 +27,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Grid
-      minH="100vh"
-      gridTemplateRows="auto 1fr auto"
-      className={`${sourceSans.className}`}
-    >
-      <Header />
-      <Box as="main" marginBottom="5rem">
-        {children}
-      </Box>
-      <Footer />
-    </Grid>
+    <Provider>
+      <Grid
+        minH="100vh"
+        gridTemplateRows="auto 1fr auto"
+        // Uten minmax(0, …) kan et langt ord gjøre siden bredere enn skjermen
+        gridTemplateColumns="minmax(0, 1fr)"
+      >
+        <Header />
+        <Box as="main">{children}</Box>
+        <Footer />
+      </Grid>
+    </Provider>
   );
 }

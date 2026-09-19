@@ -2,7 +2,6 @@ import { urlFor } from "@/sanity/lib/image";
 import {
   Box,
   BoxProps,
-  Heading,
   Link,
   LinkBox,
   LinkOverlay,
@@ -10,9 +9,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import { Mail, Phone } from "react-feather";
+import { Icon as FeatherIcon, Mail, Phone } from "react-feather";
 import { Club, Person } from "../../sanity.types";
 
+/** Arver farge, siden den står både på lyse og mørke kort */
 export const Avatar = ({
   entity,
   ...chakraProps
@@ -20,14 +20,13 @@ export const Avatar = ({
   const image = entity._type === "person" ? entity.image : entity.images?.[0];
   const phone = entity._type === "person" ? entity.phone : undefined;
   const email = entity._type === "person" ? entity.email : undefined;
-  const name = entity._type === "person" ? entity.name : entity.name;
   const url =
     entity._type === "club" ? `/klubber/${entity.slug?.current}` : undefined;
 
   return (
     <LinkBox display="flex" gap="1rem" {...chakraProps}>
       {image && (
-        <Box asChild borderRadius="50%" height="4rem" width="4rem">
+        <Box asChild boxSize="4rem" flexShrink={0} objectFit="cover">
           <Image
             height={200}
             width={200}
@@ -36,31 +35,48 @@ export const Avatar = ({
           />
         </Box>
       )}
-      <Stack gap=".25rem">
-        <Heading as="h2" size="md">
+      <Stack gap=".5rem" minWidth="0">
+        <Box fontWeight="bold">
           {url ? (
-            <LinkOverlay _hover={{ textDecoration: "underline" }} asChild>
-              <Link href={url}>{name}</Link>
+            <LinkOverlay asChild _hover={{ textDecoration: "underline" }}>
+              <Link color="inherit" href={url}>
+                {entity.name}
+              </Link>
             </LinkOverlay>
           ) : (
-            name
+            entity.name
           )}
-        </Heading>
-        <Box>
+        </Box>
+        <Box opacity={0.8} lineHeight={1.75}>
           {phone && (
-            <Text display="flex" alignItems="center" gap=".75em">
-              <Phone size="1em" strokeWidth={2.2} />
-              <Link href={`tel:${phone}`}>{phone}</Link>
-            </Text>
+            <ContactLine icon={Phone} href={`tel:${phone}`}>
+              {phone}
+            </ContactLine>
           )}
           {email && (
-            <Text display="flex" alignItems="center" gap=".75em">
-              <Mail size="1em" strokeWidth={2.2} />
-              <Link href={`mailto:${email}`}>{email}</Link>
-            </Text>
+            <ContactLine icon={Mail} href={`mailto:${email}`}>
+              {email}
+            </ContactLine>
           )}
         </Box>
       </Stack>
     </LinkBox>
   );
 };
+
+const ContactLine = ({
+  icon: Icon,
+  href,
+  children,
+}: {
+  icon: FeatherIcon;
+  href: string;
+  children: string;
+}) => (
+  <Text display="flex" alignItems="center" gap=".75em" minWidth="0">
+    <Icon size="1em" strokeWidth={2.2} />
+    <Link color="inherit" href={href} overflowWrap="anywhere">
+      {children}
+    </Link>
+  </Text>
+);

@@ -1,59 +1,48 @@
-import { DefaultContainer } from "@/components/DefaultContainer";
-import { RichText } from "@/components/RichText";
+import { CardGrid } from "@/components/CardGrid";
+import { SectionHeading } from "@/components/SectionHeading";
 import { sanityFetch } from "@/sanity/lib/client";
-import { Box, Button, Grid, Heading, Stack } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { defineQuery } from "next-sanity";
-import Link from "next/link";
 import { Calendar } from "./components/calendar";
 import { EventCard } from "./components/EventCard";
-import { RecurringEvents } from "./faste-aktiviteter/page";
+import { Hero } from "./components/Hero";
+import { RecurringEvents } from "./components/RecurringEvents";
+import { FrontpageIntro } from "./components/FrontpageIntro";
+import { PageContent } from "./layout/PageContent";
 
 const frontPageQuery = defineQuery(`{
-  "intro": *[_type == "siteSettings"][0].intro,
-  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) {
-    ...,
-    location->,
+  "settings": *[_type == "siteSettings"][0]{ heroText, intro },
+  "events": *[_type == "event" && endsAt > now()] | order(startsAt asc) [0...3] {
+    _id,
+    title,
+    startsAt,
+    endsAt,
+    "image": images[defined(asset)][0],
+    location->{ name },
   }
 }`);
 
 export default async function Home() {
-  const data = await sanityFetch(frontPageQuery);
+  const { settings, events } = await sanityFetch(frontPageQuery);
 
   return (
-    <DefaultContainer marginY="1rem" paddingX=".75rem">
-      <Stack gap="3rem">
-        {data.intro && (
-          <Box backgroundColor="yellow.100" borderRadius="md" padding="1rem">
-            <RichText blockContent={data.intro} />
-          </Box>
-        )}
-        {!!data.events?.length && (
-          <Stack gap=".5rem">
-            <Heading as="h2">Gå ikke glipp av</Heading>
-            <Grid
-              templateColumns={{
-                base: "1fr",
-                sm: "1fr 1fr",
-              }}
-              gap=".75rem"
-            >
-              {data.events.map((event) => (
+    <>
+      <Hero text={settings?.heroText} />
+      <PageContent>
+        <FrontpageIntro intro={settings?.intro} />
+        {!!events.length && (
+          <Box as="section">
+            <SectionHeading>Gå ikke glipp av</SectionHeading>
+            <CardGrid>
+              {events.map((event) => (
                 <EventCard key={event._id} {...event} />
               ))}
-            </Grid>
-          </Stack>
+            </CardGrid>
+          </Box>
         )}
-        <Calendar
-          heading="Kommende aktiviteter"
-          limit={6}
-          childrenAfter={
-            <Button size="lg" variant="solid" asChild alignSelf="flex-start">
-              <Link href="/kalender">Se alle</Link>
-            </Button>
-          }
-        />
-        <RecurringEvents />
-      </Stack>
-    </DefaultContainer>
+        <Calendar heading="Kommende aktiviteter" limit={6} showCalendarLink />
+        <RecurringEvents heading="Faste aktiviteter" />
+      </PageContent>
+    </>
   );
 }

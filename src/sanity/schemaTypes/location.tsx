@@ -1,6 +1,6 @@
-import { Stack, Text } from "@chakra-ui/react";
 import { defineField, defineType } from "sanity";
 import { getBlockContentType } from "./blockContentType";
+import { slugUrlField } from "./slugUrlField";
 
 export const location = defineType({
   name: "location",
@@ -71,17 +71,7 @@ export const location = defineType({
           return true;
         }),
       ],
-      components: {
-        field: (props) => (
-          <Stack>
-            {props.renderDefault(props)}
-            <Text
-              fontSize="xs"
-              color="gray.600"
-            >{`URL: https://hamaroyil.no/lokaler/${props.value?.current ?? "din-verdi-her"}`}</Text>
-          </Stack>
-        ),
-      },
+      components: { field: slugUrlField("lokaler") },
     }),
   ],
   preview: {
