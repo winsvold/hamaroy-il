@@ -33,7 +33,7 @@ const customConfig = defineConfig({
   theme: {
     tokens: {
       fonts: {
-        heading: { value: `var(--font-display), ${fallbackSans}` },
+        heading: { value: `var(--font-heading), ${fallbackSans}` },
         body: { value: `var(--font-body), ${fallbackSans}` },
       },
       colors: {

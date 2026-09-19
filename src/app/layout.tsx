@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Figtree, Syne } from "next/font/google";
 
-const display = Syne({
+const heading = Syne({
   weight: ["600", "700", "800"],
   subsets: ["latin"],
-  variable: "--font-display",
+  variable: "--font-heading",
   display: "swap",
 });
 
@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="no" className={`${display.variable} ${body.variable}`}>
+    <html lang="no" className={`${heading.variable} ${body.variable}`}>
       <body>{children}</body>
     </html>
   );
