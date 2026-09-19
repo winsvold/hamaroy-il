@@ -21,7 +21,7 @@ const Page = async () => {
 
   return (
     <>
-      <PageHeader kicker="Lokaler" title="Lokaler og steder" />
+      <PageHeader title="Lokaler og steder" />
       <PageContent>
         <CardGrid>
           {locations.map((location) => (

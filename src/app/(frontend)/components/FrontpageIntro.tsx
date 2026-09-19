@@ -32,7 +32,7 @@ export const FrontpageIntro = ({ intro }: Props) => {
         blockContent={intro}
         maxWidth="none"
         columnCount={{ base: 1, md: 2 }}
-        columnGap="3rem"
+        columnGap="6rem"
       />
     </Box>
   );

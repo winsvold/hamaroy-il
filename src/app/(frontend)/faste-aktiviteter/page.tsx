@@ -4,7 +4,7 @@ import { PageHeader } from "../layout/PageHeader";
 
 const Page = () => (
   <>
-    <PageHeader kicker="Hele året, alle aldre" title="Faste aktiviteter" />
+    <PageHeader title="Faste aktiviteter" />
     <PageContent>
       <RecurringEvents />
     </PageContent>

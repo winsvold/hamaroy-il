@@ -34,7 +34,7 @@ const Page = async (props: Props) => {
 
   return (
     <>
-      <PageHeader variant="detail" kicker="Klubb" title={data.name ?? ""} />
+      <PageHeader variant="detail" title={data.name ?? ""} />
       <PageContent>
         <ImageGallery images={data.images} aspectRatio={2 / 1} />
         <WithSidebar
