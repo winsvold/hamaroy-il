@@ -2,7 +2,6 @@ import { DefaultContainer } from "@/components/DefaultContainer";
 import { Box } from "@chakra-ui/react";
 import { getDayOfYear } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
-import { AuroraCurtain } from "./AuroraCurtain";
 import { AuroraGlow } from "./AuroraGlow";
 import { AuroraRibbons } from "./AuroraRibbons";
 import { MountainRange } from "./MountainRange";
@@ -25,9 +24,10 @@ const variants = {
   },
 };
 
-const skies = [AuroraRibbons, AuroraCurtain, AuroraGlow];
+const skies = [AuroraRibbons, AuroraGlow];
 
 // Ny himmel hver dag. Dagen regnes i norsk tid, siden serveren går i UTC.
+
 const skyOfTheDay = () =>
   skies[getDayOfYear(toZonedTime(new Date(), "Europe/Oslo")) % skies.length];
 
