@@ -15,6 +15,9 @@ export const DateBadge = ({ date, daySize, dayColor, ...props }: Props) => (
     align="center"
     justify="center"
     flexShrink={0}
+    position="sticky"
+    // Så den ikke havner bak den klebrige toppmenyen
+    top="5rem"
     {...props}
   >
     <Box srOnly>{formatNorwegianDate(date, "EEEE d. MMMM")}</Box>
