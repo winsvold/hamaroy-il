@@ -52,7 +52,7 @@ const customConfig = defineConfig({
         ground: { value: "#e9edeb" },
         card: {
           base: { value: "#ffffff" },
-          hover: { value: "#f7fbf9" },
+          hover: { value: "#f3f8f6" },
         },
         // Den bakre fjellryggen
         sage: {
